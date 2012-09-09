@@ -98,7 +98,7 @@ m4_define([_AC_LANG_CALL(Python)],
 
 # PC_PYTHON_PATH_PY([MINIMUM-VERSION], [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
 # ---------------------------------------------------------------------------
-AC_DEFUN([PC_PYTHON_PATH_PY],
+AC_DEFUN([PC_PYTHON_PATH],
  [
   dnl Find a Python interpreter.  Python versions prior to 2.0 are not
   dnl supported. (2.0 was released on October 16, 2000).
@@ -114,7 +114,7 @@ AC_DEFUN([PC_PYTHON_PATH_PY],
     if test -z "$PYTHON"; then
       AC_PATH_PROGS([PYTHON], _PC_PYTHON_INTERPRETER_LIST, :)
     fi
-    am_display_PYTHON=python
+    pc_display_PYTHON=python
   ], [
     dnl A version check is needed.
     if test -n "$PYTHON"; then
@@ -124,23 +124,23 @@ AC_DEFUN([PC_PYTHON_PATH_PY],
 			      [AC_MSG_RESULT([yes])],
 			      [AC_MSG_RESULT([no])
 			       AC_MSG_ERROR([Python interpreter is too old])])
-      am_display_PYTHON=$PYTHON
+      pc_display_PYTHON=$PYTHON
     else
       # Otherwise, try each interpreter until we find one that satisfies
       # VERSION.
       AC_CACHE_CHECK([for a Python interpreter with version >= $1],
-	[am_cv_pathless_PYTHON],[
-	for am_cv_pathless_PYTHON in _PC_PYTHON_INTERPRETER_LIST none; do
-	  test "$am_cv_pathless_PYTHON" = none && break
-	  PC_PYTHON_CHECK_VERSION([$am_cv_pathless_PYTHON], [$1], [break])
+	[pc_cv_pathless_PYTHON],[
+	for pc_cv_pathless_PYTHON in _PC_PYTHON_INTERPRETER_LIST none; do
+	  test "$pc_cv_pathless_PYTHON" = none && break
+	  PC_PYTHON_CHECK_VERSION([$pc_cv_pathless_PYTHON], [$1], [break])
 	done])
-      # Set $PYTHON to the absolute path of $am_cv_pathless_PYTHON.
-      if test "$am_cv_pathless_PYTHON" = none; then
+      # Set $PYTHON to the absolute path of $pc_cv_pathless_PYTHON.
+      if test "$pc_cv_pathless_PYTHON" = none; then
 	PYTHON=:
       else
-        AC_PATH_PROG([PYTHON], [$am_cv_pathless_PYTHON])
+        AC_PATH_PROG([PYTHON], [$pc_cv_pathless_PYTHON])
       fi
-      am_display_PYTHON=$am_cv_pathless_PYTHON
+      pc_display_PYTHON=$pc_cv_pathless_PYTHON
     fi
   ])
 
@@ -153,9 +153,9 @@ AC_DEFUN([PC_PYTHON_PATH_PY],
   dnl the best way to do this; it's what "site.py" does in the standard
   dnl library.
 
-  AC_CACHE_CHECK([for $am_display_PYTHON version], [am_cv_python_version],
-    [am_cv_python_version=`$PYTHON -c "import sys; sys.stdout.write(sys.version[[:3]])"`])
-  AC_SUBST([PYTHON_VERSION], [$am_cv_python_version])
+  AC_CACHE_CHECK([for $pc_display_PYTHON version], [pc_cv_python_version],
+    [pc_cv_python_version=`$PYTHON -c "import sys; sys.stdout.write(sys.version[[:3]])"`])
+  AC_SUBST([PYTHON_VERSION], [$pc_cv_python_version])
 
   dnl Use the values of $prefix and $exec_prefix for the corresponding
   dnl values of PYTHON_PREFIX and PYTHON_EXEC_PREFIX.  These are made
@@ -168,9 +168,9 @@ AC_DEFUN([PC_PYTHON_PATH_PY],
   dnl At times (like when building shared libraries) you may want
   dnl to know which OS platform Python thinks this is.
 
-  AC_CACHE_CHECK([for $am_display_PYTHON platform], [am_cv_python_platform],
-    [am_cv_python_platform=`$PYTHON -c "import sys; sys.stdout.write(sys.platform)"`])
-  AC_SUBST([PYTHON_PLATFORM], [$am_cv_python_platform])
+  AC_CACHE_CHECK([for $pc_display_PYTHON platform], [pc_cv_python_platform],
+    [pc_cv_python_platform=`$PYTHON -c "import sys; sys.stdout.write(sys.platform)"`])
+  AC_SUBST([PYTHON_PLATFORM], [$pc_cv_python_platform])
 
 
   dnl Set up 4 directories:
@@ -180,31 +180,31 @@ AC_DEFUN([PC_PYTHON_PATH_PY],
   dnl   directory like in previous automake betas.  This behavior
   dnl   is more consistent with lispdir.m4 for example.
   dnl Query distutils for this directory.
-  AC_CACHE_CHECK([for $am_display_PYTHON script directory],
-    [am_cv_python_pythondir],
+  AC_CACHE_CHECK([for $pc_display_PYTHON script directory],
+    [pc_cv_python_pythondir],
     [if test "x$prefix" = xNONE
      then
-       am_py_prefix=$ac_default_prefix
+       pc_py_prefix=$ac_default_prefix
      else
-       am_py_prefix=$prefix
+       pc_py_prefix=$prefix
      fi
-     am_cv_python_pythondir=`$PYTHON -c "import sys; from distutils import sysconfig; sys.stdout.write(sysconfig.get_python_lib(0,0,prefix='$am_py_prefix'))" 2>/dev/null`
-     case $am_cv_python_pythondir in
-     $am_py_prefix*)
-       am__strip_prefix=`echo "$am_py_prefix" | sed 's|.|.|g'`
-       am_cv_python_pythondir=`echo "$am_cv_python_pythondir" | sed "s,^$am__strip_prefix,$PYTHON_PREFIX,"`
+     pc_cv_python_pythondir=`$PYTHON -c "import sys; from distutils import sysconfig; sys.stdout.write(sysconfig.get_python_lib(0,0,prefix='$pc_py_prefix'))" 2>/dev/null`
+     case $pc_cv_python_pythondir in
+     $pc_py_prefix*)
+       pc__strip_prefix=`echo "$pc_py_prefix" | sed 's|.|.|g'`
+       pc_cv_python_pythondir=`echo "$pc_cv_python_pythondir" | sed "s,^$pc__strip_prefix,$PYTHON_PREFIX,"`
        ;;
      *)
-       case $am_py_prefix in
+       case $pc_py_prefix in
          /usr|/System*) ;;
          *)
-	  am_cv_python_pythondir=$PYTHON_PREFIX/lib/python$PYTHON_VERSION/site-packages
+	  pc_cv_python_pythondir=$PYTHON_PREFIX/lib/python$PYTHON_VERSION/site-packages
 	  ;;
        esac
        ;;
      esac
     ])
-  AC_SUBST([pythondir], [$am_cv_python_pythondir])
+  AC_SUBST([pythondir], [$pc_cv_python_pythondir])
 
   dnl pkgpythondir -- $PACKAGE directory under pythondir.  Was
   dnl   PYTHON_SITE_PACKAGE in previous betas, but this naming is
@@ -215,31 +215,31 @@ AC_DEFUN([PC_PYTHON_PATH_PY],
   dnl pyexecdir -- directory for installing python extension modules
   dnl   (shared libraries)
   dnl Query distutils for this directory.
-  AC_CACHE_CHECK([for $am_display_PYTHON extension module directory],
-    [am_cv_python_pyexecdir],
+  AC_CACHE_CHECK([for $pc_display_PYTHON extension module directory],
+    [pc_cv_python_pyexecdir],
     [if test "x$exec_prefix" = xNONE
      then
-       am_py_exec_prefix=$am_py_prefix
+       pc_py_exec_prefix=$pc_py_prefix
      else
-       am_py_exec_prefix=$exec_prefix
+       pc_py_exec_prefix=$exec_prefix
      fi
-     am_cv_python_pyexecdir=`$PYTHON -c "import sys; from distutils import sysconfig; sys.stdout.write(sysconfig.get_python_lib(1,0,prefix='$am_py_exec_prefix'))" 2>/dev/null`
-     case $am_cv_python_pyexecdir in
-     $am_py_exec_prefix*)
-       am__strip_prefix=`echo "$am_py_exec_prefix" | sed 's|.|.|g'`
-       am_cv_python_pyexecdir=`echo "$am_cv_python_pyexecdir" | sed "s,^$am__strip_prefix,$PYTHON_EXEC_PREFIX,"`
+     pc_cv_python_pyexecdir=`$PYTHON -c "import sys; from distutils import sysconfig; sys.stdout.write(sysconfig.get_python_lib(1,0,prefix='$pc_py_exec_prefix'))" 2>/dev/null`
+     case $pc_cv_python_pyexecdir in
+     $pc_py_exec_prefix*)
+       pc__strip_prefix=`echo "$pc_py_exec_prefix" | sed 's|.|.|g'`
+       pc_cv_python_pyexecdir=`echo "$pc_cv_python_pyexecdir" | sed "s,^$pc__strip_prefix,$PYTHON_EXEC_PREFIX,"`
        ;;
      *)
-       case $am_py_exec_prefix in
+       case $pc_py_exec_prefix in
          /usr|/System*) ;;
          *)
-	   am_cv_python_pyexecdir=$PYTHON_EXEC_PREFIX/lib/python$PYTHON_VERSION/site-packages
+	   pc_cv_python_pyexecdir=$PYTHON_EXEC_PREFIX/lib/python$PYTHON_VERSION/site-packages
 	   ;;
        esac
        ;;
      esac
     ])
-  AC_SUBST([pyexecdir], [$am_cv_python_pyexecdir])
+  AC_SUBST([pyexecdir], [$pc_cv_python_pyexecdir])
 
   dnl pkgpyexecdir -- $(pyexecdir)/$(PACKAGE)
 
@@ -251,7 +251,7 @@ AC_DEFUN([PC_PYTHON_PATH_PY],
 
 ])
 
-# PC_PYTHON_CHECK_VERSION(PROG, VERSION, [ACTION-IF-TRUE], [ACTION-IF-FALSE])
+
 # ---------------------------------------------------------------------------
 # Run ACTION-IF-TRUE if the Python interpreter PROG has version >= VERSION.
 # Run ACTION-IF-FALSE otherwise.
@@ -270,6 +270,8 @@ for i in list(range(0, 4)): minverhex = (minverhex << 8) + minver[[i]]
 sys.exit(sys.hexversion < minverhex)"
   AS_IF([AM_RUN_LOG([$1 -c "$prog"])], [$3], [$4])])
 
+AC_DEFUN([AC_PROG_PYTHON], [PC_PYTHON_PATH])
+
 AC_DEFUN([AC_LANG_COMPILER(Python)],
 [AC_REQUIRE([AC_PROG_PYTHON])])
 
@@ -277,7 +279,7 @@ AC_DEFUN([AC_LANG_COMPILER(Python)],
 # ----------------------------------------------------------------------
 # Macro for checking if a Python library is installed
 AC_DEFUN([PC_PYTHON_CHECK_LIB],
-[AC_REQUIRE([PC_PYTHON_PATH_PY])[]dnl
+[AC_REQUIRE([PC_PYTHON_PATH])[]dnl
 AC_CACHE_CHECK([for Python '$1' library],
     [pc_cv_python_lib_$1],
     [AC_LANG_PUSH(Python)[]dnl
@@ -291,10 +293,10 @@ except:
 else:
     sys.exit(0)
 ])],
-	[pc_cv_erlang_lib_$1="yes"],
-	[pc_cv_erlang_lib_$1="no"])
+	[pc_cv_python_lib_$1="yes"],
+	[pc_cv_python_lib_$1="no"])
      AC_LANG_POP(Python)[]dnl
     ])
-AC_SUBST([ERLANG_LIB_$1], [$pc_cv_erlang_lib_$1])
-AS_IF([test "$pc_cv_erlang_lib_$1" = "no"], [$3], [$2])
+#AC_SUBST([PYTHON_LIB_$1], [$pc_cv_erlang_lib_$1])
+AS_IF([test "$pc_cv_python_lib_$1" = "no"], [$3], [$2])
 ])# PC_PYTHON_CHECK_LIB
