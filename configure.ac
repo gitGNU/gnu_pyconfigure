@@ -24,25 +24,19 @@ if test $build_py3k = true ; then
 fi
 
 # check for python.h
-AC_MSG_CHECKING([for python.h])
-
+#AC_MSG_CHECKING([for python.h])
 #AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
-AC_CHECK_HEADER([python.h], , [AC_MSG_ERROR(could not find Python headers)])
+AC_CHECK_HEADER([Python.h], , [AC_MSG_ERROR(could not find Python headers)])
 
 # check if Python library foo exists
-PC_PYTHON_CHECK_LIB([foo],
+PC_PYTHON_CHECK_LIB([dbus],
                     [AC_MSG_RESULT(yes)],
                     [AC_MSG_ERROR(missing)])
 
-# test if Python library foo can do bar
-AC_MSG_CHECKING([for foo.bar()])
-AC_LANG_PUSH(Python)[]dnl
-AC_RUN_IFELSE([AC_LANG_PROGRAM([dnl
-import foo
-],
-[dnl
-foo.bar()
-]), AC_MSG_RESULT(yes), AC_MSG_ERROR(no)])
+# test if Python library foo can do bar()
+PC_PYTHON_CHECK_FUNC([dbus], [get_default_main_loop], , 
+                     [AC_MSG_RESULT(yes)],
+                     [AC_MSG_RESULT(no)])
 
 AC_CONFIG_FILES([])
 AC_OUTPUT

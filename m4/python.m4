@@ -36,8 +36,8 @@
 # ---------------
 AC_LANG_DEFINE([Python], [py], [PY], [PYTHON], [],
 [ac_ext=py
-ac_compile='$PYTHON $PYFLAGS conftest.$ac_ext >&AS_MESSAGE_LOG_FD'
-ac_link=''
+ac_compile='chmod +x conftest.$ac_ext >&AS_MESSAGE_LOG_FD'
+ac_link='chmod +x conftest.$ac_ext && mv conftest.$ac_ext conftest >&AS_MESSAGE_LOG_FD'
 ])
 
 
@@ -55,17 +55,11 @@ AU_DEFUN([AC_LANG_PYTHON], [AC_LANG(Python)])
 # AC_LANG_PROGRAM(Python)([PROLOGUE], [BODY])
 # -------------------------------------------
 m4_define([AC_LANG_PROGRAM(Python)], [dnl
+@%:@!$PYTHON
 $1
 if __name__ == "__main__":
     $2
 ])
-
-
-# _AC_LANG_NULL_PROGRAM(Python)
-# -----------------------------
-# Produce source that does nothing.
-m4_define([_AC_LANG_NULL_PROGRAM(Python)],
-[AC_LANG_PROGRAM([], [])])
 
 
 # _AC_LANG_IO_PROGRAM(Python)
@@ -275,6 +269,12 @@ AC_DEFUN([AC_PROG_PYTHON], [PC_PYTHON_PATH])
 AC_DEFUN([AC_LANG_COMPILER(Python)],
 [AC_REQUIRE([AC_PROG_PYTHON])])
 
+
+## -------------------------------------------- ##
+## 4. Looking for specific libs & functionality ##
+## -------------------------------------------- ##
+
+
 # PC_PYTHON_CHECK_LIB(LIBRARY, [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
 # ----------------------------------------------------------------------
 # Macro for checking if a Python library is installed
@@ -284,7 +284,7 @@ AC_CACHE_CHECK([for Python '$1' library],
     [pc_cv_python_lib_$1],
     [AC_LANG_PUSH(Python)[]dnl
      AC_RUN_IFELSE(
-	[AC_LANG_PROGRAM([], [dnl
+	[AC_LANG_PROGRAM([dnl
 import sys
 try:
     import $1
@@ -292,11 +292,40 @@ except:
     sys.exit(1)
 else:
     sys.exit(0)
-])],
+], [pass])],
 	[pc_cv_python_lib_$1="yes"],
 	[pc_cv_python_lib_$1="no"])
      AC_LANG_POP(Python)[]dnl
     ])
-#AC_SUBST([PYTHON_LIB_$1], [$pc_cv_erlang_lib_$1])
 AS_IF([test "$pc_cv_python_lib_$1" = "no"], [$3], [$2])
 ])# PC_PYTHON_CHECK_LIB
+
+
+# PC_PYTHON_CHECK_FUNC(LIBRARY, FUNCTION, ARGS, [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+AC_DEFUN([PC_PYTHON_CHECK_FUNC],
+[AC_REQUIRE([PC_PYTHON_PATH])[]dnl
+AC_CACHE_CHECK([for Python m4_ifnblank($1, '$1.$2()', '$2()') function],
+    [pc_cv_python_func_$1_$2],
+    [AC_LANG_PUSH(Python)[]dnl
+     AC_RUN_IFELSE(
+	[AC_LANG_PROGRAM([dnl
+import sys
+m4_ifnblank([$1], [import $1], [])
+], 
+[
+m4_ifnblank([$1], [
+    try:
+        $1.$2($3)], [
+    try:
+        $2($3)])
+    except:
+        sys.exit(1)
+    else:
+        sys.exit(0)
+])],
+	[pc_cv_python_func_$1_$2="yes"],
+	[pc_cv_python_func_$1_$2="no"])
+     AC_LANG_POP(Python)[]dnl
+    ])
+AS_IF([test "$pc_cv_python_func_$1_$2" = "no"], [$5], [$4])
+])# PC_PYTHON_CHECK_FUNC
