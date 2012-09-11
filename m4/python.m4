@@ -115,17 +115,17 @@ m4_ifval([$1],
 ])
   
 
-# PC_PYTHON_PROG_PYTHONCONFIG(PROG-TO-CHECK-FOR)
+# PC_PYTHON_PROG_PYTHON_CONFIG(PROG-TO-CHECK-FOR)
 # ----------------------------------------------
 # Find the python-config program
-AC_DEFUN([PC_PYTHON_PROG_PYTHONCONFIG],
+AC_DEFUN([PC_PYTHON_PROG_PYTHON_CONFIG],
 [AC_REQUIRE([AC_PROG_PYTHON])[]dnl
-AC_ARG_VAR([PYTHONCONFIG], [the Python-config program])
+AC_ARG_VAR([PYTHON_CONFIG], [the Python-config program])
 m4_define([_PYTHON_BASENAME], [`basename $PYTHON`])
 m4_ifval([$1],
-	[AC_PATH_PROGS(PYTHONCONFIG, [$1 _PYTHON_BASENAME-config])],
-	[AC_PATH_PROG(PYTHONCONFIG, _PYTHON_BASENAME-config)])
-dnl if test -n "$PYTHONCONFIG"; then
+	[AC_PATH_PROGS(PYTHON_CONFIG, [$1 _PYTHON_BASENAME-config])],
+	[AC_PATH_PROG(PYTHON_CONFIG, _PYTHON_BASENAME-config)])
+dnl if test -n "$PYTHON_CONFIG"; then
 dnl    m4_define_default([_PC_PYTHON_VER_STR],
 dnl                      [python python2 python3 python3.2 python3.1 python3.0 python2.7 dnl
 dnl                       python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0])
@@ -133,10 +133,10 @@ dnl    m4_define(_PC_PYTHON_VER_LIST, m4_split(_PC_PYTHON_VER_STR))
 dnl    m4_define(_PC_PYTHON_CONFIG_LIST, m4_combine([ ],
 dnl        _PC_PYTHON_CONFIG_LIST, [-], [config]))
 dnl    m4_ifval([$1],
-dnl  	[AC_PATH_PROGS(PYTHONCONFIG, [$1 _PC_PYTHON_CONFIG_LIST])],
-dnl 	[AC_PATH_PROG(PYTHONCONFIG, _PC_PYTHON_CONFIG_LIST)])
+dnl  	[AC_PATH_PROGS(PYTHON_CONFIG, [$1 _PC_PYTHON_CONFIG_LIST])],
+dnl 	[AC_PATH_PROG(PYTHON_CONFIG, _PC_PYTHON_CONFIG_LIST)])
 dnl fi
-]) # PC_PYTHON_PROG_PYTHONCONFIG
+]) # PC_PYTHON_PROG_PYTHON_CONFIG
 
 
 # PC_PYTHON_VERIFY_VERSION(PYTHON-PROGRAM, VERSION, [ACTION-IF-TRUE], [ACTION-IF-NOT-FOUND])
@@ -204,9 +204,13 @@ AC_SUBST([PYTHON_VERSION], [$pc_cv_python_version])
 # overridden if need be.  However, general consensus is that you
 # shouldn't need this ability.
 AC_DEFUN([PC_PYTHON_CHECK_PREFIX],
-[AC_REQUIRE([PC_PYTHON_PROG_PYTHONCONFIG])[]dnl
+[AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python prefix], [pc_cv_python_prefix],
-    [pc_cv_python_prefix=`$PYTHONCONFIG --prefix`])
+[if test -x "$PYTHON_CONFIG"; then
+    pc_cv_python_prefix=`$PYTHON_CONFIG --prefix 2>> AS_MESSAGE_LOG_FD`
+else
+    pc_cv_python_prefix=$prefix
+fi])
 AC_SUBST([PYTHON_PREFIX], [$pc_cv_python_prefix])])
 
 
@@ -214,9 +218,14 @@ AC_SUBST([PYTHON_PREFIX], [$pc_cv_python_prefix])])
 # --------------------------
 # Like above, but for $exec_prefix
 AC_DEFUN([PC_PYTHON_CHECK_EXECPREFIX],
-[AC_REQUIRE([PC_PYTHON_PROG_PYTHONCONFIG])[]dnl
+[AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python exec-prefix], [pc_cv_python_exec_prefix],
-    [pc_cv_python_exec_prefix=`$PYTHONCONFIG --exec-prefix`])
+[if test -x "$PYTHON_CONFIG"; then
+    pc_cv_python_exec_prefix=`$PYTHON_CONFIG --exec-prefix 2>> AS_MESSAGE_LOG_FD`
+else
+    pc_cv_python_exec_prefix=$exec-prefix
+fi
+])
 AC_SUBST([PYTHON_EXEC_PREFIX], [$pc_cv_python_exec_prefix])])
 
 
@@ -225,9 +234,15 @@ AC_SUBST([PYTHON_EXEC_PREFIX], [$pc_cv_python_exec_prefix])])
 # Find the Python header file include flags (ie
 # '-I/usr/include/python')
 AC_DEFUN([PC_PYTHON_CHECK_INCLUDES],
-[AC_REQUIRE([PC_PYTHON_PROG_PYTHONCONFIG])[]dnl
+[AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python includes], [pc_cv_python_includes],
-    [pc_cv_python_includes=`$PYTHONCONFIG --includes`])
+[if test -x "$PYTHON_CONFIG"; then
+    pc_cv_python_includes=`$PYTHON_CONFIG --includes 2>> AS_MESSAGE_LOG_FD`
+else
+    pc_cv_python_includes="[-I$includedir/$_PYTHON_BASENAME]m4_ifdef(PYTHON_ABI_FLAGS,
+    PYTHON_ABI_FLAGS,)"
+fi
+])
 AC_SUBST([PYTHON_INCLUDES], [$pc_cv_python_includes])])
 
 
@@ -247,13 +262,18 @@ CPPFLAGS=$pc_cflags_store
 # --------------------
 # Find the Python lib flags (ie '-lpython')
 AC_DEFUN([PC_PYTHON_CHECK_LIBS],
-[AC_REQUIRE([PC_PYTHON_PROG_PYTHONCONFIG])[]dnl
+[AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python libs], [pc_cv_python_libs],
-    [pc_cv_python_libs=`$PYTHONCONFIG --libs`])
+[if test -x "$PYTHON_CONFIG"; then
+    pc_cv_python_libs=`$PYTHON_CONFIG --libs 2>> AS_MESSAGE_LOG_FD`
+else
+    pc_cv_python_libs="[-l$_PYTHON_BASENAME]m4_ifdef(PYTHON_ABI_FLAGS, PYTHON_ABI_FLAGS,)"
+fi
+])
 AC_SUBST([PYTHON_LIBS], [$pc_cv_python_libs])])
 
 
-# PC_PYTHON_TEST_LIBS([ACTION-IF-PRESENT], [ACTION-IF-ABSENT])
+# PC_PYTHON_TEST_LIBS(LIBRARY-FUNCTION, [ACTION-IF-PRESENT], [ACTION-IF-ABSENT])
 # -------------------
 # Verify that the Python libs can be loaded
 AC_DEFUN([PC_PYTHON_TEST_LIBS],
@@ -268,16 +288,21 @@ for lflag in $PYTHON_LIBS; do
          *@:}@;;
     esac
 done
-AC_CHECK_LIB([$pc_libpython], [PyObject_Print], [$1], [$2])])
+AC_CHECK_LIB([$pc_libpython], [$1], [$2], [$3])])
 
 
 # PC_PYTHON_CHECK_CFLAGS
 # ----------------------
 # Find the Python CFLAGS
 AC_DEFUN([PC_PYTHON_CHECK_CFLAGS],
-[AC_REQUIRE([PC_PYTHON_PROG_PYTHONCONFIG])[]dnl
-AC_CACHE_CHECK([for Python CFLAGS], [pc_cv_python_CFLAGS],
-    [pc_cv_python_cflags=`$PYTHONCONFIG --cflags`])
+[AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
+AC_CACHE_CHECK([for Python CFLAGS], [pc_cv_python_cflags],
+[if test -x "$PYTHON_CONFIG"; then
+    pc_cv_python_cflags=m4_flatten(`$PYTHON_CONFIG --cflags 2>> AS_MESSAGE_LOG_FD`)
+else
+    pc_cv_python_cflags=
+fi
+])
 AC_SUBST([PYTHON_CFLAGS], [$pc_cv_python_cflags])])
 
 
@@ -285,9 +310,14 @@ AC_SUBST([PYTHON_CFLAGS], [$pc_cv_python_cflags])])
 # -----------------------
 # Find the Python LDFLAGS
 AC_DEFUN([PC_PYTHON_CHECK_LDFLAGS],
-[AC_REQUIRE([PC_PYTHON_PROG_PYTHONCONFIG])[]dnl
-AC_CACHE_CHECK([for Python LDFLAGS], [pc_cv_python_LDFLAGS],
-    [pc_cv_python_ldflags=`$PYTHONCONFIG --ldflags`])
+[AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
+AC_CACHE_CHECK([for Python LDFLAGS], [pc_cv_python_ldflags],
+[if test -x "$PYTHON_CONFIG"; then
+    pc_cv_python_ldflags=m4_flatten(`$PYTHON_CONFIG --ldflags 2>> AS_MESSAGE_LOG_FD`)
+else
+    pc_cv_python_ldflags=
+fi
+])
 AC_SUBST([PYTHON_LDFLAGS], [$pc_cv_python_ldflags])])
 
 
@@ -295,9 +325,14 @@ AC_SUBST([PYTHON_LDFLAGS], [$pc_cv_python_ldflags])])
 # --------------------------------
 # Find the Python extension suffix (i.e. '.cpython-32.so')
 AC_DEFUN([PC_PYTHON_CHECK_EXTENSION_SUFFIX],
-[AC_REQUIRE([PC_PYTHON_PROG_PYTHONCONFIG])[]dnl
+[AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python extension suffix], [pc_cv_python_extension_suffix],
-    [pc_cv_python_extension_suffix=`$PYTHONCONFIG --extension-suffix`])
+[if test -x "$PYTHON_CONFIG"; then
+     pc_cv_python_extension_suffix=`$PYTHON_CONFIG --extension-suffix 2>> AS_MESSAGE_LOG_FD`
+else
+    pc_cv_python_extension_suffix=
+fi
+])
 AC_SUBST([PYTHON_EXTENSION_SUFFIX], [$pc_cv_python_extension_suffix])])
 
 
@@ -305,9 +340,14 @@ AC_SUBST([PYTHON_EXTENSION_SUFFIX], [$pc_cv_python_extension_suffix])])
 # -------------------------
 # Find the Python ABI flags
 AC_DEFUN([PC_PYTHON_CHECK_ABI_FLAGS],
-[AC_REQUIRE([PC_PYTHON_PROG_PYTHONCONFIG])[]dnl
+[AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python ABI flags], [pc_cv_python_abi_flags],
-    [pc_cv_python_abi_flags=`$PYTHONCONFIG --abiflags`])
+[if test -x "$PYTHON_CONFIG"; then
+     pc_cv_python_abi_flags=`$PYTHON_CONFIG --abiflags 2>> AS_MESSAGE_LOG_FD`
+else
+    pc_cv_python_abi_flags=
+fi
+])
 AC_SUBST([PYTHON_ABI_FLAGS], [$pc_cv_python_abi_flags])])
 
 
