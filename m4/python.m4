@@ -195,7 +195,13 @@ AC_CACHE_CHECK([for Python prefix], [pc_cv_python_prefix],
 [if test -x "$PYTHON_CONFIG"; then
     pc_cv_python_prefix=`$PYTHON_CONFIG --prefix 2>> AS_MESSAGE_LOG_FD`
 else
-    pc_cv_python_prefix=$prefix
+    AC_LANG_PUSH(Python)[]dnl
+    pc_cv_python_prefix=AC_LANG_CONFTEST([AC_LANG_PROGRAM([dnl
+import sys
+], [dnl
+    sys.exit(sys.prefix)
+])])
+    AC_LANG_POP(Python)[]dnl
 fi])
 AC_SUBST([PYTHON_PREFIX], [$pc_cv_python_prefix])])
 
@@ -209,7 +215,13 @@ AC_CACHE_CHECK([for Python exec-prefix], [pc_cv_python_exec_prefix],
 [if test -x "$PYTHON_CONFIG"; then
     pc_cv_python_exec_prefix=`$PYTHON_CONFIG --exec-prefix 2>> AS_MESSAGE_LOG_FD`
 else
-    pc_cv_python_exec_prefix=$exec-prefix
+    AC_LANG_PUSH(Python)[]dnl
+    pc_cv_python_exec_prefix=AC_LANG_CONFTEST([AC_LANG_PROGRAM([dnl
+import sys
+], [dnl
+    sys.exit(sys.exec_prefix)
+])])
+    AC_LANG_POP(Python)[]dnl
 fi
 ])
 AC_SUBST([PYTHON_EXEC_PREFIX], [$pc_cv_python_exec_prefix])])
