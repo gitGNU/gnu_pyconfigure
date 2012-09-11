@@ -125,17 +125,6 @@ m4_define([_PYTHON_BASENAME], [`basename $PYTHON`])
 m4_ifval([$1],
 	[AC_PATH_PROGS(PYTHON_CONFIG, [$1 _PYTHON_BASENAME-config])],
 	[AC_PATH_PROG(PYTHON_CONFIG, _PYTHON_BASENAME-config)])
-dnl if test -n "$PYTHON_CONFIG"; then
-dnl    m4_define_default([_PC_PYTHON_VER_STR],
-dnl                      [python python2 python3 python3.2 python3.1 python3.0 python2.7 dnl
-dnl                       python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0])
-dnl    m4_define(_PC_PYTHON_VER_LIST, m4_split(_PC_PYTHON_VER_STR))
-dnl    m4_define(_PC_PYTHON_CONFIG_LIST, m4_combine([ ],
-dnl        _PC_PYTHON_CONFIG_LIST, [-], [config]))
-dnl    m4_ifval([$1],
-dnl  	[AC_PATH_PROGS(PYTHON_CONFIG, [$1 _PC_PYTHON_CONFIG_LIST])],
-dnl 	[AC_PATH_PROG(PYTHON_CONFIG, _PC_PYTHON_CONFIG_LIST)])
-dnl fi
 ]) # PC_PYTHON_PROG_PYTHON_CONFIG
 
 
