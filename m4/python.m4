@@ -296,7 +296,7 @@ AC_DEFUN([PC_PYTHON_CHECK_CFLAGS],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python CFLAGS], [pc_cv_python_cflags],
 [if test -x "$PYTHON_CONFIG"; then
-    pc_cv_python_cflags=m4_flatten(`$PYTHON_CONFIG --cflags 2>> AS_MESSAGE_LOG_FD`)
+    pc_cv_python_cflags=`$PYTHON_CONFIG --cflags 2>> AS_MESSAGE_LOG_FD`
 else
     pc_cv_python_cflags=
 fi
@@ -311,7 +311,7 @@ AC_DEFUN([PC_PYTHON_CHECK_LDFLAGS],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python LDFLAGS], [pc_cv_python_ldflags],
 [if test -x "$PYTHON_CONFIG"; then
-    pc_cv_python_ldflags=m4_flatten(`$PYTHON_CONFIG --ldflags 2>> AS_MESSAGE_LOG_FD`)
+    pc_cv_python_ldflags=`$PYTHON_CONFIG --ldflags 2>> AS_MESSAGE_LOG_FD`
 else
     pc_cv_python_ldflags=
 fi
