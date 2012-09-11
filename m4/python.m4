@@ -459,7 +459,7 @@ else:
      case $pc_cv_python_exec_dir in
      $pc_py_exec_prefix*)
        pc__strip_prefix=`echo "$pc_py_exec_prefix" | sed 's|.|.|g'`
-       pc_cv_python_pyexecdir=`echo "$pc_cv_python_exec_dir" | sed "s,^$pc__strip_prefix,$PYTHON_EXEC_PREFIX,"`
+       pc_cv_python_exec_dir=`echo "$pc_cv_python_exec_dir" | sed "s,^$pc__strip_prefix,$PYTHON_EXEC_PREFIX,"`
        ;;
      *)
        case $pc_py_exec_prefix in
