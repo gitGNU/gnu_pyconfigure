@@ -57,9 +57,9 @@ AU_DEFUN([AC_LANG_PYTHON], [AC_LANG(Python)])
 m4_define([AC_LANG_PROGRAM(Python)], [dnl
 @%:@!$PYTHON
 $1
+m4_if([$2], [], [], [dnl
 if __name__ == '__main__':
-$2
-])
+$2])])
 
 
 # _AC_LANG_IO_PROGRAM(Python)
@@ -75,9 +75,7 @@ except:
 else:
     close(h)
     sys.exit(0)
-], [
-    pass
-])])
+], [])])
 
 
 # _AC_LANG_CALL(Python)([PROLOGUE], [FUNCTION])
@@ -505,9 +503,7 @@ except:
     sys.exit(1)
 else:
     sys.exit(0)
-], [
-    pass
-])],
+], [])],
 	[[pc_cv_python_module_]pc_python_safe_mod="yes"],
 	[[pc_cv_python_module_]pc_python_safe_mod="no"])
      AC_LANG_POP(Python)[]dnl
