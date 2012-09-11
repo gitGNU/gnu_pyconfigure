@@ -492,8 +492,9 @@ AC_SUBST([PYTHON_EXEC_PACKAGE_DIR], [PYTHON_EXEC_DIR/$PACKAGE])])
 # Macro for checking if a Python library is installed
 AC_DEFUN([PC_PYTHON_CHECK_MODULE],
 [AC_REQUIRE([AC_PROG_PYTHON])[]dnl
+m4_define([pc_python_safe_mod], m4_bpatsubsts($1, [\.], [_]))
 AC_CACHE_CHECK([for Python '$1' library],
-    [pc_cv_python_module_$1],
+    [[pc_cv_python_module_]pc_python_safe_mod],
     [AC_LANG_PUSH(Python)[]dnl
      AC_RUN_IFELSE(
 	[AC_LANG_PROGRAM([dnl
@@ -507,11 +508,11 @@ else:
 ], [
     pass
 ])],
-	[pc_cv_python_module_$1="yes"],
-	[pc_cv_python_module_$1="no"])
+	[[pc_cv_python_module_]pc_python_safe_mod="yes"],
+	[[pc_cv_python_module_]pc_python_safe_mod="no"])
      AC_LANG_POP(Python)[]dnl
     ])
-AS_IF([test "$pc_cv_python_module_$1" = "no"], [$3], [$2])
+AS_IF([test "$[pc_cv_python_module_]pc_python_safe_mod" = "no"], [$3], [$2])
 ])# PC_PYTHON_CHECK_MODULE
 
 
@@ -521,8 +522,9 @@ AS_IF([test "$pc_cv_python_module_$1" = "no"], [$3], [$2])
 # be successfully called
 AC_DEFUN([PC_PYTHON_CHECK_FUNC],
 [AC_REQUIRE([AC_PROG_PYTHON])[]dnl
+m4_define([pc_python_safe_mod], m4_bpatsubsts($1, [\.], [_]))
 AC_CACHE_CHECK([for Python m4_ifnblank($1, '$1.$2()', '$2()') function],
-    [pc_cv_python_func_$1_$2],
+    [[pc_cv_python_func_]pc_python_safe_mod[_$2]],
     [AC_LANG_PUSH(Python)[]dnl
      AC_RUN_IFELSE(
 	[AC_LANG_PROGRAM([dnl
@@ -544,9 +546,9 @@ m4_ifnblank([$1], [
     else:
         sys.exit(0)
 ])],
-	[pc_cv_python_func_$1_$2="yes"],
-	[pc_cv_python_func_$1_$2="no"])
+	[[pc_cv_python_func_]pc_python_safe_mod[_$2]="yes"],
+	[[pc_cv_python_func_]pc_python_safe_mod[_$2]="no"])
      AC_LANG_POP(Python)[]dnl
     ])
-AS_IF([test "$pc_cv_python_func_$1_$2" = "no"], [$5], [$4])
+AS_IF([test "$[pc_cv_python_func_]pc_python_safe_mod[_$2]" = "no"], [$5], [$4])
 ])# PC_PYTHON_CHECK_FUNC
