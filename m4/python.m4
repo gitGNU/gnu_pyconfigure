@@ -1,7 +1,9 @@
 # Python Autoconf macros
 
-# Some of these macros were written by Andrew Dalke and James Henstridge
-# and are included with the Automake utility under the following copyright terms:
+# Many of these macros were adapted from ones written by Andrew Dalke
+# and James Henstridge and are included with the Automake utility
+# under the following copyright terms:
+#
 # Copyright (C) 1999-2012 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
@@ -12,7 +14,7 @@
 # the Automake namespace and to fit naming conventions for Autoconf
 # language definitions.
 
-# The remaining macros were written or adapted by Brandon Invergo and distributed
+# The remaining macros were written by Brandon Invergo and distributed
 # under the same terms. 
 
 
@@ -39,14 +41,13 @@
 AC_LANG_DEFINE([Python], [py], [PY], [PYTHON], [],
 [ac_ext=py
 ac_compile='chmod +x conftest.$ac_ext >&AS_MESSAGE_LOG_FD'
-ac_link='chmod +x conftest.$ac_ext && mv conftest.$ac_ext conftest >&AS_MESSAGE_LOG_FD'
+ac_link='chmod +x conftest.$ac_ext && cp conftest.$ac_ext conftest >&AS_MESSAGE_LOG_FD'
 ])
 
 
 # AC_LANG_PYTHON
 # --------------
 AU_DEFUN([AC_LANG_PYTHON], [AC_LANG(Python)])
-
 
 
 ## ----------------------- ##
@@ -87,6 +88,7 @@ else:
 # Produce source that calls FUNCTION
 m4_define([_AC_LANG_CALL(Python)],
 [AC_LANG_PROGRAM([$1], [$2])])
+
 
 
 ## -------------------------------------------- ##
@@ -146,8 +148,9 @@ dnl fi
 # This supports Python 2.0 or higher. (2.0 was released on October 16, 2000).
 AC_DEFUN([PC_PYTHON_VERIFY_VERSION],
 [AC_REQUIRE([AC_PROG_PYTHON])[]dnl
-AC_CACHE_CHECK([that Python > '$2'],
-    [pc_cv_python_min_version],
+m4_define([pc_python_safe_ver], m4_bpatsubsts($2, [\.], [_]))
+AC_CACHE_CHECK([if Python >= '$2'],
+    [[pc_cv_python_min_version_]pc_python_safe_ver],
     [AC_LANG_PUSH(Python)[]dnl
      AC_RUN_IFELSE(
         [AC_LANG_PROGRAM([dnl
@@ -159,15 +162,15 @@ import sys
     minver = list(map(int, '$2'.split('.'))) + [[0, 0, 0]]
     minverhex = 0
     # xrange is not present in Python 3.0 and range returns an iterator
-    for i in list(range(0, 4)):
+    for i in list(range(4)):
         minverhex = (minverhex << 8) + minver[[i]]
     sys.exit(sys.hexversion < minverhex)
 ])], 
-         [pc_cv_python_min_version="yes"], 
-         [pc_cv_python_min_version="no"])
+         [[pc_cv_python_min_version_]pc_python_safe_ver="yes"], 
+         [[pc_cv_python_min_version_]pc_python_safe_ver="no"])
      AC_LANG_POP(Python)[]dnl
     ])
-AS_IF([test "$pc_cv_python_min_version" = "no"], [$4], [$3])
+AS_IF([test "$[pc_cv_python_min_version_]pc_python_safe_ver" = "no"], [$4], [$3])
 ])# PC_PYTHON_VERIFY_VERSION
 
 

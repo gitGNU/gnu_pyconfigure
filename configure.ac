@@ -10,14 +10,21 @@ AM_INIT_AUTOMAKE([-Wall -Werror gnu])
 
 AC_PROG_PYTHON()
 
-# check that the Python version is at least python_min_ver (2.7.2, above)
-PC_PYTHON_VERIFY_VERSION([$PYTHON], python_min_ver, ,
-			 AC_MSG_ERROR(Python interpreter too old))
-
 # check if we are building for Python 3
-PC_PYTHON_CHECK_VERSION([$PYTHON], [3.0],
+PC_PYTHON_VERIFY_VERSION([$PYTHON], 3.0,
                           build_py3k=true,
                           build_py3k=false)
+
+# if building for python 3 make sure we have the minimum version supported
+if test "$build_py3k" = "true" ; then
+   PC_PYTHON_VERIFY_VERSION([$PYTHON], python3_min_ver,,
+                            [AC_MSG_ERROR(Python 3 interpreter too old)])
+else
+# otherwise check that the Python 2 version is sufficient
+   PC_PYTHON_VERIFY_VERSION([$PYTHON], python_min_ver, ,
+                            [AC_MSG_ERROR(Python interpreter too old)])
+fi
+
 
 PC_PYTHON_CHECK_PREFIX
 
@@ -45,13 +52,6 @@ PC_PYTHON_CHECK_EXEC_DIR
 
 PC_PYTHON_EXEC_PACKAGE_DIR
 
-# # if building for python 3 make sure we have the minimum version supported
-# if test $build_py3k = true ; then
-#   AC_MSG_CHECKING([for $PYTHON >=] python3_min_ver)
-#   PC_PYTHON_CHECK_VERSION([$PYTHON], python3_min_ver,
-#                           [AC_MSG_RESULT(yes)],
-#                           [AC_MSG_ERROR(too old)])
-# fi
 
 # check for python.h
 #AC_MSG_CHECKING([for python.h])
@@ -59,10 +59,12 @@ PC_PYTHON_EXEC_PACKAGE_DIR
 #AC_CHECK_HEADER([Python.h], , [AC_MSG_ERROR(could not find Python headers)])
 
 # check if Python library foo exists
-PC_PYTHON_CHECK_LIB([dbus],, [AC_MSG_ERROR(missing)])
+PC_PYTHON_CHECK_LIB([dbus])
+PC_PYTHON_CHECK_LIB([foo])
 
 # test if Python library foo can do bar()
-PC_PYTHON_CHECK_FUNC([dbus], [get_default_main_loop], , , [AC_MSG_RESULT(no)])
+PC_PYTHON_CHECK_FUNC([dbus], [get_default_main_loop])
+PC_PYTHON_CHECK_FUNC([dbus], [bar])
 
 AC_CONFIG_FILES([])
 AC_OUTPUT
