@@ -261,16 +261,16 @@ dnl Advanced notes:
 dnl m4/python.m4 implements Python as a language in Autoconf. This
 dnl means that you can use all the usual AC_LANG_* macros with Python
 dnl and it will behave as expected. In particular, this means that you
-dnl can run arbitrary Python code as follows:
+dnl can run arbitrary Python code. For example:
 dnl
 dnl AC_LANG_PUSH(Python)[]
-dnl AC_LANG_CONFTEST([AC_LANG_PROGRAM([dnl
+dnl AC_RUN_IFELSE([AC_LANG_CONFTEST([AC_LANG_PROGRAM([dnl
 dnl # some code here
 dnl import foo
 dnl ], [dnl
 dnl     # some more code here
 dnl     foo.bar()
-dnl ])])
+dnl ])])], [ACTION-IF-SUCCESSFUL], [ACTION-IF-FAILED])
 dnl AC_LANG_POP(Python)[]
 dnl  
 dnl As usual, AC_LANG_PROGRAM takes two arguments, PROLOG code and
