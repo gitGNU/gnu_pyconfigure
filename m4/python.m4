@@ -107,7 +107,7 @@ AC_DEFUN([AC_LANG_COMPILER(Python)],
 AC_DEFUN([AC_PROG_PYTHON],
 [AC_ARG_VAR([PYTHON], [the Python interpreter])
 m4_define_default([_PC_PYTHON_INTERPRETER_LIST],
-                  [python python2 python3 python3.2 python3.1 python3.0 python2.7 dnl
+                  [python python3 python3.2 python3.1 python3.0 python2 python2.7 dnl
                    python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0])
 m4_ifval([$1],
 	[AC_PATH_PROGS(PYTHON, [$1 _PC_PYTHON_INTERPRETER_LIST])],
@@ -489,13 +489,13 @@ AC_SUBST([PYTHON_EXEC_PACKAGE_DIR], [PYTHON_EXEC_DIR/$PACKAGE])])
 ## -------------------------------------------- ##
 
 
-# PC_PYTHON_CHECK_LIB(LIBRARY, [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+# PC_PYTHON_CHECK_MODULE(LIBRARY, [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
 # ----------------------------------------------------------------------
 # Macro for checking if a Python library is installed
-AC_DEFUN([PC_PYTHON_CHECK_LIB],
+AC_DEFUN([PC_PYTHON_CHECK_MODULE],
 [AC_REQUIRE([AC_PROG_PYTHON])[]dnl
 AC_CACHE_CHECK([for Python '$1' library],
-    [pc_cv_python_lib_$1],
+    [pc_cv_python_module_$1],
     [AC_LANG_PUSH(Python)[]dnl
      AC_RUN_IFELSE(
 	[AC_LANG_PROGRAM([dnl
@@ -509,15 +509,18 @@ else:
 ], [
     pass
 ])],
-	[pc_cv_python_lib_$1="yes"],
-	[pc_cv_python_lib_$1="no"])
+	[pc_cv_python_module_$1="yes"],
+	[pc_cv_python_module_$1="no"])
      AC_LANG_POP(Python)[]dnl
     ])
-AS_IF([test "$pc_cv_python_lib_$1" = "no"], [$3], [$2])
-])# PC_PYTHON_CHECK_LIB
+AS_IF([test "$pc_cv_python_module_$1" = "no"], [$3], [$2])
+])# PC_PYTHON_CHECK_MODULE
 
 
-# PC_PYTHON_CHECK_FUNC(LIBRARY, FUNCTION, ARGS, [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+# PC_PYTHON_CHECK_FUNC([LIBRARY], FUNCTION, ARGS, [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+# ---------------------------------------------------------------------------------------
+# Check to see if a given function call, optionally from a module, can
+# be successfully called
 AC_DEFUN([PC_PYTHON_CHECK_FUNC],
 [AC_REQUIRE([AC_PROG_PYTHON])[]dnl
 AC_CACHE_CHECK([for Python m4_ifnblank($1, '$1.$2()', '$2()') function],
@@ -526,8 +529,12 @@ AC_CACHE_CHECK([for Python m4_ifnblank($1, '$1.$2()', '$2()') function],
      AC_RUN_IFELSE(
 	[AC_LANG_PROGRAM([dnl
 import sys
-m4_ifnblank([$1], [import $1], [])
-], 
+m4_ifnblank([$1], [dnl
+try:
+    import $1
+except:
+    sys.exit(1)
+], [])], 
 [
 m4_ifnblank([$1], [
     try:
