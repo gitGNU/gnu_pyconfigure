@@ -253,6 +253,24 @@ AC_CACHE_CHECK([for Python libs], [pc_cv_python_libs],
 AC_SUBST([PYTHON_LIBS], [$pc_cv_python_libs])])
 
 
+# PC_PYTHON_TEST_LIBS([ACTION-IF-PRESENT], [ACTION-IF-ABSENT])
+# -------------------
+# Verify that the Python libs can be loaded
+AC_DEFUN([PC_PYTHON_TEST_LIBS],
+[AC_REQUIRE([PC_PYTHON_CHECK_LIBS])[]dnl
+pc_libflags_store=$LIBS
+for lflag in $PYTHON_LIBS; do
+    case $lflag in
+    	 -lpython*@:}@
+		LIBS="$LIBS $lflag"
+		pc_libpython=`echo $lflag | sed -e 's/^-l//'`
+		;;
+         *@:}@;;
+    esac
+done
+AC_CHECK_LIB([$pc_libpython], [PyObject_Print], [$1], [$2])])
+
+
 # PC_PYTHON_CHECK_CFLAGS
 # ----------------------
 # Find the Python CFLAGS
@@ -269,7 +287,7 @@ AC_SUBST([PYTHON_CFLAGS], [$pc_cv_python_cflags])])
 AC_DEFUN([PC_PYTHON_CHECK_LDFLAGS],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHONCONFIG])[]dnl
 AC_CACHE_CHECK([for Python LDFLAGS], [pc_cv_python_LDFLAGS],
-    [pc_cv_python_cflags=`$PYTHONCONFIG --ldflags`])
+    [pc_cv_python_ldflags=`$PYTHONCONFIG --ldflags`])
 AC_SUBST([PYTHON_LDFLAGS], [$pc_cv_python_ldflags])])
 
 
