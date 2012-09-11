@@ -32,6 +32,13 @@ PC_PYTHON_CHECK_EXECPREFIX
 
 PC_PYTHON_CHECK_INCLUDES
 
+ac_cflags_store = $CPPFLAGS
+CPPFLAGS="$CFLAGS $PYTHON_INCLUDES"
+# check for python.h
+AC_CHECK_HEADER([Python.h], , [AC_MSG_ERROR(could not find Python headers)])
+CPPFLAGS=$ac_cflags_store
+
+
 PC_PYTHON_CHECK_LIBS
 
 PC_PYTHON_CHECK_CFLAGS
@@ -52,11 +59,6 @@ PC_PYTHON_CHECK_EXEC_DIR
 
 PC_PYTHON_EXEC_PACKAGE_DIR
 
-
-# check for python.h
-#AC_MSG_CHECKING([for python.h])
-#AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
-#AC_CHECK_HEADER([Python.h], , [AC_MSG_ERROR(could not find Python headers)])
 
 # check if Python library foo exists
 PC_PYTHON_CHECK_LIB([dbus])
