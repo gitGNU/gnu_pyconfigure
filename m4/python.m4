@@ -1,4 +1,9 @@
-# Python Autoconf macros
+# Copyright 2012 Brandon Invergo <brandon@invergo.net>
+#
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without any warranty.
 
 # Many of these macros were adapted from ones written by Andrew Dalke
 # and James Henstridge and are included with the Automake utility
@@ -9,14 +14,6 @@
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
-
-# These macros' namespace and names were updated to not conflict with
-# the Automake namespace and to fit naming conventions for Autoconf
-# language definitions.
-
-# The remaining macros were written by Brandon Invergo and distributed
-# under the same terms. 
-
 
 # Table of Contents:
 #
