@@ -231,6 +231,18 @@ AC_CACHE_CHECK([for Python includes], [pc_cv_python_includes],
 AC_SUBST([PYTHON_INCLUDES], [$pc_cv_python_includes])])
 
 
+# PC_PYTHON_CHECK_HEADERS([ACTION-IF-PRESENT], [ACTION-IF-ABSENT])
+# -----------------------
+# Check for the presence and usability of Python.h
+AC_DEFUN([PC_PYTHON_CHECK_HEADERS],
+[AC_REQUIRE([PC_PYTHON_CHECK_INCLUDES])[]dnl
+pc_cflags_store=$CPPFLAGS
+CPPFLAGS="$CFLAGS $PYTHON_INCLUDES"
+AC_CHECK_HEADER([Python.h], [$1], [$2])
+CPPFLAGS=$pc_cflags_store
+])
+
+
 # PC_PYTHON_CHECK_LIBS
 # --------------------
 # Find the Python lib flags (ie '-lpython')
