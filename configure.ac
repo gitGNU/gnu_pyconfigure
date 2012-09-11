@@ -242,7 +242,7 @@ dnl
 dnl This macro lets you check if a given Python module exists on the
 dnl system.
 
-PC_PYTHON_CHECK_MODULE([foo],,[AC_MSG_ERROR(foo not present)])
+PC_PYTHON_CHECK_MODULE([foo])
 
 
 
@@ -253,7 +253,7 @@ dnl This macro lets you test if a given function, possibly contained
 dnl in a given module, exists. If any exception is encountered when
 dnl calling this function, the check will fail. 
 # test if Python library foo can do bar()
-PC_PYTHON_CHECK_FUNC([foo], [bar],,,[AC_MSG_RESULT(foo.bar() not present)])
+PC_PYTHON_CHECK_FUNC([foo], [bar])
 
 
 
