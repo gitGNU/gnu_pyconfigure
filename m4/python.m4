@@ -414,7 +414,7 @@ else:
        ;;
      esac
      ])
-AC_SUBST([PYTHON_SITE_DIR], [$pc_cv_python_site_dir])])# PC_PYTHON_CHECK_SITE_DIR
+AC_SUBST([pythondir], [$pc_cv_python_site_dir])])# PC_PYTHON_CHECK_SITE_DIR
 ])
 
 # PC_PYTHON_SITE_PACKAGE_DIR
@@ -422,7 +422,7 @@ AC_SUBST([PYTHON_SITE_DIR], [$pc_cv_python_site_dir])])# PC_PYTHON_CHECK_SITE_DI
 # $PACKAGE directory under PYTHON_SITE_DIR
 AC_DEFUN([PC_PYTHON_SITE_PACKAGE_DIR],
 [AC_REQUIRE([PC_PYTHON_CHECK_SITE_DIR])[]dnl
-AC_SUBST([PYTHON_SITE_PACKAGE_DIR], [$PYTHON_SITE_DIR/$PACKAGE])])
+AC_SUBST([pkgpythondir], [\${pythondir}/$PACKAGE])])
 
 
 # PC_PYTHON_CHECK_EXEC_DIR
@@ -469,7 +469,7 @@ else:
        ;;
      esac
     ])
-AC_SUBST([PYTHON_EXEC_DIR], [$pc_cv_python_pyexecdir])]) #PY_PYTHON_CHECK_EXEC_LIB_DIR
+AC_SUBST([pyexecdir], [$pc_cv_python_pyexecdir])]) #PY_PYTHON_CHECK_EXEC_LIB_DIR
 ])
 
 # PC_PYTHON_EXEC_PACKAGE_DIR
@@ -477,7 +477,7 @@ AC_SUBST([PYTHON_EXEC_DIR], [$pc_cv_python_pyexecdir])]) #PY_PYTHON_CHECK_EXEC_L
 # $PACKAGE directory under PYTHON_SITE_DIR
 AC_DEFUN([PC_PYTHON_EXEC_PACKAGE_DIR],
 [AC_REQUIRE([PC_PYTHON_CHECK_EXEC_DIR])[]dnl
-AC_SUBST([PYTHON_EXEC_PACKAGE_DIR], [PYTHON_EXEC_DIR/$PACKAGE])])
+AC_SUBST([pkgpyexecdir], [\${pyexecdir}/$PACKAGE])])
 
 
 ## -------------------------------------------- ##

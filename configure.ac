@@ -205,7 +205,7 @@ PC_PYTHON_CHECK_PLATFORM
 dnl # PC_PYTHON_CHECK_SITE_DIR #######################################
 dnl
 dnl This checks where Python packages are installed (usually 
-dnl /usr/lib/pythonX.Y/site-packages) and stores it in PYTHON_SITE_DIR
+dnl /usr/lib/pythonX.Y/site-packages) and stores it in pythondir.
 
 PC_PYTHON_CHECK_SITE_DIR
 
@@ -215,7 +215,10 @@ dnl # PC_PYTHON_SITE_PACKAGE_DIR #####################################
 dnl
 dnl This uses PYTHON_SITE_DIR to construct a directory for this
 dnl project (ie $PYTHON_SITE_DIR/project_name) and stores it in
-dnl PYTHON_SITE_PACKAGE_DIR
+dnl pkgpythondir. This value is used by Automake for installing Python
+dnl scripts. By default, this begins with ${pythondir}, unexpanded, to
+dnl provide compatibility with GNU Makefile specifications, allowing
+dnl the user to change the prefix from the commandline.
 
 PC_PYTHON_SITE_PACKAGE_DIR
 
@@ -223,7 +226,8 @@ PC_PYTHON_SITE_PACKAGE_DIR
 
 dnl # PC_PYTHON_CHECK_EXEC_DIR #######################################
 dnl
-dnl Same as PC_PYTHON_CHECK_SITE_DIR but for $exec-prefix
+dnl Same as PC_PYTHON_CHECK_SITE_DIR but for $exec-prefix. Stored in
+dnl pyexecdir
 
 PC_PYTHON_CHECK_EXEC_DIR
 
@@ -231,7 +235,9 @@ PC_PYTHON_CHECK_EXEC_DIR
 
 dnl # PC_PYTHON_EXEC_PACKAGE_DIR #####################################
 dnl
-dnl Same as PC_PYTHON_SITE_PACKAGE_DIR but for $exec-prefix
+dnl Same as PC_PYTHON_SITE_PACKAGE_DIR but for $exec-prefix. Stored in
+dnl pkgpyexecdir
+
 PC_PYTHON_EXEC_PACKAGE_DIR
 
 
@@ -264,13 +270,13 @@ dnl and it will behave as expected. In particular, this means that you
 dnl can run arbitrary Python code. For example:
 dnl
 dnl AC_LANG_PUSH(Python)[]
-dnl AC_RUN_IFELSE([AC_LANG_CONFTEST([AC_LANG_PROGRAM([dnl
+dnl AC_RUN_IFELSE([AC_LANG_PROGRAM([dnl
 dnl # some code here
 dnl import foo
 dnl ], [dnl
 dnl     # some more code here
 dnl     foo.bar()
-dnl ])])], [ACTION-IF-SUCCESSFUL], [ACTION-IF-FAILED])
+dnl ])], [ACTION-IF-SUCCESSFUL], [ACTION-IF-FAILED])
 dnl AC_LANG_POP(Python)[]
 dnl  
 dnl As usual, AC_LANG_PROGRAM takes two arguments, PROLOG code and
