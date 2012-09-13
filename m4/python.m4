@@ -204,10 +204,10 @@ fi])
 AC_SUBST([PYTHON_PREFIX], [$pc_cv_python_prefix])])
 
 
-# PC_PYTHON_CHECK_EXECPREFIX
+# PC_PYTHON_CHECK_EXEC_PREFIX
 # --------------------------
 # Like above, but for $exec_prefix
-AC_DEFUN([PC_PYTHON_CHECK_EXECPREFIX],
+AC_DEFUN([PC_PYTHON_CHECK_EXEC_PREFIX],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python exec-prefix], [pc_cv_python_exec_prefix],
 [if test -x "$PYTHON_CONFIG"; then
@@ -374,7 +374,7 @@ AC_SUBST([PYTHON_PLATFORM], [$pc_cv_python_platform])
 # The directory to which new libraries are installed (i.e. the
 # "site-packages" directory.
 AC_DEFUN([PC_PYTHON_CHECK_SITE_DIR],
-[AC_REQUIRE([AC_PROG_PYTHON])[]dnl
+[AC_REQUIRE([AC_PROG_PYTHON])AC_REQUIRE([PC_PYTHON_CHECK_PREFIX])[]dnl
 AC_CACHE_CHECK([for Python site-packages directory],
     [pc_cv_python_site_dir],
     [AC_LANG_PUSH(Python)[]dnl
@@ -429,7 +429,7 @@ AC_SUBST([pkgpythondir], [\${pythondir}/$PACKAGE])])
 # ------------------------
 # directory for installing python extension modules (shared libraries)
 AC_DEFUN([PC_PYTHON_CHECK_EXEC_DIR],
-[AC_REQUIRE([AC_PROG_PYTHON])[]dnl
+[AC_REQUIRE([AC_PROG_PYTHON])AC_REQUIRE([PC_PYTHON_CHECK_EXEC_PREFIX])[]dnl
   AC_CACHE_CHECK([for Python extension module directory],
     [pc_cv_python_exec_dir],
     [AC_LANG_PUSH(Python)[]dnl
