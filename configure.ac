@@ -97,11 +97,11 @@ PC_PYTHON_CHECK_PREFIX
 
 
 
-dnl # PC_PYTHON_CHECK_EXECPREFIX #####################################
+dnl # PC_PYTHON_CHECK_EXEC_PREFIX ####################################
 dnl
 dnl The same as above but for $exec-prefix
 
-PC_PYTHON_CHECK_EXECPREFIX
+PC_PYTHON_CHECK_EXEC_PREFIX
 
 
 
