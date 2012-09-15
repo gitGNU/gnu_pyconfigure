@@ -21,7 +21,6 @@
 
 
 VPATH = @srcdir@
-PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
@@ -37,15 +36,14 @@ HAVE_PYTHON_H = @HAVE_PYTHON_H@
 HAVE_PYREX = @HAVE_PYREX@
 HAVE_CYTHON = @HAVE_CYTHON@
 SHELL = @SHELL@
-VERSION = @VERSION@
 
 BZR_TARGET=release
 PLUGIN_TARGET=plugin-release
 
-pkgdatadir = $(datadir)/@PACKAGE@
-pkgincludedir = $(includedir)/@PACKAGE@
-pkglibdir = $(libdir)/@PACKAGE@
-pkglibexecdir = $(libexecdir)/@PACKAGE@
+pkgdatadir = $(datadir)/@PACKAGE_NAME@
+pkgincludedir = $(includedir)/@PACKAGE_NAME@
+pkglibdir = $(libdir)/@PACKAGE_NAME@
+pkglibexecdir = $(libexecdir)/@PACKAGE_NAME@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -87,12 +85,12 @@ extensions:
 ifeq ($(HAVE_PYTHON_H),yes)
 ifeq ($(HAVE_PYREX),yes)
 	@echo "building extension modules."
-	$(PYTHON) setup.py build_ext -i $(PYTHON_BUILDFLAGS)
+	$(PYTHON) $(srcdir)setup.py build_ext -i $(PYTHON_BUILDFLAGS)
 endif
 endif
 
 install:
-	$(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix)
+	$(PYTHON) $(srcdir)setup.py install --prefix=$(DESTDIR)$(prefix)
 
 uninstall:
 	@rm -rf $(DESTDIR)$(pkgpythondir)
