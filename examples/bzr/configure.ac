@@ -20,10 +20,12 @@ m4_include([m4/python.m4])
 
 # Initialize Autoconf.
 AC_INIT(bzr, 2.5.1,,,)
-AM_INIT_AUTOMAKE([-Wall -Werror gnu])
 
 # Load macros from the m4/ directory
 AC_CONFIG_MACRO_DIR([m4])
+
+# Ensure that srcdir contains setup.py
+AC_CONFIG_SRCDIR(setup.py)
 
 # Here we check if we are using Python 3
 PC_PYTHON_VERIFY_VERSION([$PYTHON], 3.0,
