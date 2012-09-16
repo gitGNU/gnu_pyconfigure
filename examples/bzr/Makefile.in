@@ -34,20 +34,11 @@ PYTHON25 = python25
 PYTHON26 = python26
 HAVE_PYTHON_H = @HAVE_PYTHON_H@
 HAVE_PYREX = @HAVE_PYREX@
-HAVE_CYTHON = @HAVE_CYTHON@
 SHELL = @SHELL@
 
 BZR_TARGET=release
 PLUGIN_TARGET=plugin-release
 
-pkgdatadir = $(datadir)/@PACKAGE_NAME@
-pkgincludedir = $(includedir)/@PACKAGE_NAME@
-pkglibdir = $(libdir)/@PACKAGE_NAME@
-pkglibexecdir = $(libexecdir)/@PACKAGE_NAME@
-abs_builddir = @abs_builddir@
-abs_srcdir = @abs_srcdir@
-abs_top_builddir = @abs_top_builddir@
-abs_top_srcdir = @abs_top_srcdir@
 bindir = @bindir@
 builddir = @builddir@
 datadir = @datadir@
@@ -77,7 +68,7 @@ pkgpyexecdir = @pkgpyexecdir@
 
 
 
-.PHONY: all clean realclean extensions pyflakes api-docs check-nodocs check
+.PHONY: all clean realclean extensions pyflakes api-docs check-nodocs check install uninstall distclean
 
 all: extensions
 
@@ -93,16 +84,17 @@ install:
 	$(PYTHON) $(srcdir)setup.py install --prefix=$(DESTDIR)$(prefix)
 
 uninstall:
-	@rm -rf $(DESTDIR)$(pkgpythondir)
-	@rm $(DESTDIR)$(bindir)/bzr
-	@rm $(DESTDIR)$(mandir)/man1/bzr.1
+	rm -rf $(DESTDIR)$(pkgpythondir)
+	rm $(DESTDIR)$(bindir)/bzr
+	rm $(DESTDIR)$(mandir)/man1/bzr.1
 
 distclean:
-	@rm $(srcdir)/config.log
-	@rm $(srcdir)/config.status
+	rm $(srcdir)/config.log
+	rm $(srcdir)/config.status
 
 
 check: docs check-nodocs
+	$(PYTHON) setup.py check
 
 
 # Generate a stream for PQM to watch.
@@ -499,7 +491,7 @@ clean-win32: clean-docs
 	$(PYTHON) tools/win32/ostools.py remove py2exe.log
 	$(PYTHON) tools/win32/ostools.py remove tools/win32/bzr.iss
 	$(PYTHON) tools/win32/ostools.py remove bzr-setup*.exe
-	$(PYTHON) tools/win32/ostools.py remove bzr-*win32.exe
+v	$(PYTHON) tools/win32/ostools.py remove bzr-*win32.exe
 	$(PYTHON) tools/win32/ostools.py remove dist
 
 
