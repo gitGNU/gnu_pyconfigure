@@ -56,7 +56,6 @@ AS_IF([test "x$SPHINXBUILD" = xno],
 	    AC_MSG_WARN(sphinx-build is required to build documentation))
 
 
-AC_DEFUN([VIRTUALENV], [no])
 AC_ARG_WITH([virtualenv],
 	[AS_HELP_STRING([--with-virtualenv], [install to a Python virtualenv])],
 	[],
@@ -65,9 +64,11 @@ AS_IF([test "x$with_virtualenv" != xno],
 	    AC_CHECK_PROGS([VIRTUALENV], [virtualenv virtualenv2], [no])
 	    AS_IF([test "x$VIRTUALENV" = xno],
 	    [AC_MSG_FAILURE(
-		[--with-virtualenv given but virtualenv could not be found])]))
+		[--with-virtualenv given but virtualenv could not be found])]),
+	AC_SUBST([VIRTUALENV], [no]))
 AC_ARG_VAR([VIRTUALENV_FLAGS], [flags to pass to the virtualenv command])
-	    
+
+AC_PROG_INSTALL	    
 
 PC_PYTHON_CHECK_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
@@ -75,7 +76,7 @@ PC_PYTHON_SITE_PACKAGE_DIR
 PC_PYTHON_EXEC_PACKAGE_DIR
 
 PC_PYTHON_CHECK_MODULE([lxml],,[AC_MSG_ERROR(could not find Python lxml module)])
-PC_PYTHON_CHECK_MODULE([Image],,[AC_MSG_ERROR(could not find Python Imaging Library (PIL)])
+PC_PYTHON_CHECK_MODULE([Image],,[AC_MSG_ERROR(could not find Python Imaging Library)])
 
 
 

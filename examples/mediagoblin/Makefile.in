@@ -12,8 +12,9 @@ VIRTUALENV = @VIRTUALENV@
 SPHINXBUILD = @SPHINXBUILD@
 SHELL = @SHELL@
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = $(INSTALL)
-INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
@@ -32,15 +33,15 @@ all: install
 
 install:
 	$(NORMAL_INSTALL)
-ifneq ($VIRTUALENV, no)
-	$(VIRTUALENV) $(VIRTUALENV_FLAGS) $(DESTDIR)$(prefix) || virtualenv $(DESTDIR)$(prefix)
+ifneq ($(VIRTUALENV),no)
+	$(VIRTUALENV) $(VIRTUALENV_FLAGS) $(DESTDIR)$(prefix) || $(VIRTUALENV) $(DESTDIR)$(prefix)
 	$(DESTDIR)$(prefix)/bin/python $(srcdir)/setup.py develop --prefix=$(DESTDIR)$(prefix)
 else
-	$(PYTHON) $(srcdir)setup.py develop --prefix=$(DESTDIR)$(prefix)
+	$(PYTHON) $(srcdir)/setup.py develop --prefix=$(DESTDIR)$(prefix)
 endif
-	$(INSTALL_PROGRAM) $(srcdir)/lazyserver.sh $(DESTDIR)$(datadir)
-	$(INSTALL_PROGRAM) $(srcdir)/lazycelery.sh $(DESTDIR)$(datadir)
-	$(INSTALL_PROGRAM) $(srcdir)/lazystarter.sh $(DESTDIR)$(datadir)
+	$(INSTALL_SCRIPT) $(srcdir)/lazyserver.sh $(DESTDIR)$(datadir)
+	$(INSTALL_SCRIPT) $(srcdir)/lazycelery.sh $(DESTDIR)$(datadir)
+	$(INSTALL_SCRIPT) $(srcdir)/lazystarter.sh $(DESTDIR)$(datadir)
 	$(INSTALL_DATA) $(srcdir)/mediagoblin.ini $(DESTDIR)$(datadir)
 	$(INSTALL_DATA) $(srcdir)/paste.ini $(DESTDIR)$(datadir)
 
@@ -71,7 +72,7 @@ $(DESTDIR)$(infodir)/gnumediagoblin.info: docs/build/texinfo/gnumediagoblin.info
 info: docs/build/texinfo/gnumediagoblin.info
 
 docs/build/texinfo/gnumediagoblin.info: $(wildcard docs/source/*)
-ifneq ($SPHINX_BUILD, no)
+ifneq ($(SPHINX_BUILD),no)
 	$(MAKE) -C docs info SPHINXBUILD=$(SPHINXBUILD)
 endif
 
@@ -82,7 +83,7 @@ install-html: html
 html: docs/build/html/index.html
 
 docs/build/html/index.html: $(wildcard $(srcdir)/docs/source/*)
-ifneq ($SPHINX_BUILD, no)
+ifneq ($(SPHINX_BUILD),no)
 	$(MAKE) -C docs html SPHINXBUILD=$(SPHINXBUILD)
 endif
 
@@ -93,7 +94,7 @@ install-pdf: pdf
 pdf: docs/build/latex/GNUMediaGoblin.pdf
 
 docs/build/latex/GNUMediaGoblin.pdf: $(wildcard $(srcdir)/docs/source/*)
-ifneq ($SPHINX_BUILD, no)
+ifneq ($(SPHINX_BUILD),no)
 	$(MAKE) -C docs latexpdf SPHINXBUILD=$(SPHINXBUILD)
 endif
 
