@@ -8,6 +8,7 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PYTHON = @PYTHON@
+SPHINXBUILD = @SPHINXBUILD@
 SHELL = @SHELL@
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = $(INSTALL)
@@ -22,7 +23,6 @@ prefix = @prefix@
 srcdir = @srcdir@
 pkgpythondir = @pkgpythondir@
 pkgpyexecdir = @pkgpyexecdir@
-
 
 
 all: install
@@ -65,7 +65,9 @@ $(DESTDIR)$(infodir)/gnumediagoblin.info: docs/build/texinfo/gnumediagoblin.info
 info: docs/build/texinfo/gnumediagoblin.info
 
 docs/build/texinfo/gnumediagoblin.info: $(wildcard docs/source/*)
-	$(MAKE) -C docs info
+ifneq ($SPHINX_BUILD, none)
+	$(MAKE) -C docs info SPHINXBUILD=$(SPHINXBUILD)
+endif
 
 
 install-html: html
@@ -74,7 +76,9 @@ install-html: html
 html: docs/build/html/index.html
 
 docs/build/html/index.html: $(wildcard $(srcdir)/docs/source/*)
-	$(MAKE) -C docs html
+ifneq ($SPHINX_BUILD, none)
+	$(MAKE) -C docs html SPHINXBUILD=$(SPHINXBUILD)
+endif
 
 
 install-pdf: pdf
@@ -83,7 +87,9 @@ install-pdf: pdf
 pdf: docs/build/latex/GNUMediaGoblin.pdf
 
 docs/build/latex/GNUMediaGoblin.pdf: $(wildcard $(srcdir)/docs/source/*)
-	$(MAKE) -C docs latexpdf
+ifneq ($SPHINX_BUILD, none)
+	$(MAKE) -C docs latexpdf SPHINXBUILD=$(SPHINXBUILD)
+endif
 
 
 install-dvi:

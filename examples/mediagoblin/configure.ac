@@ -51,6 +51,11 @@ else
                             [AC_MSG_ERROR(Python interpreter too old)])
 fi
 
+AC_CHECK_PROGS([SPHINXBUILD], [sphinx-build sphinx-build2], [none])
+AS_IF([test "x$SPHINXBUILD" = xnone], 
+	    AC_MSG_WARN(sphinx-build is required to build documentation))
+
+
 PC_PYTHON_CHECK_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
 PC_PYTHON_SITE_PACKAGE_DIR
