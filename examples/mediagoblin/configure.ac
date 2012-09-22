@@ -31,11 +31,11 @@ dnl Autoconf and Automake initialization #
 dnl#######################################
 
 # Initialize Autoconf.
-AC_INIT(MediaGoblin, 0.3.1)
+AC_INIT(mediagoblin, 0.3.1)
 
 # Load macros from the m4/ directory
 AC_CONFIG_MACRO_DIR([m4])
-
+AM_INIT_AUTOMAKE
 
 # Here we check if we are using Python 3
 PC_PYTHON_VERIFY_VERSION([$PYTHON], 3.0,
@@ -68,6 +68,7 @@ AS_IF([test "x$with_virtualenv" != xno],
 	AC_SUBST([VIRTUALENV], [no]))
 AC_ARG_VAR([VIRTUALENV_FLAGS], [flags to pass to the virtualenv command])
 
+AC_PROG_MKDIR_P
 AC_PROG_INSTALL	    
 
 PC_PYTHON_CHECK_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
