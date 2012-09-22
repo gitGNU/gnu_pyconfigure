@@ -402,19 +402,19 @@ else:
      case $pc_cv_python_site_dir in
      $pc_py_prefix*)
        pc__strip_prefix=`echo "$pc_py_prefix" | sed 's|.|.|g'`
-       pc_cv_python_site_dir=`echo "$pc_cv_python_site_dir" | sed "s,^$pc__strip_prefix,$PYTHON_PREFIX,"`
+       pc_cv_python_site_dir=`echo "$pc_cv_python_site_dir" | sed "s,^$pc__strip_prefix/,,"`
        ;;
      *)
        case $pc_py_prefix in
          /usr|/System*) ;;
          *)
-	  pc_cv_python_site_dir=$PYTHON_PREFIX/lib/python$PYTHON_VERSION/site-packages
+	  pc_cv_python_site_dir=lib/python$PYTHON_VERSION/site-packages
 	  ;;
        esac
        ;;
      esac
      ])
-AC_SUBST([pythondir], [$pc_cv_python_site_dir])])# PC_PYTHON_CHECK_SITE_DIR
+AC_SUBST([pythondir], [\${prefix}/$pc_cv_python_site_dir])])# PC_PYTHON_CHECK_SITE_DIR
 ])
 
 # PC_PYTHON_SITE_PACKAGE_DIR
@@ -457,19 +457,19 @@ else:
      case $pc_cv_python_exec_dir in
      $pc_py_exec_prefix*)
        pc__strip_prefix=`echo "$pc_py_exec_prefix" | sed 's|.|.|g'`
-       pc_cv_python_exec_dir=`echo "$pc_cv_python_exec_dir" | sed "s,^$pc__strip_prefix,$PYTHON_EXEC_PREFIX,"`
+       pc_cv_python_exec_dir=`echo "$pc_cv_python_exec_dir" | sed "s,^$pc__strip_prefix/,,"`
        ;;
      *)
        case $pc_py_exec_prefix in
          /usr|/System*) ;;
          *)
-	   pc_cv_python_exec_dir=$PYTHON_EXEC_PREFIX/lib/python$PYTHON_VERSION/site-packages
+	   pc_cv_python_exec_dir=lib/python$PYTHON_VERSION/site-packages
 	   ;;
        esac
        ;;
      esac
     ])
-AC_SUBST([pyexecdir], [$pc_cv_python_pyexecdir])]) #PY_PYTHON_CHECK_EXEC_LIB_DIR
+AC_SUBST([pyexecdir], [\${exec_prefix}/$pc_cv_python_pyexecdir])]) #PY_PYTHON_CHECK_EXEC_LIB_DIR
 ])
 
 # PC_PYTHON_EXEC_PACKAGE_DIR
