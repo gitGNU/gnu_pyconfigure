@@ -1,0 +1,31 @@
+python-configure 0.1
+--------------------
+
+python-configure provides a means to easily manage the configuration
+and installation of Python programs with the familiar GNU standard
+installation procedure:
+
+    $ ./configure --prefix=/usr
+    $ make
+    $ make install
+
+Of course, since Python programs usually do not need to be compiled,
+the second step can be eliminated.
+
+Currently, python-configure is designed to live alongside the
+traditional Python distutils (`setup.py') method, providing a wrapper
+around it. Later, it will expand to allow developers to bypass
+distutils altogether.
+
+To use python-configure, you may simply drop the files into your
+Python project. Without modification, they provide a basic wrapper
+around setup.py that allows one to install to the chosen prefix. It
+allows one optionally to install the application to a virtualenv with
+the --with-virtualenv configure argument.
+
+Several Autoconf macros are provided in the m4 directory which may be
+used to perform a variety of tests during the configuration stage,
+from verifying a minimum Python version to running test programs. See
+the included documentation for more info and browse through the
+provided `configure.ac' sample Autoconf script for well-commented
+examples.
