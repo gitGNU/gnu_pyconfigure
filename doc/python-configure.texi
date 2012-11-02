@@ -1,0 +1,558 @@
+\input texinfo   @c -*-texinfo-*-
+@comment $Id: texinfo.txi,v 1.204 2007/07/29 14:55:43 karl Exp $
+@comment %**start of header
+@setfilename python-configure.info
+@include version.texi
+@settitle python-configure @value{VERSION}
+@syncodeindex pg cp
+@comment %**end of header
+@copying
+This manual is for python-configure (version @value{VERSION}, updated 
+@value{UPDATED}).
+
+Copyright @copyright{} 2012 Brandon Invergo
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts and no Back-Cover Texts.  A
+copy of the license is included in the section entitled ``GNU Free
+Documentation License.''
+@end quotation
+@end copying
+
+@dircategory Miscellaneous
+@direntry
+* python-configure: (python-configure)GNU Standards-compliant Python
+  configuration and installation
+@end direntry
+
+@titlepage
+@title python-configure
+@subtitle for version @value{VERSION}, @value{UPDATED}
+@author @email{bug-gsrc@@gnu.org}
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+@ifnottex
+@node Top, Introduction, (dir), (dir)
+@top GNU Source Release Collection
+
+This manual is for python-configure (version @value{VERSION}, @value{UPDATED}).
+@end ifnottex
+
+@menu
+* Introduction::                
+* Using python-configure::
+* Appendix::
+* GNU Free Documentation License::  
+
+@detailmenu
+ --- The Detailed Node Listing ---
+
+Introduction
+
+* Configuring Python packages::
+
+Using python-configure
+
+* Required macros::
+* Verifying the Python version::
+* Checking for a module or function::
+* Writing test programs::
+* Using Sphinxbuild to build documentation::
+
+Appendix
+
+* Autoconf Macros
+
+@end detailmenu
+@end menu
+
+@node Introduction, Using python-configure, Top, Top
+@chapter Introduction
+
+Python packages typically are configured and installed through the use
+of @code{distutils} or one of its derivatives. The user performs
+necessary actions via a Python script called @file{setup.py}. For
+simple programs, this is straight-forward. However, for more complex
+software packages, especially for those which also include code in
+other languages such as C or Fortran, the limitations of the
+@code{distutils} method quickly become apparent.
+
+The configuration and installation of GNU software and many other
+programs, on the other hand, is done according to the use of standard
+@file{configure} scripts and Make recipes. This method has the
+advantage of being language-agnostic, very flexible,
+time-proven. python-configure consists of all the files
+necessary to use the standard GNU build process to configure and
+install Python packages. 
+
+Without modification, python-configure provides a wrapper
+around @file{setup.py}, which allows the user to use the familiar GNU
+installation commands to install a Python package. With the powerful
+Autoconf macros that it provides, a Python developer can greatly
+extend or even replace altogether the capabilities of
+@file{setup.py}. Plus, since this method is language-agnostic, all the
+power of Autoconf for compiled languages is gained for free. 
+
+@menu
+* Configuring Python packages::
+@end menu
+
+@node Configuring Python packages, , Introduction, Introduction
+@section Configuring Python packages
+
+Configuring and installing Python packages which use
+python-configure follows the familiar steps of all standard GNU
+software:
+
+@example
+$ ./configure
+$ make
+$ make install
+@end example
+
+In fact, since most programs do not have anything to build, the second
+step could usually be skipped.
+
+As usual, the user may pass arguments to @file{configure} in order to
+specify how she wants the software to be installed. By default,
+@file{configure} takes the following useful arguments:
+
+@multitable @columnfractions .25 .75
+@headitem
+Argument
+@tab
+Description
+
+@item
+@code{--prefix}
+@tab
+Set the root directory in which to install files (default=/usr/local)
+
+@item
+@code{--with-virtualenv}
+@tab
+Install to a virtualenv at @code{$prefix}
+
+@item
+@code{PYTHON}
+@tab
+Path to the Python interpreter to use
+
+@item
+@code{PYTHONPATH}
+@tab
+The PYTHONPATH to use during the installation
+
+@end multitable
+
+However, as the developer is expected to customize these files, the
+final @file{configure} script may take many more arguments. The
+developer is expected to provide proper documentation in this case.
+
+@node Using python-configure, Appendix, Introduction, Top
+@chapter Using python-configure
+
+While it is possible to simply copy the python-configure files into
+your project's source directory and use them unmodified, it is
+recommended that you customize them to more appropriately fit your
+needs. In particular, you will want to customize @file{configure.ac}
+and @file{Makefile.in}. @file{configure.ac} contains a series of
+macros which are used by Autoconf to build a portable @file{configure}
+shell script. When the user invokes @file{configure}, it uses
+@file{Makefile.in} as a template to create the Make recipe
+@file{Makefile}.
+
+Several Autoconf macros are provided in the python-configure file
+@file{m4/python.m4} to allow the developer to write robust tests
+@xref{Autoconf macros}. Note that when you distribute your software,
+you must include this directory and file with your distribution. 
+
+Once you modify your @file{configure.ac} to your liking, you must
+regenerate your @file{configure} script with autoreconf:
+
+@example
+$ autoreconf -fvi
+@end example
+
+A full explanation of the use of Autoconf macros is beyond the scope
+of this document, however it is worth presenting some examples.
+
+@menu
+* Required macros::
+* Verifying the Python version::
+* Checking for a module or function::
+* Writing test programs::
+* Using Sphinxbuild to build documentation::
+@end menu
+
+@node Required macros, Verifying the Python version, Using python-configure, Using python-configure
+@section Required macros
+
+Several macros are required in @file{configure.ac} to use
+python-configure. These are:
+
+@example
+m4_include([m4/python.m4])
+@end example
+
+This macro imports all of the Python Autoconf macros. If you choose to
+write your own macros for other purposes, you would also include them
+in this manner.
+
+@example
+AC_INIT(project_name, project_version)
+@end example
+
+This initializes Autoconf and also substitutes your project name and
+version in any output that it generates.
+
+@example
+AC_CONFIG_MACRO_DIR([m4])
+@end example
+
+Now that Autoconf is initialized, we inform it of the location of our
+macros.
+
+@example
+AC_PROG_PYTHON
+@end example
+
+This is the key macro. It finds the highest-version Python interpreter
+available on the system and saves its path in the @code{PYTHON}
+variable. 
+
+@example
+PC_PYTHON_SITE_PACKAGE_DIR
+PC_PYTHON_EXEC_PACKAGE_DIR
+@end example
+
+These two macros figure out where Python expects packages to be
+installed (i.e. @file{/usr/lib/python2.7/site-packages/}) and saves
+them in the variables @code{pkgpythondir} and @code{pkgpyexecdir},
+respectively, for use in @file{Makefile.in}
+
+@node Verifying the Python version, Checking for a module or function, Required macros, Using python-configure
+@section Verifying the Python version
+
+As described in the previous section, @code{AC_PROG_PYTHON} finds the
+Python interpreter with the highest version installed on the
+system. Often, you will want to be sure that the user has some minimum
+version installed. There is a macro available to simplify this,
+@code{PC_PYTHON_VERIFY_VERSION}. 
+
+@example
+m4_define(python_min_ver, 2.6.1)
+PC_PYTHON_VERIFY_VERSION([$PYTHON], python_min_ver, ,
+                         [AC_MSG_ERROR(Python interpreter too old)])
+@end example
+
+In this example, we set the minimum version to 2.6.1 through the use
+of an M4 macro. We then check if the interpreter stored in the
+@code{PYTHON} variable (either set by the user or found by
+@code{AC_PROG_PYTHON}) is at least of that version. If it is not, the
+resulting @file{configure} script will exit with an appropriate error
+message.
+
+Unfortunately, the divide between Python 2 and Python 3 and many
+programs are only compatible with Python 2. Since
+@code{AC_PROG_PYTHON} will find the latest Python interpreter, if the
+user has any Python version 3.x installed, @code{configure} must be
+able to instead find the most latest 2.x version installed. This is
+slightly less straight-forward, but one possible implementation is as
+follows:
+
+@example
+PC_PYTHON_VERIFY_VERSION([$PYTHON], 3.0,
+                          py3k=true,
+                          py3k=false)
+# If a Python 3 interpreter was found, look specifically for a Python 2 one
+if test "$py3k" = "true" ; then
+   m4_define_default([_PYTHON2_BINS], [python2 python2.7 python2.6])
+   AC_PATH_PROGS(PYTHON, [_PYTHON2_BINS])				 
+else
+# otherwise check that the Python 2 version is sufficient
+   PC_PYTHON_VERIFY_VERSION([$PYTHON], python_min_ver, ,
+                            [AC_MSG_ERROR(Python interpreter too old)])
+fi
+if test -z "$PYTHON"; then
+   AC_MSG_ERROR(No Python 2 interpreter found)
+fi
+@end example
+
+We first check to see if Python is version 3.0 or greater. If it is,
+we create a list of compatible Python interpreters and manually check
+for them using standard Autoconf macros. Finally, we check if the
+interpreter that we found this time is of sufficient version,
+otherwise @file{configure} will halt with an error. Likewise, if no
+appropriate interpreter was found, an error message will be printed
+and @file{configure} will stop.
+
+@node Checking for a module or function, Writing test programs, Verifying the Python version, Using python-configure
+@section Checking for a module or function
+
+It's reasonable to assume that many Python packages will have
+dependencies on other, external modules. With the provided
+python-configure macros, this is simple. All you have to do is use the
+@code{PC_PYTHON_CHECK_MODULE} macro as follows:
+
+@example
+PC_PYTHON_CHECK_MODULE([foo])
+@end example
+
+If the module is a hard requirement, you may provide actions to do if
+it is not present:
+
+@example
+PC_PYTHON_CHECK_MODULE([foo], , AC_MSG_ERROR([Module foo is not installed]))
+@end example
+
+If you need more fine-grained control, you can also test for a
+specific function:
+
+@example
+PC_PYTHON_CHECK_FUNC([foo], [bar], [arg1, arg2])
+@end example
+
+Remember that you may omit arguments to Autoconf macros: in the above
+example, the final two arguments, which correspond to the action to
+take if the test is successful and if it fails simply are not present
+in the argument list. Similarly, if you do not need to pass arguments
+to the test function, you can entirely omit the third argument to the
+macro:
+
+@example
+PC_PYTHON_CHECK_FUNC([foo], [bar])
+@end example
+
+@node Writing test programs, Using Sphinxbuild to build documentation, Checking for a module or function, Using python-configure
+@section Writing test programs
+
+One great benefit of Autoconf is the ability to embed test programs
+inside @file{configure}. The python-configure macros allow for this by
+defining Python as a language within Autoconf. You then would proceed
+to write test programs as you would in any other language that
+Autoconf supports like C.
+
+@example
+AC_LANG_PUSH(Python)[]
+AC_RUN_IFELSE([AC_LANG_PROGRAM([dnl
+# some code here
+import foo
+], [dnl
+    # some more code here
+    foo.bar()
+])], [ACTION-IF-SUCCESSFUL], [ACTION-IF-FAILED])
+AC_LANG_POP(Python)[]
+@end example
+
+The first argument to @code{AC_LANG_PROGRAM} is the so-called
+``prolog'', and typically will contain your @code{import} statements
+or function definitions. The second argument contains the main body of
+the program, which will be in the scope of an @code{if __name__=="__main__":}
+block. So, you must be sure to indent the code appropriately.
+
+@node Using Sphinxbuild to build documentation, , Writing test programs, Using python-configure
+@section Using Sphinxbuild to build documentation
+
+Using python-configure and Autoconf to test for other tools is quite
+easy. For example, many Python packages use Sphinxbuild to build their
+documentation. If this is the case for your project, you might do
+something like the following:
+
+@example
+AC_CHECK_PROGS([SPHINXBUILD], [sphinx-build sphinx-build3 sphinx-build2], [no])
+AS_IF([test "x$SPHINXBUILD" = xno], 
+	    AC_MSG_WARN(sphinx-build is required to build documentation))
+@end example
+
+We simply use Autoconf's @code{AC_CHECK_PROGS} macro to check for a
+series of possible Sphinxbuild binaries and save the result to the
+SPHINXBUILD variable, which may then be used in @file{Makefile.in}:
+
+@example
+docs/build/index.html: $(wildcard $(srcdir)/docs/source/*)
+ifneq ($(SPHINXBUILD),no)
+ 	$(SPHINXBUILD) -b html docs/source/ docs/build/ 
+endif
+@end example
+
+@node Appendix, GNU Free Documentation License, Using python-configure, Top
+@chapter Appendix
+
+@menu
+* Autoconf macros::
+@end menu
+
+@node Autoconf macros, , , Appendix
+@section Autoconf macros
+
+@multitable @columnfractions .33 .33 .33
+@headitem
+Macro Name & Arguments
+@tab
+Description
+@tab
+Variables exported
+
+@item
+@code{AC_PROG_PYTHON([NAME-TO-CHECK])}
+@tab
+Find a Python interpreter
+@tab
+@code{PYTHON}
+
+@item
+@code{PC_PROG_PYTHON_CONFIG([NAME-TO-CHECK])}
+@tab
+Find a python-config program
+@tab
+@code{PYTHON_CONFIG}
+
+@item
+@code{PC_PYTHON_VERIFY_VERSION(VERSION, [ACTION-IF-TRUE], [ACTION-IF-NOT-TRUE])}
+@tab
+Verify that the Python interpreter is of a sufficient version number
+@tab
+
+@item
+@code{PC_PYTHON_CHECK_VERSION}
+@tab
+Get the version of the Python interpreter
+@tab
+@code{PYTHON_VERSION}
+
+@item
+@code{PC_PYTHON_CHECK_PREFIX}
+@tab
+Check what Python thinks is the prefix
+@tab
+@code{PYTHON_PREFIX}
+
+@item
+@code{PC_PYTHON_CHECK_EXEC_PREFIX}
+@tab
+Check what Python thinks is the exec_prefix
+@tab
+@code{PYTHON_EXEC_PREFIX}
+
+@item
+@code{PC_PYTHON_CHECK_INCLUDES}
+@tab
+Check the include flags ('-I[header]...') for including the Python
+header files
+@tab
+@code{PYTHON_INCLUDES}
+
+@item
+@code{PC_PYTHON_CHECK_HEADERS}
+@tab
+Check for the Python header files (i.e. @file{Python.h})
+@tab
+@code{HAVE_PYTHON_H}
+
+@item
+@code{PC_PYTHON_CHECK_LIBS}
+@tab
+Check for the proper LIBS flags to load the Python shared libraries
+@tab
+@code{PYTHON_LIBS}
+
+@item
+@code{PC_PYTHON_TEST_LIBS}
+@tab
+Test for the presence of the Python shared libraries
+@tab
+@code{HAVE_LIBPYTHON}
+
+@item
+@code{PC_PYTHON_CHECK_CFLAGS}
+@tab
+Find the CFLAGS that Python expects
+@tab
+@code{PYTHON_CFLAGS}
+
+@item
+@code{PC_PYTHON_CHECK_LDFLAGS}
+@tab
+Find the LDFLAGS that Python expects
+@tab
+@code{PYTHON_LDFLAGS}
+
+@item
+@code{PC_PYTHON_CHECK_EXTENSION_SUFFIX}
+@tab
+Check the extension suffix given to Python extension modules (Python 3
+only)
+@tab
+@code{PYTHON_EXTENSION_SUFFIX}
+
+@item
+@code{PC_PYTHON_CHECK_ABI_FLAGS}
+@tab
+Check the ABI flags used by Python (Python 3 only)
+@tab
+@code{PC_PYTHON_ABI_FLAGS}
+
+@item
+@code{PC_PYTHON_CHECK_PLATFORM}
+@tab
+Check what platform Python thinks this is
+@code{PYTHON_PLATFORM}
+
+@item
+@code{PC_PYTHON_CHECK_SITE_DIR}
+@tab
+Check the appropriate place to install Python packages (i.e.
+@file{$(prefix)/lib/python2.7/site-packages})
+@tab
+@code{pythondir}
+
+@item
+@code{PC_PYTHON_SITE_PACKAGE_DIR}
+@tab
+A convenience macro; adds the package's name to @code{pythondir}
+@tab
+@code{pkgpythondir}
+
+@item
+@code{PC_PYTHON_CHECK_EXEC_DIR}
+@tab
+Check directory for installing Python extension modules
+@tab
+@code{pyexecdir}
+
+@item
+@code{PC_PYTHON_EXEC_PACKAGE_DIR}
+@tab
+A convenience macro; adds the package's name to @code{pyexecdir}
+@tab
+@code{pkgpyexecdir}
+
+@item
+@code{PC_PYTHON_CHECK_MODULE}
+@tab
+Test if a given Python module can be successfully loaded
+@tab
+
+@item
+@code{PC_PYTHON_CHECK_FUNC}
+@tab
+Test if a given Python function can be called successfully.
+@tab
+@end multitable
+
+@node GNU Free Documentation License,  , Appendix, Top
+@appendix GNU Free Documentation License
+
+@include fdl.texi
+
+@bye
+
