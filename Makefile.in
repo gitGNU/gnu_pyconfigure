@@ -94,7 +94,7 @@ distclean: $(wildcard $(srcdir)/docs/source/*)
 # info: docs/build/texinfo/foo.info
 
 # docs/build/texinfo/foo.info: $(wildcard docs/source/*)
-# ifneq ($(SPHINX_BUILD),no)
+# ifneq ($(SPHINXBUILD),no)
 # 	$(MAKE) -C docs info SPHINXBUILD=$(SPHINXBUILD)
 # endif
 
@@ -105,7 +105,7 @@ distclean: $(wildcard $(srcdir)/docs/source/*)
 # html: docs/build/html/index.html
 
 # docs/build/html/index.html: $(wildcard $(srcdir)/docs/source/*)
-# ifneq ($(SPHINX_BUILD),no)
+# ifneq ($(SPHINXBUILD),no)
 # 	$(MAKE) -C docs html SPHINXBUILD=$(SPHINXBUILD)
 # endif
 
@@ -116,7 +116,7 @@ distclean: $(wildcard $(srcdir)/docs/source/*)
 # pdf: docs/build/latex/Foo.pdf
 
 # docs/build/latex/foo.pdf: $(wildcard $(srcdir)/docs/source/*)
-# ifneq ($(SPHINX_BUILD),no)
+# ifneq ($(SPHINXBUILD),no)
 # 	$(MAKE) -C docs latexpdf SPHINXBUILD=$(SPHINXBUILD)
 # endif
 
