@@ -1,3 +1,5 @@
+# configure.ac
+#
 # Copyright 2012 Brandon Invergo <brandon@invergo.net>
 #
 # Copying and distribution of this file, with or without modification,
@@ -10,13 +12,13 @@
 # modified to the specific needs of the project.
 
 
-dnl####################################
-dnl Define some macros here as needed #
-dnl####################################
+dnl#######################################
+dnl Define some m4 macros here as needed #
+dnl#######################################
 
 # The minimum-required Python versions
-m4_define(python_min_ver, 2.7.2)
-m4_define(python3_min_ver, 3.2.1)
+#m4_define(python_min_ver, 2.7.2)
+#m4_define(python3_min_ver, 3.2.1)
 
 
 dnl#############################################
@@ -38,7 +40,7 @@ AC_INIT(project_name, project_version, [project_name-bug@gnu.org])
 AC_SUBST(ACLOCAL_AMFLAGS, "-I m4 -I .")
 
 # Initialize Automake
-AM_INIT_AUTOMAKE([-Wall -Werror gnu])
+#AM_INIT_AUTOMAKE()
 
 # Load macros from the m4/ directory
 AC_CONFIG_MACRO_DIR([m4])
@@ -61,6 +63,29 @@ dnl all, since most of the macros depend on this one.
 
 AC_PROG_PYTHON
 
+# Support installing to a virtualenv via the --with-virtualenv configure flag
+AC_ARG_WITH([virtualenv],
+	[AS_HELP_STRING([--with-virtualenv], [install to a Python virtualenv])],
+	[],
+	[with_virtualenv=no])
+AS_IF([test "x$with_virtualenv" != xno],
+	    AC_CHECK_PROGS([VIRTUALENV], [virtualenv virtualenv2], [no])
+	    AS_IF([test "x$VIRTUALENV" = xno],
+	    [AC_MSG_FAILURE(
+		[--with-virtualenv given but virtualenv could not be found])]),
+	AC_SUBST([VIRTUALENV], [no]))
+AC_ARG_VAR([VIRTUALENV_FLAGS], [flags to pass to the virtualenv command])
+
+# If the program uses sphinx-build to build documentation, uncomment this to 
+# create a SPHINXBUILD variable in the Makefile pointing to the program
+#AC_CHECK_PROGS([SPHINXBUILD], [sphinx-build sphinx-build3 sphinx-build2], [no])
+#AS_IF([test "x$SPHINXBUILD" = xno], 
+#	    AC_MSG_WARN(sphinx-build is required to build documentation))
+
+
+# A couple extra useful commands
+AC_PROG_MKDIR_P
+AC_PROG_INSTALL	    
 
 
 dnl # PC_PYTHON_VERIFY_VERSION #######################################
@@ -70,19 +95,19 @@ dnl Python binary meets some minimum requirement. You may optionally
 dnl provide actions to take if it does or if it doesn't meet the
 dnl requirement.
 
-# Here we check if we are using Python 3
-PC_PYTHON_VERIFY_VERSION([$PYTHON], 3.0,
-                          py3k=true,
-                          py3k=false)
-# If using python 3 make sure we have the minimum version supported
-if test "$py3k" = "true" ; then
-   PC_PYTHON_VERIFY_VERSION([$PYTHON], python3_min_ver,,
-                            [AC_MSG_ERROR(Python 3 interpreter too old)])
-else
-# otherwise check that the Python 2 version is sufficient
-   PC_PYTHON_VERIFY_VERSION([$PYTHON], python_min_ver, ,
-                            [AC_MSG_ERROR(Python interpreter too old)])
-fi
+## Here we check if we are using Python 3
+#PC_PYTHON_VERIFY_VERSION([$PYTHON], 3.0,
+#                          py3k=true,
+#                          py3k=false)
+## If using python 3 make sure we have the minimum version supported
+#if test "$py3k" = "true" ; then
+#   PC_PYTHON_VERIFY_VERSION([$PYTHON], python3_min_ver,,
+#                            [AC_MSG_ERROR(Python 3 interpreter too old)])
+#else
+## otherwise check that the Python 2 version is sufficient
+#   PC_PYTHON_VERIFY_VERSION([$PYTHON], python_min_ver, ,
+#                            [AC_MSG_ERROR(Python interpreter too old)])
+#fi
 
 
 
@@ -93,7 +118,7 @@ dnl (i.e. /usr) and stores it in PYTHON_PREFIX. You probably shouldn't
 dnl use this and you should just stick to $prefix, but here it is
 dnl anyway.
 
-PC_PYTHON_CHECK_PREFIX
+#PC_PYTHON_CHECK_PREFIX
 
 
 
@@ -101,7 +126,7 @@ dnl # PC_PYTHON_CHECK_EXEC_PREFIX ####################################
 dnl
 dnl The same as above but for $exec-prefix
 
-PC_PYTHON_CHECK_EXEC_PREFIX
+#PC_PYTHON_CHECK_EXEC_PREFIX
 
 
 
@@ -111,7 +136,7 @@ dnl This macro figures out the include flags necessary for loading the
 dnl Python headers (ie -I/usr/lib/python). The results are stored in
 dnl PYTHON_INCLUDES
 
-PC_PYTHON_CHECK_INCLUDES
+#PC_PYTHON_CHECK_INCLUDES
 
 
 
@@ -122,7 +147,7 @@ dnl to make sure that Python.h can be loaded. Note that if you use
 dnl this, you don't strictly need to also include
 dnl PC_PYTHON_CHECK_INCLUDES.
 
-PC_PYTHON_CHECK_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
+#PC_PYTHON_CHECK_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
 
 
@@ -131,7 +156,7 @@ dnl
 dnl This checks what LIBS flags are necessary to use the Python
 dnl libraries (ie -lpython). The results are stored in PYTHON_LIBS
 
-PC_PYTHON_CHECK_LIBS
+#PC_PYTHON_CHECK_LIBS
 
 
 
@@ -142,10 +167,10 @@ dnl PC_PYTHON_CHECK_LIBS is loadable and if a given function can be
 dnl found in the library. You may use this to test for the presence of
 dnl features in the library. 
 
-PC_PYTHON_TEST_LIBS([PyObject_Print],,
-                     [AC_MSG_ERROR(The Python library could not be loaded)])
-# Add PYTHON_LIBS to LIBS
-LIBS="$LIBS $PYTHON_LIBS"
+#PC_PYTHON_TEST_LIBS([PyObject_Print],,
+#                     [AC_MSG_ERROR(The Python library could not be loaded)])
+## Add PYTHON_LIBS to LIBS
+#LIBS="$LIBS $PYTHON_LIBS"
 
 
 
@@ -156,9 +181,9 @@ dnl use and stores them in PYTHON_CFLAGS. Note that this info is only
 dnl available for Python versions which include a python-config tool
 dnl (2.5+).
 
-PC_PYTHON_CHECK_CFLAGS
-# Add PYTHON_CFLAGS to CFLAGS
-CFLAGS="$CFLAGS $PYTHON_CFLAGS"
+#PC_PYTHON_CHECK_CFLAGS
+## Add PYTHON_CFLAGS to CFLAGS
+#CFLAGS="$CFLAGS $PYTHON_CFLAGS"
 
 
 
@@ -166,9 +191,9 @@ dnl # PC_PYTHON_CHECK_LDFLAGS ########################################
 dnl
 dnl The same as above but for LDFLAGS
 
-PC_PYTHON_CHECK_LDFLAGS
-# Add PYTHON_LDFLAGS to LDFLAGS
-LDFLAGS="$LDFLAGS $PYTHON_LDFLAGS"
+#PC_PYTHON_CHECK_LDFLAGS
+## Add PYTHON_LDFLAGS to LDFLAGS
+#LDFLAGS="$LDFLAGS $PYTHON_LDFLAGS"
 
 
 
@@ -179,7 +204,7 @@ dnl modules to be (i.e. .cpython-32mu.so) and stores it in
 dnl PYTHON_EXTENSION SUFFIX. This information is only available for
 dnl Python 3+
 
-PC_PYTHON_CHECK_EXTENSION_SUFFIX
+#PC_PYTHON_CHECK_EXTENSION_SUFFIX
 
 
 
@@ -189,7 +214,7 @@ dnl This checks for the ABI flags used by Python (i.e. "mu") and
 dnl stores it in PYTHON_ABI_FLAGS. This information is only available
 dnl for Python 3+
 
-PC_PYTHON_CHECK_ABI_FLAGS
+#PC_PYTHON_CHECK_ABI_FLAGS
 
 
 
@@ -198,7 +223,7 @@ dnl
 dnl This macro checks what platform Python thinks this is (ie
 dnl "linux2") and stores it in PYTHON_PLATFORM
 
-PC_PYTHON_CHECK_PLATFORM
+#PC_PYTHON_CHECK_PLATFORM
 
 
 
@@ -207,7 +232,7 @@ dnl
 dnl This checks where Python packages are installed (usually 
 dnl /usr/lib/pythonX.Y/site-packages) and stores it in pythondir.
 
-PC_PYTHON_CHECK_SITE_DIR
+#PC_PYTHON_CHECK_SITE_DIR
 
 
 
@@ -229,7 +254,7 @@ dnl
 dnl Same as PC_PYTHON_CHECK_SITE_DIR but for $exec-prefix. Stored in
 dnl pyexecdir
 
-PC_PYTHON_CHECK_EXEC_DIR
+#PC_PYTHON_CHECK_EXEC_DIR
 
 
 
@@ -248,7 +273,7 @@ dnl
 dnl This macro lets you check if a given Python module exists on the
 dnl system.
 
-PC_PYTHON_CHECK_MODULE([foo])
+#PC_PYTHON_CHECK_MODULE([foo])
 
 
 
@@ -259,7 +284,7 @@ dnl This macro lets you test if a given function, possibly contained
 dnl in a given module, exists. If any exception is encountered when
 dnl calling this function, the check will fail. 
 # test if Python library foo can do bar()
-PC_PYTHON_CHECK_FUNC([foo], [bar])
+#PC_PYTHON_CHECK_FUNC([foo], [bar])
 
 
 
@@ -288,6 +313,6 @@ dnl indented once by default. PROLOG code does not require this.
 
 
 # Files to be configured
-AC_CONFIG_FILES([])
+AC_CONFIG_FILES([Makefile])
 # Generate config.status
 AC_OUTPUT
