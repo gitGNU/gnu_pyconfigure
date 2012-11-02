@@ -21,7 +21,11 @@ To use python-configure, you may simply drop the files into your
 Python project. Without modification, they provide a basic wrapper
 around setup.py that allows one to install to the chosen prefix. It
 allows one optionally to install the application to a virtualenv with
-the --with-virtualenv configure argument.
+the --with-virtualenv configure argument. It would be advisable at
+least to modify the configure.ac script to reflect your project's name
+and then run:
+
+    $ autoreconf -fvi
 
 Several Autoconf macros are provided in the m4 directory which may be
 used to perform a variety of tests during the configuration stage,
