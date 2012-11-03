@@ -17,13 +17,13 @@ traditional Python distutils (`setup.py') method, providing a wrapper
 around it. Later, it will expand to allow developers to bypass
 distutils altogether.
 
-To use python-configure, you may simply drop the files into your
-Python project. Without modification, they provide a basic wrapper
-around setup.py that allows one to install to the chosen prefix. It
-allows one optionally to install the application to a virtualenv with
-the --with-virtualenv configure argument. It would be advisable at
-least to modify the configure.ac script to reflect your project's name
-and then run:
+To use python-configure, you may simply drop the files from the src/
+directory into your Python project. Without modification, they provide
+a basic wrapper around setup.py that allows one to install to the
+chosen prefix. It allows one optionally to install the application to
+a virtualenv with the --with-virtualenv configure argument. It would
+be advisable at least to modify the configure.ac script to reflect
+your project's name and then run:
 
     $ autoreconf -fvi
 
