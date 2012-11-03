@@ -1,4 +1,4 @@
-python-configure TODO
+python-configure TODO    -*- mode: org; -*-
 
 * TODO replicate setup.py installation of files in Makefile.in
 * TODO add metadata like setup.py and add `make egg'
