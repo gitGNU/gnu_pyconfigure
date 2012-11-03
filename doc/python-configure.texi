@@ -160,18 +160,20 @@ developer is expected to provide proper documentation in this case.
 @node Using python-configure, Appendix, Introduction, Top
 @chapter Using python-configure
 
-While it is possible to simply copy the python-configure files into
-your project's source directory and use them unmodified, it is
-recommended that you customize them to more appropriately fit your
-needs. In particular, you will want to customize @file{configure.ac}
-and @file{Makefile.in}. @file{configure.ac} contains a series of
-macros which are used by Autoconf to build a portable @file{configure}
-shell script. When the user invokes @file{configure}, it uses
-@file{Makefile.in} as a template to create the Make recipe
+While it is possible to simply copy the python-configure files from
+the @file{src} directory into your project's source directory and use
+them unmodified, it is recommended that you customize them to more
+appropriately fit your needs. In particular, you will want to
+customize @file{configure.ac} and
+@file{Makefile.in}. @file{configure.ac} contains a series of macros
+which are used by Autoconf to build a portable @file{configure} shell
+script. This script either guesses important system settings or is
+provided them by the user. When the user invokes @file{configure}, it
+uses @file{Makefile.in} as a template to create the Make recipe
 @file{Makefile}.
 
 Several Autoconf macros are provided in the python-configure file
-@file{m4/python.m4} to allow the developer to write robust tests
+@file{src/m4/python.m4} to allow the developer to write robust tests
 @xref{Autoconf macros}. Note that when you distribute your software,
 you must include this directory and file with your distribution. 
 

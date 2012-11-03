@@ -1,7 +1,7 @@
-This is python-configure.info, produced by makeinfo version 4.13 from
-/home/brandon/Projects/python-autoconfigure/doc/python-configure.texi.
+This is doc/python-configure.info, produced by makeinfo version 4.13
+from ./doc/python-configure.texi.
 
-This manual is for python-configure (version 0.1, updated 02 November
+This manual is for python-configure (version 0.1, updated 3 November
 2012).
 
    Copyright (C) 2012 Brandon Invergo
@@ -25,7 +25,7 @@ File: python-configure.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up:
 GNU Source Release Collection
 *****************************
 
-This manual is for python-configure (version 0.1, 02 November 2012).
+This manual is for python-configure (version 0.1, 3 November 2012).
 
 * Menu:
 
@@ -123,17 +123,18 @@ File: python-configure.info,  Node: Using python-configure,  Next: Appendix,  Pr
 2 Using python-configure
 ************************
 
-While it is possible to simply copy the python-configure files into
-your project's source directory and use them unmodified, it is
-recommended that you customize them to more appropriately fit your
-needs. In particular, you will want to customize `configure.ac' and
-`Makefile.in'. `configure.ac' contains a series of macros which are
-used by Autoconf to build a portable `configure' shell script. When the
-user invokes `configure', it uses `Makefile.in' as a template to create
-the Make recipe `Makefile'.
+While it is possible to simply copy the python-configure files from the
+`src' directory into your project's source directory and use them
+unmodified, it is recommended that you customize them to more
+appropriately fit your needs. In particular, you will want to customize
+`configure.ac' and `Makefile.in'. `configure.ac' contains a series of
+macros which are used by Autoconf to build a portable `configure' shell
+script. This script either guesses important system settings or is
+provided them by the user. When the user invokes `configure', it uses
+`Makefile.in' as a template to create the Make recipe `Makefile'.
 
    Several Autoconf macros are provided in the python-configure file
-`m4/python.m4' to allow the developer to write robust tests *Note
+`src/m4/python.m4' to allow the developer to write robust tests *Note
 Autoconf macros::. Note that when you distribute your software, you
 must include this directory and file with your distribution.
 
@@ -898,17 +899,17 @@ permit their use in free software.
 
 
 Tag Table:
-Node: Top832
-Node: Introduction1454
-Node: Configuring Python packages2905
-Node: Using python-configure4139
-Node: Required macros5522
-Node: Verifying the Python version6722
-Node: Checking for a module or function9249
-Node: Writing test programs10484
-Node: Using Sphinxbuild to build documentation11593
-Node: Appendix12618
-Node: Autoconf macros12799
-Node: GNU Free Documentation License16502
+Node: Top793
+Node: Introduction1414
+Node: Configuring Python packages2865
+Node: Using python-configure4099
+Node: Required macros5597
+Node: Verifying the Python version6797
+Node: Checking for a module or function9324
+Node: Writing test programs10559
+Node: Using Sphinxbuild to build documentation11668
+Node: Appendix12693
+Node: Autoconf macros12874
+Node: GNU Free Documentation License16577
 
 End Tag Table
