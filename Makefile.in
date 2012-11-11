@@ -65,13 +65,13 @@ CONFIG_CLEAN_VPATH_FILES =
 SOURCES =
 DIST_SOURCES =
 am__dirstamp = $(am__leading_dot)dirstamp
-INFO_DEPS = $(srcdir)/doc/python-configure.info
+INFO_DEPS = $(srcdir)/doc/pyconfigure.info
 am__TEXINFO_TEX_DIR = $(srcdir)
-DVIS = doc/python-configure.dvi
-PDFS = doc/python-configure.pdf
-PSS = doc/python-configure.ps
-HTMLS = doc/python-configure.html
-TEXINFOS = doc/python-configure.texi
+DVIS = doc/pyconfigure.dvi
+PDFS = doc/pyconfigure.pdf
+PSS = doc/pyconfigure.ps
+HTMLS = doc/pyconfigure.html
+TEXINFOS = doc/pyconfigure.texi
 TEXI2DVI = texi2dvi
 MAKEINFOHTML = $(MAKEINFO) --html
 AM_MAKEINFOHTMLFLAGS = $(AM_MAKEINFOFLAGS)
@@ -199,7 +199,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-info_TEXINFOS = doc/python-configure.texi
+info_TEXINFOS = doc/pyconfigure.texi
 all: all-am
 
 .SUFFIXES:
@@ -242,7 +242,7 @@ doc/$(am__dirstamp):
 	@$(MKDIR_P) doc
 	@: > doc/$(am__dirstamp)
 
-$(srcdir)/doc/python-configure.info: doc/python-configure.texi $(srcdir)/doc/version.texi
+$(srcdir)/doc/pyconfigure.info: doc/pyconfigure.texi $(srcdir)/doc/version.texi
 	restore=: && backupdir="$(am__leading_dot)am$$$$" && \
 	am__cwd=`pwd` && $(am__cd) $(srcdir) && \
 	rm -rf $$backupdir && mkdir $$backupdir && \
@@ -253,7 +253,7 @@ $(srcdir)/doc/python-configure.info: doc/python-configure.texi $(srcdir)/doc/ver
 	else :; fi && \
 	cd "$$am__cwd"; \
 	if $(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc -I $(srcdir)/doc \
-	 -o $@ $(srcdir)/doc/python-configure.texi; \
+	 -o $@ $(srcdir)/doc/pyconfigure.texi; \
 	then \
 	  rc=0; \
 	  $(am__cd) $(srcdir); \
@@ -264,20 +264,20 @@ $(srcdir)/doc/python-configure.info: doc/python-configure.texi $(srcdir)/doc/ver
 	fi; \
 	rm -rf $$backupdir; exit $$rc
 
-doc/python-configure.dvi: doc/python-configure.texi $(srcdir)/doc/version.texi doc/$(am__dirstamp)
+doc/pyconfigure.dvi: doc/pyconfigure.texi $(srcdir)/doc/version.texi doc/$(am__dirstamp)
 	TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc -I $(srcdir)/doc' \
-	$(TEXI2DVI)  --clean -o $@ `test -f 'doc/python-configure.texi' || echo '$(srcdir)/'`doc/python-configure.texi 
+	$(TEXI2DVI)  --clean -o $@ `test -f 'doc/pyconfigure.texi' || echo '$(srcdir)/'`doc/pyconfigure.texi 
 
-doc/python-configure.pdf: doc/python-configure.texi $(srcdir)/doc/version.texi doc/$(am__dirstamp)
+doc/pyconfigure.pdf: doc/pyconfigure.texi $(srcdir)/doc/version.texi doc/$(am__dirstamp)
 	TEXINPUTS="$(am__TEXINFO_TEX_DIR)$(PATH_SEPARATOR)$$TEXINPUTS" \
 	MAKEINFO='$(MAKEINFO) $(AM_MAKEINFOFLAGS) $(MAKEINFOFLAGS) -I doc -I $(srcdir)/doc' \
-	$(TEXI2PDF)  --clean -o $@ `test -f 'doc/python-configure.texi' || echo '$(srcdir)/'`doc/python-configure.texi 
+	$(TEXI2PDF)  --clean -o $@ `test -f 'doc/pyconfigure.texi' || echo '$(srcdir)/'`doc/pyconfigure.texi 
 
-doc/python-configure.html: doc/python-configure.texi $(srcdir)/doc/version.texi doc/$(am__dirstamp)
+doc/pyconfigure.html: doc/pyconfigure.texi $(srcdir)/doc/version.texi doc/$(am__dirstamp)
 	rm -rf $(@:.html=.htp)
 	if $(MAKEINFOHTML) $(AM_MAKEINFOHTMLFLAGS) $(MAKEINFOFLAGS) -I doc -I $(srcdir)/doc \
-	 -o $(@:.html=.htp) `test -f 'doc/python-configure.texi' || echo '$(srcdir)/'`doc/python-configure.texi; \
+	 -o $(@:.html=.htp) `test -f 'doc/pyconfigure.texi' || echo '$(srcdir)/'`doc/pyconfigure.texi; \
 	then \
 	  rm -rf $@; \
 	  if test ! -d $(@:.html=.htp) && test -d $(@:.html=); then \
@@ -288,10 +288,10 @@ doc/python-configure.html: doc/python-configure.texi $(srcdir)/doc/version.texi 
 	  exit 1; \
 	fi
 $(srcdir)/doc/version.texi:  $(srcdir)/doc/stamp-vti
-$(srcdir)/doc/stamp-vti: doc/python-configure.texi $(top_srcdir)/configure
+$(srcdir)/doc/stamp-vti: doc/pyconfigure.texi $(top_srcdir)/configure
 	test -f doc/$(am__dirstamp) || $(MAKE) $(AM_MAKEFLAGS) doc/$(am__dirstamp)
-	@(dir=.; test -f ./doc/python-configure.texi || dir=$(srcdir); \
-	set `$(SHELL) $(srcdir)/mdate-sh $$dir/doc/python-configure.texi`; \
+	@(dir=.; test -f ./doc/pyconfigure.texi || dir=$(srcdir); \
+	set `$(SHELL) $(srcdir)/mdate-sh $$dir/doc/pyconfigure.texi`; \
 	echo "@set UPDATED $$1 $$2 $$3"; \
 	echo "@set UPDATED-MONTH $$2 $$3"; \
 	echo "@set EDITION $(VERSION)"; \
@@ -388,19 +388,17 @@ dist-info: $(INFO_DEPS)
 	done
 
 mostlyclean-aminfo:
-	-rm -rf python-configure.aux python-configure.cp python-configure.cps \
-	  python-configure.fn python-configure.fns python-configure.ky \
-	  python-configure.kys python-configure.log \
-	  python-configure.pg python-configure.tmp \
-	  python-configure.toc python-configure.tp \
-	  python-configure.tps python-configure.vr \
-	  python-configure.vrs
+	-rm -rf pyconfigure.aux pyconfigure.cp pyconfigure.cps pyconfigure.fn \
+	  pyconfigure.fns pyconfigure.ky pyconfigure.kys \
+	  pyconfigure.log pyconfigure.pg pyconfigure.tmp \
+	  pyconfigure.toc pyconfigure.tp pyconfigure.tps \
+	  pyconfigure.vr pyconfigure.vrs
 
 clean-aminfo:
-	-test -z "doc/python-configure.dvi doc/python-configure.pdf \
-	  doc/python-configure.ps doc/python-configure.html" \
-	|| rm -rf doc/python-configure.dvi doc/python-configure.pdf \
-	  doc/python-configure.ps doc/python-configure.html
+	-test -z "doc/pyconfigure.dvi doc/pyconfigure.pdf doc/pyconfigure.ps \
+	  doc/pyconfigure.html" \
+	|| rm -rf doc/pyconfigure.dvi doc/pyconfigure.pdf doc/pyconfigure.ps \
+	  doc/pyconfigure.html
 
 maintainer-clean-aminfo:
 	@list='$(INFO_DEPS)'; for i in $$list; do \
@@ -795,6 +793,9 @@ uninstall-am: uninstall-dvi-am uninstall-html-am uninstall-info-am \
 	uninstall-html-am uninstall-info-am uninstall-pdf-am \
 	uninstall-ps-am
 
+
+#EXTRA_DIST = src/Makefile src/Makefile.in src/aclocal.m4 src/configure \
+#src/configure.ac src/install.sh src/missing src/m4/python.m4
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

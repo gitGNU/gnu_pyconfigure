@@ -1,8 +1,7 @@
-This is doc/python-configure.info, produced by makeinfo version 4.13
-from ./doc/python-configure.texi.
+This is pyconfigure.info, produced by makeinfo version 4.13 from
+/home/brandon/Projects/python-autoconfigure/doc/pyconfigure.texi.
 
-This manual is for python-configure (version 0.1, updated 3 November
-2012).
+This manual is for pyconfigure (version 0.1, updated 3 November 2012).
 
    Copyright (C) 2012 Brandon Invergo
 
@@ -15,22 +14,22 @@ This manual is for python-configure (version 0.1, updated 3 November
 
 INFO-DIR-SECTION Miscellaneous
 START-INFO-DIR-ENTRY
-* python-configure: (python-configure)GNU Standards-compliant Python
+* pyconfigure: (pyconfigure)GNU Standards-compliant Python
   configuration and installation
 END-INFO-DIR-ENTRY
 
 
-File: python-configure.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir)
+File: pyconfigure.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir)
 
 GNU Source Release Collection
 *****************************
 
-This manual is for python-configure (version 0.1, 3 November 2012).
+This manual is for pyconfigure (version 0.1, 3 November 2012).
 
 * Menu:
 
 * Introduction::
-* Using python-configure::
+* Using pyconfigure::
 * Appendix::
 * GNU Free Documentation License::
 
@@ -40,7 +39,7 @@ Introduction
 
 * Configuring Python packages::
 
-Using python-configure
+Using pyconfigure
 
 * Required macros::
 * Verifying the Python version::
@@ -53,7 +52,7 @@ Appendix
 * Autoconf Macros
 
 
-File: python-configure.info,  Node: Introduction,  Next: Using python-configure,  Prev: Top,  Up: Top
+File: pyconfigure.info,  Node: Introduction,  Next: Using pyconfigure,  Prev: Top,  Up: Top
 
 1 Introduction
 **************
@@ -69,11 +68,11 @@ apparent.
    The configuration and installation of GNU software and many other
 programs, on the other hand, is done according to the use of standard
 `configure' scripts and Make recipes. This method has the advantage of
-being language-agnostic, very flexible, time-proven. python-configure
+being language-agnostic, very flexible, time-proven. pyconfigure
 consists of all the files necessary to use the standard GNU build
 process to configure and install Python packages.
 
-   Without modification, python-configure provides a wrapper around
+   Without modification, pyconfigure provides a wrapper around
 `setup.py', which allows the user to use the familiar GNU installation
 commands to install a Python package. With the powerful Autoconf macros
 that it provides, a Python developer can greatly extend or even replace
@@ -86,12 +85,12 @@ gained for free.
 * Configuring Python packages::
 
 
-File: python-configure.info,  Node: Configuring Python packages,  Prev: Introduction,  Up: Introduction
+File: pyconfigure.info,  Node: Configuring Python packages,  Prev: Introduction,  Up: Introduction
 
 1.1 Configuring Python packages
 ===============================
 
-Configuring and installing Python packages which use python-configure
+Configuring and installing Python packages which use pyconfigure
 follows the familiar steps of all standard GNU software:
 
      $ ./configure
@@ -118,12 +117,12 @@ final `configure' script may take many more arguments. The developer is
 expected to provide proper documentation in this case.
 
 
-File: python-configure.info,  Node: Using python-configure,  Next: Appendix,  Prev: Introduction,  Up: Top
+File: pyconfigure.info,  Node: Using pyconfigure,  Next: Appendix,  Prev: Introduction,  Up: Top
 
-2 Using python-configure
-************************
+2 Using pyconfigure
+*******************
 
-While it is possible to simply copy the python-configure files from the
+While it is possible to simply copy the pyconfigure files from the
 `src' directory into your project's source directory and use them
 unmodified, it is recommended that you customize them to more
 appropriately fit your needs. In particular, you will want to customize
@@ -133,7 +132,7 @@ script. This script either guesses important system settings or is
 provided them by the user. When the user invokes `configure', it uses
 `Makefile.in' as a template to create the Make recipe `Makefile'.
 
-   Several Autoconf macros are provided in the python-configure file
+   Several Autoconf macros are provided in the pyconfigure file
 `src/m4/python.m4' to allow the developer to write robust tests *Note
 Autoconf macros::. Note that when you distribute your software, you
 must include this directory and file with your distribution.
@@ -155,13 +154,13 @@ of this document, however it is worth presenting some examples.
 * Using Sphinxbuild to build documentation::
 
 
-File: python-configure.info,  Node: Required macros,  Next: Verifying the Python version,  Prev: Using python-configure,  Up: Using python-configure
+File: pyconfigure.info,  Node: Required macros,  Next: Verifying the Python version,  Prev: Using pyconfigure,  Up: Using pyconfigure
 
 2.1 Required macros
 ===================
 
-Several macros are required in `configure.ac' to use python-configure.
-These are:
+Several macros are required in `configure.ac' to use pyconfigure. These
+are:
 
      m4_include([m4/python.m4])
 
@@ -194,7 +193,7 @@ the variables `pkgpythondir' and `pkgpyexecdir', respectively, for use
 in `Makefile.in'
 
 
-File: python-configure.info,  Node: Verifying the Python version,  Next: Checking for a module or function,  Prev: Required macros,  Up: Using python-configure
+File: pyconfigure.info,  Node: Verifying the Python version,  Next: Checking for a module or function,  Prev: Required macros,  Up: Using pyconfigure
 
 2.2 Verifying the Python version
 ================================
@@ -247,14 +246,14 @@ interpreter was found, an error message will be printed and `configure'
 will stop.
 
 
-File: python-configure.info,  Node: Checking for a module or function,  Next: Writing test programs,  Prev: Verifying the Python version,  Up: Using python-configure
+File: pyconfigure.info,  Node: Checking for a module or function,  Next: Writing test programs,  Prev: Verifying the Python version,  Up: Using pyconfigure
 
 2.3 Checking for a module or function
 =====================================
 
 It's reasonable to assume that many Python packages will have
-dependencies on other, external modules. With the provided
-python-configure macros, this is simple. All you have to do is use the
+dependencies on other, external modules. With the provided pyconfigure
+macros, this is simple. All you have to do is use the
 `PC_PYTHON_CHECK_MODULE' macro as follows:
 
      PC_PYTHON_CHECK_MODULE([foo])
@@ -279,16 +278,16 @@ macro:
      PC_PYTHON_CHECK_FUNC([foo], [bar])
 
 
-File: python-configure.info,  Node: Writing test programs,  Next: Using Sphinxbuild to build documentation,  Prev: Checking for a module or function,  Up: Using python-configure
+File: pyconfigure.info,  Node: Writing test programs,  Next: Using Sphinxbuild to build documentation,  Prev: Checking for a module or function,  Up: Using pyconfigure
 
 2.4 Writing test programs
 =========================
 
 One great benefit of Autoconf is the ability to embed test programs
-inside `configure'. The python-configure macros allow for this by
-defining Python as a language within Autoconf. You then would proceed
-to write test programs as you would in any other language that Autoconf
-supports like C.
+inside `configure'. The pyconfigure macros allow for this by defining
+Python as a language within Autoconf. You then would proceed to write
+test programs as you would in any other language that Autoconf supports
+like C.
 
      AC_LANG_PUSH(Python)[]
      AC_RUN_IFELSE([AC_LANG_PROGRAM([dnl
@@ -307,13 +306,13 @@ which will be in the scope of an `if __name__=="__main__":' block. So,
 you must be sure to indent the code appropriately.
 
 
-File: python-configure.info,  Node: Using Sphinxbuild to build documentation,  Prev: Writing test programs,  Up: Using python-configure
+File: pyconfigure.info,  Node: Using Sphinxbuild to build documentation,  Prev: Writing test programs,  Up: Using pyconfigure
 
 2.5 Using Sphinxbuild to build documentation
 ============================================
 
-Using python-configure and Autoconf to test for other tools is quite
-easy. For example, many Python packages use Sphinxbuild to build their
+Using pyconfigure and Autoconf to test for other tools is quite easy.
+For example, many Python packages use Sphinxbuild to build their
 documentation. If this is the case for your project, you might do
 something like the following:
 
@@ -331,7 +330,7 @@ SPHINXBUILD variable, which may then be used in `Makefile.in':
      endif
 
 
-File: python-configure.info,  Node: Appendix,  Next: GNU Free Documentation License,  Prev: Using python-configure,  Up: Top
+File: pyconfigure.info,  Node: Appendix,  Next: GNU Free Documentation License,  Prev: Using pyconfigure,  Up: Top
 
 3 Appendix
 **********
@@ -341,7 +340,7 @@ File: python-configure.info,  Node: Appendix,  Next: GNU Free Documentation Lice
 * Autoconf macros::
 
 
-File: python-configure.info,  Node: Autoconf macros,  Up: Appendix
+File: pyconfigure.info,  Node: Autoconf macros,  Up: Appendix
 
 3.1 Autoconf macros
 ===================
@@ -411,7 +410,7 @@ Macro Name & Arguments   Description              Variables exported
                          successfully.            
 
 
-File: python-configure.info,  Node: GNU Free Documentation License,  Prev: Appendix,  Up: Top
+File: pyconfigure.info,  Node: GNU Free Documentation License,  Prev: Appendix,  Up: Top
 
 Appendix A GNU Free Documentation License
 *****************************************
@@ -899,17 +898,17 @@ permit their use in free software.
 
 
 Tag Table:
-Node: Top793
-Node: Introduction1414
-Node: Configuring Python packages2865
-Node: Using python-configure4099
-Node: Required macros5597
-Node: Verifying the Python version6797
-Node: Checking for a module or function9324
-Node: Writing test programs10559
-Node: Using Sphinxbuild to build documentation11668
-Node: Appendix12693
-Node: Autoconf macros12874
-Node: GNU Free Documentation License16577
+Node: Top806
+Node: Introduction1407
+Node: Configuring Python packages2838
+Node: Using pyconfigure4062
+Node: Required macros5530
+Node: Verifying the Python version6710
+Node: Checking for a module or function9227
+Node: Writing test programs10447
+Node: Using Sphinxbuild to build documentation11541
+Node: Appendix12551
+Node: Autoconf macros12722
+Node: GNU Free Documentation License16420
 
 End Tag Table
