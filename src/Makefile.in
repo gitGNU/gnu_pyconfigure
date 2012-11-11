@@ -34,6 +34,7 @@ infodir = @infodir@
 prefix = @prefix@
 srcdir = @srcdir@
 datadir = @datadir@
+datarootdir = @datarootdir@
 pythondir = @pythondir@
 pyexecdir = @pyexecdir@
 pkgdatadir = $(datadir)/@PACKAGE_NAME@
