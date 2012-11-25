@@ -95,19 +95,34 @@ dnl Python binary meets some minimum requirement. You may optionally
 dnl provide actions to take if it does or if it doesn't meet the
 dnl requirement.
 
-## Here we check if we are using Python 3
-#PC_PYTHON_VERIFY_VERSION([$PYTHON], 3.0,
-#                          py3k=true,
-#                          py3k=false)
-## If using python 3 make sure we have the minimum version supported
-#if test "$py3k" = "true" ; then
-#   PC_PYTHON_VERIFY_VERSION([$PYTHON], python3_min_ver,,
-#                            [AC_MSG_ERROR(Python 3 interpreter too old)])
-#else
-## otherwise check that the Python 2 version is sufficient
-#   PC_PYTHON_VERIFY_VERSION([$PYTHON], python_min_ver, ,
-#                            [AC_MSG_ERROR(Python interpreter too old)])
+## If your package only supports Python 2 you'll have to do some extra tests
+## since by default AC_PROG_PYTHON will find the highest-version python binary,
+## which may be Python 3.x
+
+## First, look for a binary called "python2". If it can't be found, try just 
+## searching for "python", but exit with an error if that binary is Python 3+
+
+#AC_PROG_PYTHON([python2])
+#if [[ "x$PYTHON" == "x" ]]; then
+#   AC_PROG_PYTHON
+#   PC_PYTHON_VERIFY_VERSION(3.0, ,
+#	AC_MSG_ERROR(Python 2 (python_min_ver+) is required))
 #fi
+
+## Ok, we hopefully have a Python 2 interpreter if we made it this far, now 
+## check if it is of the minimum version, otherwise exit with an error
+
+#PC_PYTHON_VERIFY_VERSION(python_min_ver, ,
+#	AC_MSG_ERROR(Python 2 (python_min_ver+) is required))
+
+## In order to use some of the other macros, you also need the python-config
+## command, which will fall subject to the same problem of python3-config 
+## being preferred
+
+#PC_PYTHON_PROG_PYTHON_CONFIG([python2-config])
+#if [[ "x$PYTHON_CONFIG" == "x" ]]; then
+#   PC_PYTHON_PROG_PYTHON_CONFIG([$PYTHON-config])
+#fi   
 
 
 
