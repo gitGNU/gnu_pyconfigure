@@ -7,12 +7,18 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
+# List whatever files you want to include in your source distribution here.
+# You can include whole directories but note that *everything* under that 
+# directory will be included
+DISTFILES =
 
+DESTDIR = 
 VPATH = @srcdir@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_DISTNAME = ${PACKAGE_NAME}-${PACKAGE_VERSION}
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
@@ -48,7 +54,6 @@ all: install
 .PHONY: all install uninstall distclean info install-html html install-pdf pdf install-dvi dvi install-ps ps clean dist check installdirs
 
 
-
 # Since installing to a virtualenv is all the rage these days, support it here. If the VIRTUALENV
 # variable is set to anything other than "no", set up a new virtualenv and install there, otherwise
 # install as usual from setup.py
@@ -62,10 +67,14 @@ else
 endif
 
 
-# setup.py doesn't (yet) support an uninstall command, so until it does, you must manually remove
-# everything that was installed here
-uninstall: $(wildcard $(srcdir)/docs/source/*)
-	rm -rf $(pkgpythondir)
+# setup.py doesn't (yet) support an uninstall command, so until it does, you 
+# must manually remove everything that was installed here. The following example
+# should remove a basic package installed via setup.py, but please double- and 
+# triple-check it so that you don't remove something you shouldn't!
+# Be sure to remove any extra files you install, such as binaries or documentation!
+uninstall: 
+	rm -rvf $(pkgpythondir)
+	rm -v $(pythondir)/$(PACKAGE_DISTNAME)-*.egg-info
 
 
 # Just use the usual setup.py clean command
@@ -74,9 +83,28 @@ clean:
 
 
 # Clean up the output of configure
-distclean: $(wildcard $(srcdir)/docs/source/*)
-	rm $(srcdir)/config.log
-	rm $(srcdir)/config.status
+distclean: 
+	rm -v $(srcdir)/config.log
+	rm -v $(srcdir)/config.status
+	rm -rvf $(srcdir)/autom4te.cache
+	rm -v $(srcdir)/Makefile
+
+# You can either use the setup.py sdist command or you can roll your own here
+dist:
+#	$(PYTHON) setup.py sdist
+	@mkdir $(PACKAGE_DISTNAME)
+	@cp -r $(DISTFILES) $(PACKAGE_DISTNAME)
+	@tar -czf $(PACKAGE_DISTNAME).tar.gz $(PACKAGE_DISTNAME)
+	@rm -rf $(PACKAGE_DISTNAME)
+
+# Use the setup.py check command
+check:
+	$(PYTHON) setup.py check
+
+# setup.py might complain if a directory doesn't exist so just in case, make the directory
+# here
+installdirs:
+	$(MKDIR_P) $(DESTDIR)$(pkgpythondir)
 
 
 # The following show how to install documentation, following the example of GNU MediaGoblin
@@ -89,7 +117,7 @@ distclean: $(wildcard $(srcdir)/docs/source/*)
 # 	$(INSTALL_DATA) @< $(DESTDIR)$@
 # 	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then
 # 		install-info --dir-file=$(DESTDIR)$(infodir)/dir \
-# 				$(DESTDIR)$(infodir)/gnumediagoblin.info;
+# 				$(DESTDIR)$(infodir)/foo.info;
 # 	else true; fi
 
 # info: docs/build/texinfo/foo.info
@@ -131,15 +159,3 @@ distclean: $(wildcard $(srcdir)/docs/source/*)
 # ps:
 
 
-# Just use the setup.py sdist (source distribution) command
-dist:
-	$(PYTHON) setup.py sdist
-
-# Use the setup.py check command
-check:
-	$(PYTHON) setup.py check
-
-# setup.py might complain if a directory doesn't exist so just in case, make the directory
-# here
-installdirs:
-	$(MKDIR_P) $(DESTDIR)$(pkgpythondir)
