@@ -198,10 +198,20 @@ values will be automatically filled in by @file{configure}. You should
 fill in the rest yourself. See the Python distutils documentation for
 more information.
 
-Several Autoconf macros are provided in the pyconfigure file
-@file{src/m4/python.m4} to allow the developer to write robust tests
-@xref{Autoconf macros}. Note that when you distribute your software,
-you must include this directory and file with your distribution. 
+If you intend to produce source distributions via the @file{Makefile},
+which is more flexible than doing so via @file{setup.py}, it is
+important to modify the @code{DIST_FILES} variable in
+@file{Makefile.in}. Any file or directory you list there will be
+included in your source distribution.
+
+While the default @file{configure} script will likely be sufficient
+for a basic Python-based project, it may be made much more powerful
+for packages with more complex needs. To that end, several Autoconf
+macros are provided in the pyconfigure file @file{src/m4/python.m4} to
+allow the developer to write robust tests @xref{Autoconf macros}. Note
+that when you distribute your software, you must include this
+directory and file with your distribution if you also distribute your
+@file{configure.ac} file.  
 
 Once you modify your @file{configure.ac} to your liking, you must
 regenerate your @file{configure} script with autoreconf:
