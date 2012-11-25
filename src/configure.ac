@@ -328,6 +328,6 @@ dnl indented once by default. PROLOG code does not require this.
 
 
 # Files to be configured
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile setup.py PKG-INFO])
 # Generate config.status
 AC_OUTPUT

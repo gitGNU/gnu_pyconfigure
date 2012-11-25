@@ -2000,18 +2000,33 @@ test -z "$INSTALL_DATA" && INSTALL_DATA='${INSTALL} -m 644'
 
 
 
-## Here we check if we are using Python 3
-#PC_PYTHON_VERIFY_VERSION([$PYTHON], 3.0,
-#                          py3k=true,
-#                          py3k=false)
-## If using python 3 make sure we have the minimum version supported
-#if test "$py3k" = "true" ; then
-#   PC_PYTHON_VERIFY_VERSION([$PYTHON], python3_min_ver,,
-#                            [AC_MSG_ERROR(Python 3 interpreter too old)])
-#else
-## otherwise check that the Python 2 version is sufficient
-#   PC_PYTHON_VERIFY_VERSION([$PYTHON], python_min_ver, ,
-#                            [AC_MSG_ERROR(Python interpreter too old)])
+## If your package only supports Python 2 you'll have to do some extra tests
+## since by default AC_PROG_PYTHON will find the highest-version python binary,
+## which may be Python 3.x
+
+## First, look for a binary called "python2". If it can't be found, try just
+## searching for "python", but exit with an error if that binary is Python 3+
+
+#AC_PROG_PYTHON([python2])
+#if [[ "x$PYTHON" == "x" ]]; then
+#   AC_PROG_PYTHON
+#   PC_PYTHON_VERIFY_VERSION(3.0, ,
+#	AC_MSG_ERROR(Python 2 (python_min_ver+) is required))
+#fi
+
+## Ok, we hopefully have a Python 2 interpreter if we made it this far, now
+## check if it is of the minimum version, otherwise exit with an error
+
+#PC_PYTHON_VERIFY_VERSION(python_min_ver, ,
+#	AC_MSG_ERROR(Python 2 (python_min_ver+) is required))
+
+## In order to use some of the other macros, you also need the python-config
+## command, which will fall subject to the same problem of python3-config
+## being preferred
+
+#PC_PYTHON_PROG_PYTHON_CONFIG([python2-config])
+#if [[ "x$PYTHON_CONFIG" == "x" ]]; then
+#   PC_PYTHON_PROG_PYTHON_CONFIG([$PYTHON-config])
 #fi
 
 
@@ -2329,7 +2344,7 @@ pkgpyexecdir=\${pyexecdir}/$PACKAGE
 
 
 # Files to be configured
-ac_config_files="$ac_config_files Makefile"
+ac_config_files="$ac_config_files Makefile setup.py PKG-INFO"
 
 # Generate config.status
 cat >confcache <<\_ACEOF
@@ -3040,6 +3055,8 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+    "setup.py") CONFIG_FILES="$CONFIG_FILES setup.py" ;;
+    "PKG-INFO") CONFIG_FILES="$CONFIG_FILES PKG-INFO" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
