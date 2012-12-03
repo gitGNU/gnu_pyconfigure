@@ -207,7 +207,7 @@ AC_DEFUN([PC_PYTHON_CHECK_PREFIX],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python prefix], [pc_cv_python_prefix],
 [if test -x "$PYTHON_CONFIG"; then
-    pc_cv_python_prefix=`$PYTHON_CONFIG --prefix 2>> AS_MESSAGE_LOG_FD`
+    pc_cv_python_prefix=`$PYTHON_CONFIG --prefix 2>&AS_MESSAGE_LOG_FD`
 else
     AC_LANG_PUSH(Python)[]dnl
     pc_cv_python_prefix=AC_LANG_CONFTEST([AC_LANG_PROGRAM([dnl
@@ -227,7 +227,7 @@ AC_DEFUN([PC_PYTHON_CHECK_EXEC_PREFIX],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python exec-prefix], [pc_cv_python_exec_prefix],
 [if test -x "$PYTHON_CONFIG"; then
-    pc_cv_python_exec_prefix=`$PYTHON_CONFIG --exec-prefix 2>> AS_MESSAGE_LOG_FD`
+    pc_cv_python_exec_prefix=`$PYTHON_CONFIG --exec-prefix 2>&AS_MESSAGE_LOG_FD`
 else
     AC_LANG_PUSH(Python)[]dnl
     pc_cv_python_exec_prefix=AC_LANG_CONFTEST([AC_LANG_PROGRAM([dnl
@@ -249,7 +249,7 @@ AC_DEFUN([PC_PYTHON_CHECK_INCLUDES],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python includes], [pc_cv_python_includes],
 [if test -x "$PYTHON_CONFIG"; then
-    pc_cv_python_includes=`$PYTHON_CONFIG --includes 2>> AS_MESSAGE_LOG_FD`
+    pc_cv_python_includes=`$PYTHON_CONFIG --includes 2>&AS_MESSAGE_LOG_FD`
 else
     pc_cv_python_includes="[-I$includedir/$_PYTHON_BASENAME]m4_ifdef(PYTHON_ABI_FLAGS,
     PYTHON_ABI_FLAGS,)"
@@ -277,7 +277,7 @@ AC_DEFUN([PC_PYTHON_CHECK_LIBS],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python libs], [pc_cv_python_libs],
 [if test -x "$PYTHON_CONFIG"; then
-    pc_cv_python_libs=`$PYTHON_CONFIG --libs 2>> AS_MESSAGE_LOG_FD`
+    pc_cv_python_libs=`$PYTHON_CONFIG --libs 2>&AS_MESSAGE_LOG_FD`
 else
     pc_cv_python_libs="[-l$_PYTHON_BASENAME]m4_ifdef(PYTHON_ABI_FLAGS, PYTHON_ABI_FLAGS,)"
 fi
@@ -310,7 +310,7 @@ AC_DEFUN([PC_PYTHON_CHECK_CFLAGS],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python CFLAGS], [pc_cv_python_cflags],
 [if test -x "$PYTHON_CONFIG"; then
-    pc_cv_python_cflags=`$PYTHON_CONFIG --cflags 2>> AS_MESSAGE_LOG_FD`
+    pc_cv_python_cflags=`$PYTHON_CONFIG --cflags 2>&AS_MESSAGE_LOG_FD`
 else
     pc_cv_python_cflags=
 fi
@@ -325,7 +325,7 @@ AC_DEFUN([PC_PYTHON_CHECK_LDFLAGS],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python LDFLAGS], [pc_cv_python_ldflags],
 [if test -x "$PYTHON_CONFIG"; then
-    pc_cv_python_ldflags=`$PYTHON_CONFIG --ldflags 2>> AS_MESSAGE_LOG_FD`
+    pc_cv_python_ldflags=`$PYTHON_CONFIG --ldflags 2>&AS_MESSAGE_LOG_FD`
 else
     pc_cv_python_ldflags=
 fi
@@ -340,7 +340,7 @@ AC_DEFUN([PC_PYTHON_CHECK_EXTENSION_SUFFIX],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python extension suffix], [pc_cv_python_extension_suffix],
 [if test -x "$PYTHON_CONFIG"; then
-     pc_cv_python_extension_suffix=`$PYTHON_CONFIG --extension-suffix 2>> AS_MESSAGE_LOG_FD`
+     pc_cv_python_extension_suffix=`$PYTHON_CONFIG --extension-suffix 2>&AS_MESSAGE_LOG_FD`
 else
     pc_cv_python_extension_suffix=
 fi
@@ -355,7 +355,7 @@ AC_DEFUN([PC_PYTHON_CHECK_ABI_FLAGS],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
 AC_CACHE_CHECK([for Python ABI flags], [pc_cv_python_abi_flags],
 [if test -x "$PYTHON_CONFIG"; then
-     pc_cv_python_abi_flags=`$PYTHON_CONFIG --abiflags 2>> AS_MESSAGE_LOG_FD`
+     pc_cv_python_abi_flags=`$PYTHON_CONFIG --abiflags 2>&AS_MESSAGE_LOG_FD`
 else
     pc_cv_python_abi_flags=
 fi
