@@ -16,9 +16,10 @@ dnl#######################################
 dnl Define some m4 macros here as needed #
 dnl#######################################
 
-# The minimum-required Python versions
-#m4_define(python_min_ver, 2.7.2)
-#m4_define(python3_min_ver, 3.2.1)
+# Set your minimum-required Python version(s). You can use these macros 
+# later when you do version checking.
+#m4_define([python_min_ver], [2.7.2])
+#m4_define([python3_min_ver], [3.2.1])
 
 
 dnl#############################################
