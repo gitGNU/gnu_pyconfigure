@@ -118,7 +118,7 @@ AC_DEFUN([AC_LANG_COMPILER(Python)],
 AC_DEFUN([AC_PROG_PYTHON],
 [AC_ARG_VAR([PYTHON], [the Python interpreter])
 m4_define_default([_PC_PYTHON_INTERPRETER_LIST],
-                  [python python3 python3.2 python3.1 python3.0 python2 python2.7 dnl
+                  [python python3 python 3.3 python3.2 python3.1 python3.0 python2 python2.7 dnl
                    python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0])
 m4_ifval([$1],
 	[AC_PATH_PROGS(PYTHON, [$1 _PC_PYTHON_INTERPRETER_LIST])],
@@ -403,9 +403,19 @@ AC_CACHE_CHECK([for Python site-packages directory],
      AC_LANG_CONFTEST([
          AC_LANG_PROGRAM([dnl
 import sys
+from platform import python_implementation
+# sysconfig in CPython 2.7 doesn't work in virtualenv
+# <https://github.com/pypa/virtualenv/issues/118>
 try:
     import sysconfig
 except:
+    can_use_sysconfig = False
+else:
+    can_use_sysconfig = True
+if can_use_sysconfig:
+    if python_implementation() == "CPython" && sys.version[[:3]] == '2.7':
+        can_use_sysconfig = False
+if not can_use_sysconfig:        
     from distutils import sysconfig
     sitedir = sysconfig.get_python_lib(False, False, prefix='$pc_py_prefix')
 else:
@@ -458,13 +468,23 @@ AC_DEFUN([PC_PYTHON_CHECK_EXEC_DIR],
      AC_LANG_CONFTEST([
          AC_LANG_PROGRAM([dnl
 import sys
+from platform import python_implementation
+# sysconfig in CPython 2.7 doesn't work in virtualenv
+# <https://github.com/pypa/virtualenv/issues/118>
 try:
     import sysconfig
 except:
-    from distutils import sysconfig
-    sitedir = sysconfig.get_python_lib(True, False, prefix='$pc_py_exec_prefix')
+    can_use_sysconfig = False
 else:
-    sitedir = sysconfig.get_path('platlib', vars={'platbase':'$pc_py_exec_prefix'})
+    can_use_sysconfig = True
+if can_use_sysconfig:
+    if python_implementation() == "CPython" && sys.version[[:3]] == '2.7':
+        can_use_sysconfig = False
+if not can_use_sysconfig:        
+    from distutils import sysconfig
+    sitedir = sysconfig.get_python_lib(False, False, prefix='$pc_py__exec_prefix')
+else:
+    sitedir = sysconfig.get_path('purelib', vars={'platbase':'$pc_py_exec_prefix'})
 ], [dnl
     sys.stdout.write(sitedir)
 ])])
