@@ -1,5 +1,7 @@
 2013-01-08  Brandon Invergo  <brandon@invergo.net>
 
+	* Makefile.am (EXTRA_DIST): Remove no-longer-existent scripts
+
 	* src/m4/python.m4 (PC_PYTHON_CHECK_SITE_DIR): Fix incorrect
 	Python syntax.
 	(PC_PYTHON_CHECK_EXEC_DIR): Fix incorrect Python syntax.
