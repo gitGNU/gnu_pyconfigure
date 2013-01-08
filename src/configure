@@ -1713,7 +1713,7 @@ ACLOCAL_AMFLAGS="-I m4 -I ."
 
 
 
-for ac_prog in python python3 python3.2 python3.1 python3.0 python2 python2.7                    python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0
+for ac_prog in python python3 python 3.3 python3.2 python3.1 python3.0 python2 python2.7                    python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -2148,7 +2148,7 @@ if ${pc_cv_python_prefix+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   if test -x "$PYTHON_CONFIG"; then
-    pc_cv_python_prefix=`$PYTHON_CONFIG --prefix 2>> 5`
+    pc_cv_python_prefix=`$PYTHON_CONFIG --prefix 2>&5`
 else
     ac_ext=py
 ac_compile='chmod +x conftest.$ac_ext >&5'
@@ -2190,9 +2190,19 @@ ac_link='chmod +x conftest.$ac_ext && cp conftest.$ac_ext conftest >&5'
 
          #!$PYTHON
 import sys
+from platform import python_implementation
+# sysconfig in CPython 2.7 doesn't work in virtualenv
+# <https://github.com/pypa/virtualenv/issues/118>
 try:
     import sysconfig
 except:
+    can_use_sysconfig = False
+else:
+    can_use_sysconfig = True
+if can_use_sysconfig:
+    if python_implementation() == "CPython" and sys.version[:3] == '2.7':
+        can_use_sysconfig = False
+if not can_use_sysconfig:
     from distutils import sysconfig
     sitedir = sysconfig.get_python_lib(False, False, prefix='$pc_py_prefix')
 else:
@@ -2245,7 +2255,7 @@ if ${pc_cv_python_exec_prefix+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   if test -x "$PYTHON_CONFIG"; then
-    pc_cv_python_exec_prefix=`$PYTHON_CONFIG --exec-prefix 2>> 5`
+    pc_cv_python_exec_prefix=`$PYTHON_CONFIG --exec-prefix 2>&5`
 else
     ac_ext=py
 ac_compile='chmod +x conftest.$ac_ext >&5'
@@ -2288,13 +2298,23 @@ ac_link='chmod +x conftest.$ac_ext && cp conftest.$ac_ext conftest >&5'
 
          #!$PYTHON
 import sys
+from platform import python_implementation
+# sysconfig in CPython 2.7 doesn't work in virtualenv
+# <https://github.com/pypa/virtualenv/issues/118>
 try:
     import sysconfig
 except:
-    from distutils import sysconfig
-    sitedir = sysconfig.get_python_lib(True, False, prefix='$pc_py_exec_prefix')
+    can_use_sysconfig = False
 else:
-    sitedir = sysconfig.get_path('platlib', vars={'platbase':'$pc_py_exec_prefix'})
+    can_use_sysconfig = True
+if can_use_sysconfig:
+    if python_implementation() == "CPython" and sys.version[:3] == '2.7':
+        can_use_sysconfig = False
+if not can_use_sysconfig:
+    from distutils import sysconfig
+    sitedir = sysconfig.get_python_lib(False, False, prefix='$pc_py__exec_prefix')
+else:
+    sitedir = sysconfig.get_path('purelib', vars={'platbase':'$pc_py_exec_prefix'})
 
 if __name__ == '__main__':
     sys.stdout.write(sitedir)
