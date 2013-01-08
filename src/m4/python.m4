@@ -413,7 +413,7 @@ except:
 else:
     can_use_sysconfig = True
 if can_use_sysconfig:
-    if python_implementation() == "CPython" && sys.version[[:3]] == '2.7':
+    if python_implementation() == "CPython" and sys.version[[:3]] == '2.7':
         can_use_sysconfig = False
 if not can_use_sysconfig:        
     from distutils import sysconfig
@@ -478,7 +478,7 @@ except:
 else:
     can_use_sysconfig = True
 if can_use_sysconfig:
-    if python_implementation() == "CPython" && sys.version[[:3]] == '2.7':
+    if python_implementation() == "CPython" and sys.version[[:3]] == '2.7':
         can_use_sysconfig = False
 if not can_use_sysconfig:        
     from distutils import sysconfig
