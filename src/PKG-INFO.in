@@ -8,5 +8,7 @@ Author-email: @PACKAGE_BUGREPORT@
 License: 
 Description: 
 Platform: 
-Classifier: 
-
+Classifier: License :: OSI Approved :: GNU General Public License (GPL) 
+Classifier: Development Status :: 4 - Beta 
+Classifier: Programming Language :: Python 
+Classifier: Operating System :: OS Independent 
