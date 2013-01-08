@@ -1,4 +1,4 @@
 info_TEXINFOS = doc/pyconfigure.texi
 
-#EXTRA_DIST = src/Makefile src/Makefile.in src/aclocal.m4 src/configure \
-#src/configure.ac src/install.sh src/missing src/m4/python.m4
+EXTRA_DIST = src/Makefile.in src/configure src/configure.ac \
+src/m4/python.m4 src/setup.py.in src/PKG-INFO.in
