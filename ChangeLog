@@ -1,3 +1,8 @@
+2013-01-09  Brandon Invergo  <brandon@invergo.net>
+
+	* Makefile.am (EXTRA_DIST): Include bootstrap.sh in files to be
+	distributed.
+
 2013-01-08  Brandon Invergo  <brandon@invergo.net>
 
 	* Makefile.am (EXTRA_DIST): Remove no-longer-existent scripts
@@ -8,7 +13,7 @@
 
 	* src/Makefile.in (DISTFILES): Fix errant newline
 
-	* src/bootstrap: create
+	* src/bootstrap.sh: create
 
 	* src/PKG-INFO.in (Classifier): Expand default Classifiers
 

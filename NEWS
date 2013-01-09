@@ -1,3 +1,36 @@
-2012-11-11
-----------
-* First release: 0.1
+# -*- org -*-
+
+Copyright (C) 2012 Brandon Invergo <brandon@invergo.net>
+
+This file is part of pyconfigure.
+
+pyconfigure is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+pyconfigure is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pyconfigure.  If not, see <http://www.gnu.org/licenses/>.
+
+* 0.1.1
+This is a bugfix/cleanup release, correcting several problems with
+version 0.1 
+** Running Autoconf no longer produces errant files.
+There was a bug in the Python Autoconf macros which produced empty
+files. This has been corrected.
+** Python syntax errors in some macros were fixed.
+** The `src' directory was cleaned up.
+Previously, pre-generated files were included in the src
+directory. This has been cleaned up in favor of the developer
+generating them him or herself.
+** The `bootstrap.sh' script was added
+The `bootstrap.sh' script can be executed in place of `autoreconf'
+(so the developer need not know about `autoreconf').
+** PKG-INFO.in has been expanded to show more default classifiers
+* 0.1
+This is the first release of pyconfigure
