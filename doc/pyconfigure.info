@@ -1,7 +1,8 @@
 This is doc/pyconfigure.info, produced by makeinfo version 4.13 from
 ./doc/pyconfigure.texi.
 
-This manual is for pyconfigure (version 0.1, updated 25 November 2012).
+This manual is for pyconfigure (version 0.1.1, updated 25 November
+2012).
 
    Copyright (C) 2012 Brandon Invergo
 
@@ -24,7 +25,7 @@ File: pyconfigure.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir
 GNU Source Release Collection
 *****************************
 
-This manual is for pyconfigure (version 0.1, 25 November 2012).
+This manual is for pyconfigure (version 0.1.1, 25 November 2012).
 
 * Menu:
 
@@ -920,17 +921,17 @@ permit their use in free software.
 
 
 Tag Table:
-Node: Top769
-Node: Introduction1371
-Node: Configuring Python packages2802
-Node: Using pyconfigure4026
-Node: Required macros7153
-Node: Verifying the Python version8333
-Node: Checking for a module or function10476
-Node: Writing test programs11696
-Node: Using Sphinxbuild to build documentation12790
-Node: Appendix13800
-Node: Autoconf macros13971
-Node: GNU Free Documentation License17669
+Node: Top771
+Node: Introduction1375
+Node: Configuring Python packages2806
+Node: Using pyconfigure4030
+Node: Required macros7157
+Node: Verifying the Python version8337
+Node: Checking for a module or function10480
+Node: Writing test programs11700
+Node: Using Sphinxbuild to build documentation12794
+Node: Appendix13804
+Node: Autoconf macros13975
+Node: GNU Free Documentation License17673
 
 End Tag Table
