@@ -1,4 +1,4 @@
-AC_INIT(pyconfigure, 0.1, bug-pyconfigure@gnu.org)
+AC_INIT(pyconfigure, 0.1.1, bug-pyconfigure@gnu.org)
 AM_INIT_AUTOMAKE
 
 AC_PROG_INSTALL
