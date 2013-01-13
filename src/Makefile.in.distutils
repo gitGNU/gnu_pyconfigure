@@ -1,6 +1,6 @@
 # Makefile.in
 #
-# Copyright © 2012 Brandon Invergo <brandon@invergo.net>
+# Copyright © 2012, 2013 Brandon Invergo <brandon@invergo.net>
 #
 # Copying and distribution of this file, with or without modification,
 # are permitted in any medium without royalty provided the copyright
@@ -10,7 +10,7 @@
 # List whatever files you want to include in your source distribution here.
 # You can include whole directories but note that *everything* under that 
 # directory will be included
-DISTFILES = PKG-INFO Makefile.in configure setup.py install-sh missing m4/aclocal.m4
+DISTFILES = PKG-INFO Makefile.in configure setup.py install-sh
 
 DESTDIR = 
 VPATH = @srcdir@
