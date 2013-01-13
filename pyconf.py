@@ -30,7 +30,35 @@ DATADIR = "/usr/local/share/pyconfigure/"
 
 
 def parse_pkg_info(pkg_info):
-    pass
+    singles = ["Name", "Version", "Summary", "Keywords", "Home-page",
+               "Download-URL", "Author", "Author-email", "Maintainer",
+               "Maintainer-email", "License", "Requires-Python"]
+    multis = ["Platform", "Supported-Platform", "Classifier", "Requires-Dist",
+              "Provides-Dist", "Obsoletes-Dist", "Requires-External",
+              "Project-URL"]
+    pkg_meta = {}
+    with open(pkg_info) as h:
+        lines = pkg_info.readlines()
+    for line in lines:
+        key, sep, val = line.partition(':')
+        val = val.strip()
+        if key == "Metadata-Version" and float(val) < 1.2:
+            sys.exit("*** Error: PKG-INFO metadata format version 1.2 or greater \
+                      is required")
+        elif key in singles:
+            if key not in pkg_meta:
+                pkg_meta[key] = val
+            else:
+                print("==> Warning: multiple entries for metadata field \
+                      '{0}'".format(key))
+        elif key in multis:
+            if key not in pkg_meta:
+                pkg_meta[key] = []
+            pkg_meta[key].append(val)
+        else:
+            print("==> Warning: unknown metadata field '{0}'".format(key))
+            continue
+    return pkg_meta
 
 
 def gen_configure(pkg_meta, output):
@@ -41,9 +69,9 @@ def gen_configure(pkg_meta, output):
         config_lines = h.readlines()
     init_i = config_lines.index("@AC_INIT_LINE@")
     config_lines[init_i] = "AC_INIT([{0}], [{1}], [{2}])".format(
-        pkg_meta["name"],
-        pkg_meta["version"],
-        pkg_meta["email"])
+        pkg_meta["Name"],
+        pkg_meta["Version"],
+        pkg_meta["Author-Email"])
     with open(config_dst, 'w') as h:
         for line in config_lines:
             h.write(line)
@@ -52,11 +80,21 @@ def gen_configure(pkg_meta, output):
 
 
 def gen_makefile(pkg_meta, output, prefer_make):
-    pass
+    if prefer_make:
+        makefile_src = os.path.join(DATADIR, "Makefile.in.make")
+    else:
+        makefile_src = os.path.join(DATADIR, "Makefile.in.distutils")
+    makefile_dst = os.path.join(output, "Makefile.in")
+    shutils.copy(makefile_src, makefile_dst)
 
 
 def gen_distutils(pkg_meta, output, prefer_make):
-    pass
+    if prefer_make:
+        setup_py_src = os.path.join(DATADIR, "setup.py.in.make")
+    else:
+        setup_py_src = os.path.join(DATADIR, "setup.py.in.distutils")
+    setup_py_dst = os.path.join(output, "setup.py.in")
+    shutils.copy(makefile_src, makefile_dst)
 
 
 def print_usage():
@@ -121,8 +159,13 @@ if __name__ == "__main__":
     if not os.isfile(pkg_info):
         print("Error: PKG-INFO file does not exist")
         sys.exit(2)
+    print("Running pyconfigure in {0}".format(output))
+    print("Parsing metadata...")
     pkg_meta = parse(pkg_info)
+    print("Generating `configure'")
     gen_configure(pkg_meta, output)
+    print("Generating `Makefile.in'")
     gen_makefile(pkg_meta, output, prefer_make)
     # also with an eye to the future:
+    print("Generating `setup.py'")
     [gen_distutils][target](pkg_meta, output, prefer_make)
