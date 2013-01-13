@@ -35,7 +35,7 @@ dnl Autoconf and Automake initialization #
 dnl#######################################
 
 # Initialize Autoconf.
-AC_INIT([{Name}], [{Version}], [{Author-Email}])
+AC_INIT([{Name}], [{Version}], [{Author-email}])
 
 # Set some Automake flags
 AC_SUBST(ACLOCAL_AMFLAGS, "-I m4 -I .")
@@ -257,7 +257,7 @@ dnl
 dnl This uses PYTHON_SITE_DIR to construct a directory for this
 dnl project (ie $PYTHON_SITE_DIR/project_name) and stores it in
 dnl pkgpythondir. This value is used by Automake for installing Python
-dnl scripts. By default, this begins with ${pythondir}, unexpanded, to
+dnl scripts. By default, this begins with $pythondir, unexpanded, to
 dnl provide compatibility with GNU Makefile specifications, allowing
 dnl the user to change the prefix from the commandline.
 
@@ -329,6 +329,6 @@ dnl indented once by default. PROLOG code does not require this.
 
 
 # Files to be configured
-AC_CONFIG_FILES([Makefile setup.py PKG-INFO])
+AC_CONFIG_FILES([Makefile setup.py])
 # Generate config.status
 AC_OUTPUT

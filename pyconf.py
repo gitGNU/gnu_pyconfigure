@@ -22,48 +22,51 @@ from __future__ import print_function
 import os.path
 import sys
 import getopt
-import shutils
+import shutil
 import subprocess
 
 
-DATADIR = "/usr/local/share/pyconfigure/"
+DATADIR = "/home/brandon/Projects/pyconfigure/pyconfigure/src/"
 
 
 def parse_pkg_info(pkg_info):
     singles = ["Name", "Version", "Summary", "Keywords", "Home-page",
                "Download-URL", "Author", "Author-email", "Maintainer",
-               "Maintainer-email", "License", "Requires-Python"]
+               "Maintainer-email", "License", "Requires-Python", 
+               "Description", "Metadata-Version"]
     multis = ["Platform", "Supported-Platform", "Classifier", "Requires-Dist",
               "Provides-Dist", "Obsoletes-Dist", "Requires-External",
               "Project-URL"]
     pkg_meta = {}
+    for key in singles:
+        pkg_meta[key] = ""
+    for key in multis:
+        pkg_meta[key] = []
     with open(pkg_info) as h:
-        lines = pkg_info.readlines()
+        lines = h.readlines()
     for line in lines:
         key, sep, val = line.partition(':')
         val = val.strip()
         if key == "Metadata-Version" and float(val) < 1.2:
             sys.exit("*** Error: PKG-INFO metadata format version 1.2 or greater \
-                      is required")
+is required")
         elif key in singles:
-            if key not in pkg_meta:
+            if pkg_meta[key] == "":
                 pkg_meta[key] = val
             else:
                 print("==> Warning: multiple entries for metadata field \
-                      '{0}'".format(key))
+'{0}'".format(key))
         elif key in multis:
-            if key not in pkg_meta:
-                pkg_meta[key] = []
             pkg_meta[key].append(val)
         else:
             print("==> Warning: unknown metadata field '{0}'".format(key))
             continue
-    if "Project-URL" in pkg_meta && len(pkg_meta["Project-URL"]) > 0:
+    if "Project-URL" in pkg_meta and len(pkg_meta["Project-URL"]) > 0:
         pkg_meta["URL"] = pkg_meta["Project-URL"][0]
     else:
         pkg_meta["URL"] = ""
     for key in multis:
-        if key in pkg_meta && len(pkg_meta[key]) > 0:
+        if key in pkg_meta and len(pkg_meta[key]) > 0:
             pkg_meta["{0}-list".format(key)] = "',\n\t\t'".join(pkg_meta[key])
         else:
             pkg_meta["{0}-list".format(key)] = ""
@@ -75,15 +78,30 @@ def subst_meta(in_file, out_file, pkg_meta):
         lines = h.readlines()
     with open(out_file, 'w') as h:
         for line in lines:
-            h.write(line.format(**pkg_meta))
+            line_fmt = line.format(**pkg_meta)
+            line_fmt = line_fmt.replace("\\[", "{")
+            line_fmt = line_fmt.replace("\\]", "}")
+            h.write(line_fmt)
     
     
 def gen_configure(pkg_meta, output):
     config_src = os.path.join(DATADIR, "configure.ac")
     config_dst = os.path.join(output, "configure.ac")
     bootstrap = os.path.join(DATADIR, "bootstrap.sh")
+    install_sh = os.path.join(DATADIR, "install-sh")
+    macros = os.path.join(DATADIR, "m4", "python.m4")
+    macro_dir = os.path.join(output, "m4")
     subst_meta(config_src, config_dst, pkg_meta)
-    shutils.copy(bootstrap, output)
+    print("Copying bootstrap.sh")
+    shutil.copy(bootstrap, output)
+    print("Copying Python m4 macros")
+    try:
+        os.mkdir(macro_dir)
+    except FileExistsError:
+        pass
+    shutil.copy(macros, macro_dir)
+    print("Generating `configure'")
+    shutil.copy(install_sh, output)
     subprocess.call(["autoreconf", "-fvi", output])
 
 
@@ -93,7 +111,7 @@ def gen_makefile(pkg_meta, output, prefer_make):
     else:
         makefile_src = os.path.join(DATADIR, "Makefile.in.distutils")
     makefile_dst = os.path.join(output, "Makefile.in")
-    shutils.copy(makefile_src, makefile_dst)
+    shutil.copy(makefile_src, makefile_dst)
 
 
 def gen_distutils(pkg_meta, output, prefer_make):
@@ -162,19 +180,19 @@ if __name__ == "__main__":
         # Python packaging systems:
         target = {"distutils":0}.get(args[0])
         if target is None:
-            print("Error: invalid target {0}".format([args[0]))
+            print("Error: invalid target {0}".format(args[0]))
             sys.exit(2)
         pkg_info = args[1]
-    if not os.isfile(pkg_info):
+    if not os.path.isfile(pkg_info):
         print("Error: PKG-INFO file does not exist")
         sys.exit(2)
     print("Running pyconfigure in {0}".format(output))
     print("Parsing metadata...")
-    pkg_meta = parse(pkg_info)
-    print("Generating `configure'")
+    pkg_meta = parse_pkg_info(pkg_info)
+    print("Generating `configure.ac'")
     gen_configure(pkg_meta, output)
     print("Generating `Makefile.in'")
     gen_makefile(pkg_meta, output, prefer_make)
     # also with an eye to the future:
-    print("Generating `setup.py'")
+    print("Generating `setup.py.in'")
     [gen_distutils][target](pkg_meta, output, prefer_make)
