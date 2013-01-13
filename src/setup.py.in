@@ -20,11 +20,11 @@ long_desc = \
 """
 
 setup(name='@PACKAGE_NAME@',
-      version='@PACKAGE_VERSION',
+      version='@PACKAGE_VERSION@',
       description='',
       long_description = long_desc,
       author='',
-      author_email='@PACKAGE_BUGREPORT',
+      author_email='@PACKAGE_BUGREPORT@',
       url='',
       packages=[''],
       scripts=[''],
