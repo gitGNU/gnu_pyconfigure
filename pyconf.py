@@ -58,23 +58,31 @@ def parse_pkg_info(pkg_info):
         else:
             print("==> Warning: unknown metadata field '{0}'".format(key))
             continue
+    if "Project-URL" in pkg_meta && len(pkg_meta["Project-URL"]) > 0:
+        pkg_meta["URL"] = pkg_meta["Project-URL"][0]
+    else:
+        pkg_meta["URL"] = ""
+    for key in multis:
+        if key in pkg_meta && len(pkg_meta[key]) > 0:
+            pkg_meta["{0}-list".format(key)] = "',\n\t\t'".join(pkg_meta[key])
+        else:
+            pkg_meta["{0}-list".format(key)] = ""
     return pkg_meta
 
 
+def subst_meta(in_file, out_file, pkg_meta):
+    with open(in_file) as h:
+        lines = h.readlines()
+    with open(out_file, 'w') as h:
+        for line in lines:
+            h.write(line.format(**pkg_meta))
+    
+    
 def gen_configure(pkg_meta, output):
     config_src = os.path.join(DATADIR, "configure.ac")
     config_dst = os.path.join(output, "configure.ac")
     bootstrap = os.path.join(DATADIR, "bootstrap.sh")
-    with open(config_src, 'r') as h:
-        config_lines = h.readlines()
-    init_i = config_lines.index("@AC_INIT_LINE@")
-    config_lines[init_i] = "AC_INIT([{0}], [{1}], [{2}])".format(
-        pkg_meta["Name"],
-        pkg_meta["Version"],
-        pkg_meta["Author-Email"])
-    with open(config_dst, 'w') as h:
-        for line in config_lines:
-            h.write(line)
+    subst_meta(config_src, config_dst, pkg_meta)
     shutils.copy(bootstrap, output)
     subprocess.call(["autoreconf", "-fvi", output])
 
@@ -94,7 +102,8 @@ def gen_distutils(pkg_meta, output, prefer_make):
     else:
         setup_py_src = os.path.join(DATADIR, "setup.py.in.distutils")
     setup_py_dst = os.path.join(output, "setup.py.in")
-    shutils.copy(makefile_src, makefile_dst)
+    if not prefer_make:
+        subst_meta(setup_py_src, setup_py_dst, pkg_meta)
 
 
 def print_usage():

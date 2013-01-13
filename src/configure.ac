@@ -35,7 +35,7 @@ dnl Autoconf and Automake initialization #
 dnl#######################################
 
 # Initialize Autoconf.
-AC_INIT(project_name, project_version, [project_name-bug@gnu.org])
+AC_INIT([{Name}], [{Version}], [{Author-Email}])
 
 # Set some Automake flags
 AC_SUBST(ACLOCAL_AMFLAGS, "-I m4 -I .")
