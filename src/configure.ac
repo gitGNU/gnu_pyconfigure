@@ -1,6 +1,6 @@
 # configure.ac
 #
-# Copyright 2012 Brandon Invergo <brandon@invergo.net>
+# Copyright 2012, 2013 Brandon Invergo <brandon@invergo.net>
 #
 # Copying and distribution of this file, with or without modification,
 # are permitted in any medium without royalty provided the copyright
