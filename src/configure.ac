@@ -55,12 +55,12 @@ dnl######################
 
 dnl----
 dnl Initialize Autoconf with the package metadata
-dnl Replace the following fields with your package's information. See 
-dnl the Autoconf manual for more information.
+dnl The arguments have been set via the project's PKG-INFO file
+dnl and correspond to:
 dnl
-dnl Name: package name (i.e. foo)
-dnl Version: package version (i.e. 1.2)
-dnl Email: bug/info/project email address (i.e. bug-foo@gnu.org)
+dnl 1) package name (i.e. foo)
+dnl 2) package version (i.e. 1.2)
+dnl 3) bug/info/project email address (i.e. bug-foo@gnu.org)
 dnl----
 dnl
 AC_INIT([{Name}], [{Version}], [{Author-email}])
