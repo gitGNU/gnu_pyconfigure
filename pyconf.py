@@ -122,6 +122,7 @@ def gen_distutils(pkg_meta, output, prefer_make):
     setup_py_dst = os.path.join(output, "setup.py.in")
     if not prefer_make:
         subst_meta(setup_py_src, setup_py_dst, pkg_meta)
+    shutil.copy(setup_py_src, setup_py_dst)
 
 
 def print_usage():
