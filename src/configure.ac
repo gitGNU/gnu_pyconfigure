@@ -63,7 +63,7 @@ dnl Version: package version (i.e. 1.2)
 dnl Email: bug/info/project email address (i.e. bug-foo@gnu.org)
 dnl----
 dnl
-AC_INIT([{Name}], [{Version}], [{Email}])
+AC_INIT([{Name}], [{Version}], [{Author-email}])
 
 
 dnl----
