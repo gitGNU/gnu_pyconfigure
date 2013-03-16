@@ -1,4 +1,6 @@
-# setup.py.in
+#!/usr/bin/env python
+
+# setup.py.in.distutils
 #
 # Copyright 2012, 2013 Brandon Invergo <brandon@invergo.net>
 #
@@ -7,7 +9,6 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-#!/usr/bin/env python
 
 from distutils.core import setup
 import platform
