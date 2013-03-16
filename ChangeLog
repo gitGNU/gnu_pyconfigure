@@ -1,5 +1,11 @@
 2013-03-16  Brandon Invergo  <brandon@invergo.net>
 
+	* configure.ac: Configure pyconf script
+
+	* pyconf.py (gen_distutils): Fix to support multiple targets in
+	the future.
+	(gen_configure): Rearrange and print more messages
+
 	* src/setup.py.in.make: Add make-wrapping setup.py
 
 2013-03-14  Brandon Invergo  <brandon@invergo.net>
