@@ -1,3 +1,29 @@
+2013-03-16  Brandon Invergo  <brandon@invergo.net>
+
+	* src/setup.py.in.make: Add make-wrapping setup.py
+
+2013-03-14  Brandon Invergo  <brandon@invergo.net>
+
+	* src/Makefile.in.make: Add Makefile with pure-Make installation
+	logic
+
+2013-03-12  Brandon Invergo  <brandon@invergo.net>
+
+	* src/configure.ac (AC_INIT): Revert AC_INIT argument values to
+	those required by the pyconf script
+
+	* pyconf.py (gen_distutils): Add missing copy action
+
+2013-03-06  Brandon Invergo  <brandon@invergo.net>
+
+	* src/configure.ac: Clean up, reorganize and add more comments
+
+	* src/m4/python.m4 (PC_PYTHON_CHECK_SITE_DIR): Remove extraneous
+	braces
+
+	* src/m4/python.m4 (PC_PYTHON_CHECK_EXEC_DIR): Remove extraneous
+	braces
+
 2013-01-13  Brandon Invergo  <brandon@invergo.net>
 
 	* pyconf.py: Add script
