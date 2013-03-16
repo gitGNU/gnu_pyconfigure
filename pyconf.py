@@ -131,10 +131,11 @@ Generate `configure' and installation scripts for a Python program
 
 OPTIONS
     -o, --output=DIR    directory to move the generated files
-    --prefer-make       prefer Make for performing installation logic,
-                        otherwise prefer the TARGET
+    -m, --prefer-make   prefer using Make for performing installation 
+                        logic, instead of the Python-based TARGET
+    --no-make           do not generate a Makefile
     --help              show this information
-TARGETSl:
+TARGETS:
     distutils (default)
 
 By default, the generated `Makefile' will be a wrapper around the
@@ -151,23 +152,27 @@ General help using GNU software: <http://www.gnu.org/get/help/>""")
 
 
 if __name__ == "__main__":
-    long_args = ["help", "output", "prefer-make"]
+    long_args = ["help", "output", "prefer-make", "no-make"]
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], "ho:", long_args)
+        opts, args = getopt.gnu_getopt(sys.argv[1:], "ho:m", long_args)
     except getopt.GetoptError as err:
         print(str(err))
         print_usage()
         sys.exit(2)
     output = os.getcwd()
     prefer_make = False
+    no_make = False
     for o, a in opts:
         if o in ["-h", "--help"]:
             print_usage()
             sys.exit()
         if o in ["-o", "--output"]:
             output = a
-        if o in ["--prefer-make"]:
+        if o in ["-m", "--prefer-make"]:
             prefer_make = True
+        if o in ["--no-make"]:
+            no_make = True
+            prefer_make = False
         else:
             print("Warning: unhandled option")
     if len(args) == 0:
@@ -192,8 +197,9 @@ if __name__ == "__main__":
     pkg_meta = parse_pkg_info(pkg_info)
     print("Generating `configure.ac'")
     gen_configure(pkg_meta, output)
-    print("Generating `Makefile.in'")
-    gen_makefile(pkg_meta, output, prefer_make)
+    if not no_make:
+        print("Generating `Makefile.in'")
+        gen_makefile(pkg_meta, output, prefer_make)
     # also with an eye to the future:
     print("Generating `setup.py.in'")
     [gen_distutils][target](pkg_meta, output, prefer_make)
