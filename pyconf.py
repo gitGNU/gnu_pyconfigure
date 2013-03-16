@@ -30,10 +30,15 @@ DATADIR = "/home/brandon/Projects/pyconfigure/pyconfigure/src/"
 
 
 def parse_pkg_info(pkg_info):
+    """Parse a PKG-INFO file to get all the relevant package meta-data.
+    The file should be in PKG-INFO format version 1.2"""
+
+    # Fields that can only appear once in the file
     singles = ["Name", "Version", "Summary", "Keywords", "Home-page",
                "Download-URL", "Author", "Author-email", "Maintainer",
                "Maintainer-email", "License", "Requires-Python", 
                "Description", "Metadata-Version"]
+    # Fields that can appear more than once
     multis = ["Platform", "Supported-Platform", "Classifier", "Requires-Dist",
               "Provides-Dist", "Obsoletes-Dist", "Requires-External",
               "Project-URL"]
@@ -74,6 +79,10 @@ is required")
 
 
 def subst_meta(in_file, out_file, pkg_meta):
+    """Substitute the package's metadata into the template files.  Substitutions
+    occur where one of the metadata keys appears in the file wrapped in \[ and \]
+    (i.e. \[URL\] -> {http://myproject.org})"""
+
     with open(in_file) as h:
         lines = h.readlines()
     with open(out_file, 'w') as h:
@@ -85,6 +94,9 @@ def subst_meta(in_file, out_file, pkg_meta):
     
     
 def gen_configure(pkg_meta, output):
+    """Generate the configure script. Copy the source files into the project
+    directory and then run autoreconf to generate the configure script"""
+    
     config_src = os.path.join(DATADIR, "configure.ac")
     config_dst = os.path.join(output, "configure.ac")
     bootstrap = os.path.join(DATADIR, "bootstrap.sh")
@@ -92,8 +104,10 @@ def gen_configure(pkg_meta, output):
     macros = os.path.join(DATADIR, "m4", "python.m4")
     macro_dir = os.path.join(output, "m4")
     subst_meta(config_src, config_dst, pkg_meta)
-    print("Copying bootstrap.sh")
+    print("Copying `bootstrap.sh'")
     shutil.copy(bootstrap, output)
+    print("Copying `install-sh'")
+    shutil.copy(install_sh, output)
     print("Copying Python m4 macros")
     try:
         os.mkdir(macro_dir)
@@ -101,11 +115,14 @@ def gen_configure(pkg_meta, output):
         pass
     shutil.copy(macros, macro_dir)
     print("Generating `configure'")
-    shutil.copy(install_sh, output)
     subprocess.call(["autoreconf", "-fvi", output])
 
 
 def gen_makefile(pkg_meta, output, prefer_make):
+    """Generate the Makefile. If the --prefer-make option was passed, copy the
+    Makefile that contains the installation logic written in Make, otherwise
+    copy the Makefile that acts as a wrapper around Distutils"""
+    
     if prefer_make:
         makefile_src = os.path.join(DATADIR, "Makefile.in.make")
     else:
@@ -114,11 +131,19 @@ def gen_makefile(pkg_meta, output, prefer_make):
     shutil.copy(makefile_src, makefile_dst)
 
 
-def gen_distutils(pkg_meta, output, prefer_make):
+def gen_distutils(pkg_meta, output, prefer_make, target):
+    """Generate the setup.py.in script. If the --prefer-make option was passed,
+    copy the setup.py.in that wraps the Makefile, otherwise script that uses
+    'target'. 'target' is a number representing which Python-based distribution
+    to use. 0 -> distutils """
+
     if prefer_make:
         setup_py_src = os.path.join(DATADIR, "setup.py.in.make")
     else:
-        setup_py_src = os.path.join(DATADIR, "setup.py.in.distutils")
+        setup_py_file = {0: "setup.py.in.distutils"}.get(target)
+        if setup_py_file is None:
+            setup_py_file = "setup.py.in.distutils"
+        setup_py_src = os.path.join(DATADIR, setup_py_file)
     setup_py_dst = os.path.join(output, "setup.py.in")
     if not prefer_make:
         subst_meta(setup_py_src, setup_py_dst, pkg_meta)
@@ -183,7 +208,9 @@ if __name__ == "__main__":
         pkg_info = args[0]
     else:
         # do the following with an eye to the future of handling more
-        # Python packaging systems:
+        # Python packaging systems. Right now, only distutils is supported.
+        # Choose the target number based on the target selected by the user
+        # i.e. distutils -> 0
         target = {"distutils":0}.get(args[0])
         if target is None:
             print("Error: invalid target {0}".format(args[0]))
@@ -200,6 +227,9 @@ if __name__ == "__main__":
     if not no_make:
         print("Generating `Makefile.in'")
         gen_makefile(pkg_meta, output, prefer_make)
-    # also with an eye to the future:
+    # also with an eye to the future. This will be a list of gen_TARGET functions
+    # and the function is chosen according to the index number 'target'. Since
+    # only distutils is supported, the list has one element, gen_distutils, and
+    # only target 0 works
     print("Generating `setup.py.in'")
-    [gen_distutils][target](pkg_meta, output, prefer_make)
+    [gen_distutils][target](pkg_meta, output, prefer_make, target)
