@@ -101,12 +101,12 @@ def copy_aux_files(output):
     install_sh = os.path.join(DATADIR, "install-sh")
     print("Copying bootstrap.sh")
     shutil.copy(bootstrap, output)
-    os.chmod(os.path.join(output, "bootstrap.sh",
-                          stat.IXUSR | stat.IXGRP | stat.IXOTH))
+    os.chmod(os.path.join(output, "bootstrap.sh"),
+                          stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
     print("Copying install-sh")
     shutil.copy(install_sh, output)
-    os.chmod(os.path.join(output, "install-sh",
-                          stat.IXUSR | stat.IXGRP | stat.IXOTH))
+    os.chmod(os.path.join(output, "install-sh"),
+                          stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
     
 
 def copy_macros(output):
