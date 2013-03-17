@@ -94,32 +94,43 @@ def subst_meta(in_file, out_file, pkg_meta):
             h.write(line_fmt)
     
     
+def copy_aux_files(output):
+    """Copy auxiliary install scripts to the destination directory."""
+    
+    bootstrap = os.path.join(DATADIR, "bootstrap.sh")
+    install_sh = os.path.join(DATADIR, "install-sh")
+    print("Copying bootstrap.sh")
+    shutil.copy(bootstrap, output)
+    os.chmod(os.path.join(output, "bootstrap.sh",
+                          stat.IXUSR | stat.IXGRP | stat.IXOTH))
+    print("Copying install-sh")
+    shutil.copy(install_sh, output)
+    os.chmod(os.path.join(output, "install-sh",
+                          stat.IXUSR | stat.IXGRP | stat.IXOTH))
+    
+
+def copy_macros(output):
+    """Copy the Autoconf macros to the destination directory."""
+    
+    macros = os.path.join(DATADIR, "m4", "python.m4")
+    macro_dir = os.path.join(output, "m4")
+    print("Copying Python M4 macros")
+    try:
+        os.mkdir(macro_dir)
+    except FileExistsError:
+        pass
+    shutil.copy(macros, macro_dir)
+
+
 def gen_configure(pkg_meta, output):
     """Generate the configure script. Copy the source files into the project
     directory and then run autoreconf to generate the configure script"""
     
     config_src = os.path.join(DATADIR, "configure.ac")
     config_dst = os.path.join(output, "configure.ac")
-    bootstrap = os.path.join(DATADIR, "bootstrap.sh")
-    install_sh = os.path.join(DATADIR, "install-sh")
-    macros = os.path.join(DATADIR, "m4", "python.m4")
-    macro_dir = os.path.join(output, "m4")
+    print("Generating configure.ac")
     subst_meta(config_src, config_dst, pkg_meta)
-    print("Copying `bootstrap.sh'")
-    shutil.copy(bootstrap, output)
-    os.chmod(os.path.join(output, "bootstrap.sh",
-                          stat.IXUSR | stat.IXGRP | stat.IXOTH))
-    print("Copying `install-sh'")
-    shutil.copy(install_sh, output)
-    os.chmod(os.path.join(output, "install-sh",
-                          stat.IXUSR | stat.IXGRP | stat.IXOTH))
-    print("Copying Python m4 macros")
-    try:
-        os.mkdir(macro_dir)
-    except FileExistsError:
-        pass
-    shutil.copy(macros, macro_dir)
-    print("Generating `configure'")
+    print("Generating configure")
     subprocess.call(["autoreconf", "-fvi", output])
 
 
@@ -132,6 +143,7 @@ def gen_makefile(pkg_meta, output, prefer_make):
         makefile_src = os.path.join(DATADIR, "Makefile.in.make")
     else:
         makefile_src = os.path.join(DATADIR, "Makefile.in.distutils")
+    print("Generating Makefile.in")
     makefile_dst = os.path.join(output, "Makefile.in")
     shutil.copy(makefile_src, makefile_dst)
 
@@ -150,6 +162,7 @@ def gen_distutils(pkg_meta, output, prefer_make, target):
             setup_py_file = "setup.py.in.distutils"
         setup_py_src = os.path.join(DATADIR, setup_py_file)
     setup_py_dst = os.path.join(output, "setup.py.in")
+    print("Generating setup.py.in")
     if not prefer_make:
         subst_meta(setup_py_src, setup_py_dst, pkg_meta)
     shutil.copy(setup_py_src, setup_py_dst)
@@ -161,8 +174,11 @@ Generate `configure' and installation scripts for a Python program
 
 OPTIONS
     -o, --output=DIR    directory to move the generated files
+                        (default ".")
     -m, --prefer-make   prefer using Make for performing installation 
                         logic, instead of the Python-based TARGET
+    --macros-only       copy the pyconfigure M4 macros to the output
+                        directory and exit
     --no-make           do not generate a Makefile
     --help              show this information and exit
     --version           output version information and exit
@@ -193,7 +209,8 @@ Written by Brandon Invergo.""")
 
 
 if __name__ == "__main__":
-    long_args = ["help", "version", "output", "prefer-make", "no-make"]
+    long_args = ["help", "version", "output", "prefer-make", "no-make",
+                 "macros-only"]
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "hvo:m", long_args)
     except getopt.GetoptError as err:
@@ -203,6 +220,7 @@ if __name__ == "__main__":
     output = os.getcwd()
     prefer_make = False
     no_make = False
+    macros_only = False
     for o, a in opts:
         if o in ["-h", "--help"]:
             print_usage()
@@ -217,6 +235,8 @@ if __name__ == "__main__":
         if o in ["--no-make"]:
             no_make = True
             prefer_make = False
+        if o in ["--macros-only"]:
+            macros_only = True
         else:
             print("Warning: unhandled option")
     if len(args) == 0:
@@ -239,16 +259,18 @@ if __name__ == "__main__":
         print("Error: PKG-INFO file does not exist")
         sys.exit(2)
     print("Running pyconfigure in {0}".format(output))
+    copy_macros(output)
+    if macros_only:
+        sys.exit(0)
     print("Parsing metadata...")
     pkg_meta = parse_pkg_info(pkg_info)
-    print("Generating `configure.ac'")
+    copy_aux_files(output)
     gen_configure(pkg_meta, output)
     if not no_make:
-        print("Generating `Makefile.in'")
         gen_makefile(pkg_meta, output, prefer_make)
     # also with an eye to the future. This will be a list of gen_TARGET functions
     # and the function is chosen according to the index number 'target'. Since
     # only distutils is supported, the list has one element, gen_distutils, and
     # only target 0 works
-    print("Generating `setup.py.in'")
     [gen_distutils][target](pkg_meta, output, prefer_make, target)
+    sys.exit(0)
