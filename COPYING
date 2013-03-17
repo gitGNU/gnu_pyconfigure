@@ -1,13 +1,20 @@
-Copyright 2012 Brandon Invergo <brandon@invergo.net>
+Copyright 2012, 2013 Brandon Invergo <brandon@invergo.net>
 
 Copying and distribution of this software, with or without modification,
 are permitted in any medium without royalty provided the copyright
 notice and this notice are preserved.  This file is offered as-is,
 without any warranty.
 
+The included file `pyconf.in', contained in the same directory as this
+notice, is released under the terms of the GNU General Public License
+Version 3 or any later version, as defined by the Free Software
+Foundation. Please refer to the file `COPYING.GPLv3+' for more
+information.
+
 The included file `python.m4', contained in the src/m4/ directory, is
 released under the terms of the GNU General Public License Version 3,
-as defined by the Free Software Foundation, with additional
-permissions granted under Section 7 in the Autoconf Configure Script
-Exception. Please refer to the files `COPYING' and `COPYING.EXCEPTION'
-located in that directory. 
+or any later version, as defined by the Free Software Foundation, with
+additional permissions granted under Section 7 in the Autoconf
+Configure Script Exception. Please refer to the file
+`COPYING.EXCEPTION' located in that directory for more information on
+the additional permissions.

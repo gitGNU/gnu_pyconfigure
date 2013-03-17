@@ -1,4 +1,4 @@
-# Copyright 2012 Brandon Invergo <brandon@invergo.net>
+# Copyright 2012, 2013 Brandon Invergo <brandon@invergo.net>
 #
 # This file is part of pyconfigure.  This program is free
 # software; you can redistribute it and/or modify it under the
@@ -441,7 +441,6 @@ else:
      esac
      ])
 AC_SUBST([pythondir], [\${prefix}/$pc_cv_python_site_dir])])# PC_PYTHON_CHECK_SITE_DIR
-])
 
 # PC_PYTHON_SITE_PACKAGE_DIR
 # --------------------------
@@ -506,7 +505,7 @@ else:
      esac
     ])
 AC_SUBST([pyexecdir], [\${exec_prefix}/$pc_cv_python_pyexecdir])]) #PY_PYTHON_CHECK_EXEC_LIB_DIR
-])
+
 
 # PC_PYTHON_EXEC_PACKAGE_DIR
 # --------------------------

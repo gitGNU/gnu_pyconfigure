@@ -14,10 +14,10 @@ the second step can be eliminated.
 
 Currently, pyconfigure is designed to live alongside the
 traditional Python distutils (`setup.py') method, providing a wrapper
-around it. Later, it will expand to allow developers to bypass
-distutils altogether.
+around its functionality. Future releases might optionally allow
+developers to work independently of distutils altogether.
 
-To use pyconfigure, you may simply drop the files from the src/
+To use pyconfigure, you can simply drop the files from the src/
 directory into your Python project. Without modification, they provide
 a basic wrapper around setup.py that allows one to install to the
 chosen prefix. It allows one optionally to install the application to
@@ -27,11 +27,11 @@ your project's name and then run:
 
     $ autoreconf -fvi
 
-Several Autoconf macros are provided in the m4 directory which may be
+Several Autoconf macros are provided in the m4 directory which can be
 used to perform a variety of tests during the configuration stage,
 from verifying a minimum Python version to running test programs. See
 the included documentation for more info and browse through the
-provided `configure.ac' sample Autoconf script for well-commented
+provided sample Autoconf script (`configure.ac') for well-commented
 examples.
 
 pyconfigure is official GNU software and is released under the aegis
