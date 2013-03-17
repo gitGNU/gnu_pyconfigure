@@ -124,10 +124,10 @@ File: pyconfigure.info,  Node: Installation,  Next: Invoking pyconf,  Prev: Intr
 2 Installation
 **************
 
-Pyconfigure includes the template files that the developer will use in
-his or her projects, the 'pyconf' script to copy those files into a
-project's directory, and this documentation.  In order for their usage
-to be convenient, it is recommended to install them.  Installation of
+Pyconfigure includes the template files that you will use in your
+projects, the 'pyconf' script to copy those files into a project's
+directory, and this documentation.  In order for their usage to be
+convenient, it is recommended to install them.  Installation of
 pyconfigure follows the standard GNU installation procedure.  Upon
 unpacking the source, navigate into its directory and run the following
 command sequence:
@@ -176,8 +176,11 @@ the '--prefer-make' ('-m') option:
 wrapper around the 'Makefile.in' file.  You would then extend the
 installation process in the latter file.
 
-   Finally, if you would prefer a pure-Python approach, pyconf may
-optionally not generate any Makefile by passing the '--no-make' option.
+   If you would prefer a pure-Python approach, pyconf may optionally not
+generate any Makefile by passing the '--no-make' option.  Finally, if
+you only need pyconfigure's Autoconf macros, you may pass the
+'--macros-only' option, which causes 'pyconf' to exit immediately after
+copying the macros into your package directory.
 
 * Menu:
 
@@ -1142,21 +1145,21 @@ Node: Top760
 Node: Introduction1463
 Node: Configuring Python packages2472
 Node: Installation3830
-Node: Invoking pyconf4559
-Node: PKG-INFO metadata6272
-Node: Customization7432
-Node: configure.ac8214
-Node: Required macros9970
-Node: Verifying the Python version11310
-Node: Checking for a module or function13461
-Node: Writing test programs14683
-Node: Using Sphinxbuild to build documentation15780
-Node: Makefile.in16790
-Node: Makefile.in (distutils)17226
-Node: Makefile.in (Make)19182
-Node: setup.py.in22050
-Node: Appendix22678
-Node: Autoconf macros22845
-Node: GNU Free Documentation License26462
+Node: Invoking pyconf4543
+Node: PKG-INFO metadata6442
+Node: Customization7602
+Node: configure.ac8384
+Node: Required macros10140
+Node: Verifying the Python version11480
+Node: Checking for a module or function13631
+Node: Writing test programs14853
+Node: Using Sphinxbuild to build documentation15950
+Node: Makefile.in16960
+Node: Makefile.in (distutils)17396
+Node: Makefile.in (Make)19352
+Node: setup.py.in22220
+Node: Appendix22848
+Node: Autoconf macros23015
+Node: GNU Free Documentation License26632
 
 End Tag Table

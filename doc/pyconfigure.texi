@@ -162,13 +162,13 @@ developer is expected to provide proper documentation in this case.
 @node Installation, Invoking pyconf, Introduction, Top
 @chapter Installation
 
-Pyconfigure includes the template files that the developer will use in
-his or her projects, the @file{pyconf} script to copy those files into
-a project's directory, and this documentation. In order for their
-usage to be convenient, it is recommended to install
-them. Installation of pyconfigure follows the standard GNU
-installation procedure. Upon unpacking the source, navigate into its
-directory and run the following command sequence:
+Pyconfigure includes the template files that you will use in your
+projects, the @file{pyconf} script to copy those files into a
+project's directory, and this documentation. In order for their usage
+to be convenient, it is recommended to install them. Installation of
+pyconfigure follows the standard GNU installation procedure. Upon
+unpacking the source, navigate into its directory and run the
+following command sequence:
 
 @example
 $ ./configure --prefix=/usr/local
@@ -223,9 +223,12 @@ Now, the @file{setup.py.in} script that is generated will instead be a
 wrapper around the @file{Makefile.in} file. You would then extend the
 installation process in the latter file.
 
-Finally, if you would prefer a pure-Python approach, pyconf may
-optionally not generate any Makefile by passing the @code{--no-make}
-option. 
+If you would prefer a pure-Python approach, pyconf may optionally not
+generate any Makefile by passing the @code{--no-make} option. Finally,
+if you only need pyconfigure's Autoconf macros, you may pass the
+@code{--macros-only} option, which causes @file{pyconf} to exit
+immediately after copying the macros into your package directory.
+
 
 @menu
 * PKG-INFO metadata::
