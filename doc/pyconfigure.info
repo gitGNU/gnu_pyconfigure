@@ -1,17 +1,16 @@
-This is pyconfigure.info, produced by makeinfo version 4.13 from
-/home/brandon/Projects/python-autoconfigure/doc/pyconfigure.texi.
+This is pyconfigure.info, produced by makeinfo version 5.0 from
+pyconfigure.texi.
 
-This manual is for pyconfigure (version 0.1, updated 3 November 2012).
+This manual is for pyconfigure (version 0.2, updated 17 March 2013).
 
-   Copyright (C) 2012 Brandon Invergo
+   Copyright (C) 2012, 2013 Brandon Invergo
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
      Version 1.2 or any later version published by the Free Software
-     Foundation; with no Invariant Sections, no Front-Cover Texts and
-     no Back-Cover Texts.  A copy of the license is included in the
-     section entitled "GNU Free Documentation License."
-
+     Foundation; with no Invariant Sections, no Front-Cover Texts and no
+     Back-Cover Texts.  A copy of the license is included in the section
+     entitled "GNU Free Documentation License."
 INFO-DIR-SECTION Miscellaneous
 START-INFO-DIR-ENTRY
 * pyconfigure: (pyconfigure)GNU Standards-compliant Python
@@ -24,61 +23,58 @@ File: pyconfigure.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir
 GNU Source Release Collection
 *****************************
 
-This manual is for pyconfigure (version 0.1, 3 November 2012).
+This manual is for pyconfigure (version 0.2, 17 March 2013).
 
 * Menu:
 
-* Introduction::
-* Using pyconfigure::
+* Introduction::        pyconfigure in brief.
+* Installation::        How to install pyconfigure.
+* Invoking pyconf::     How to invoke the pyconf script.
+* Customization::       How to customize the template files for your package
 * Appendix::
 * GNU Free Documentation License::
 
- --- The Detailed Node Listing ---
+-- The Detailed Node Listing --
 
 Introduction
 
-* Configuring Python packages::
+* Configuring Python packages
 
-Using pyconfigure
+Invoking pyconf
 
-* Required macros::
-* Verifying the Python version::
-* Checking for a module or function::
-* Writing test programs::
-* Using Sphinxbuild to build documentation::
+* PKG-INFO metadata
+
+Customization
+
+* configure.ac
+* Makefile.in
+* setup.py.in
 
 Appendix
 
-* Autoconf Macros
+* Autoconf macros
+
 
 
-File: pyconfigure.info,  Node: Introduction,  Next: Using pyconfigure,  Prev: Top,  Up: Top
+File: pyconfigure.info,  Node: Introduction,  Next: Installation,  Prev: Top,  Up: Top
 
 1 Introduction
 **************
 
 Python packages typically are configured and installed through the use
-of `distutils' or one of its derivatives. The user performs necessary
-actions via a Python script called `setup.py'. For simple programs,
-this is straight-forward. However, for more complex software packages,
-especially for those which also include code in other languages such as
-C or Fortran, the limitations of the `distutils' method quickly become
-apparent.
+of the 'distutils' module or one of its derivatives.  The user performs
+necessary actions via a Python script called 'setup.py'.  For simple
+programs, this is straight-forward.  However, for more complex software
+packages, especially for those which also include code in other
+languages such as C or Fortran, the limitations of the 'distutils'
+method quickly become apparent.
 
    The configuration and installation of GNU software and many other
 programs, on the other hand, is done according to the use of standard
-`configure' scripts and Make recipes. This method has the advantage of
-being language-agnostic, very flexible, time-proven. pyconfigure
+'configure' scripts and Make recipes.  This method has the advantage of
+being language-agnostic, very flexible, and time-proven.  pyconfigure
 consists of all the files necessary to use the standard GNU build
 process to configure and install Python packages.
-
-   Without modification, pyconfigure provides a wrapper around
-`setup.py', which allows the user to use the familiar GNU installation
-commands to install a Python package. With the powerful Autoconf macros
-that it provides, a Python developer can greatly extend or even replace
-altogether the capabilities of `setup.py'. Plus, since this method is
-language-agnostic, all the power of Autoconf for compiled languages is
-gained for free.
 
 * Menu:
 
@@ -90,60 +86,185 @@ File: pyconfigure.info,  Node: Configuring Python packages,  Prev: Introduction,
 1.1 Configuring Python packages
 ===============================
 
-Configuring and installing Python packages which use pyconfigure
-follows the familiar steps of all standard GNU software:
+Configuring and installing Python packages which use pyconfigure follows
+the familiar steps of all standard GNU software:
 
      $ ./configure
      $ make
      $ make install
 
    In fact, since most programs do not have anything to build, the
-second step could usually be skipped.
+second step can usually be skipped.
 
-   As usual, the user may pass arguments to `configure' in order to
-specify how she wants the software to be installed. By default,
-`configure' takes the following useful arguments:
+   As usual, the user may pass arguments to 'configure' in order to
+specify how she wants the software to be installed.  By default, the
+generated 'configure' script takes the following useful arguments, among
+others:
 
 Argument           Description
--------------------------------------------------------------------------- 
-`--prefix'         Set the root directory in which to install files
+                   
+--------------------------------------------------------------------------
+'--prefix'         Set the root directory in which to install files
                    (default=/usr/local)
-`--with-virtualenv'Install to a virtualenv at `$prefix'
-`PYTHON'           Path to the Python interpreter to use
-`PYTHONPATH'       The PYTHONPATH to use during the installation
+                   
+'--with-virtualenv'Install to a virtualenv at '$prefix'
+                   
+'PYTHON'           Path to the Python interpreter to use
+                   
+'PYTHONPATH'       The PYTHONPATH to use during the installation
+                   
 
    However, as the developer is expected to customize these files, the
-final `configure' script may take many more arguments. The developer is
+final 'configure' script may take many more arguments.  The developer is
 expected to provide proper documentation in this case.
 
 
-File: pyconfigure.info,  Node: Using pyconfigure,  Next: Appendix,  Prev: Introduction,  Up: Top
+File: pyconfigure.info,  Node: Installation,  Next: Invoking pyconf,  Prev: Introduction,  Up: Top
 
-2 Using pyconfigure
-*******************
+2 Installation
+**************
 
-While it is possible to simply copy the pyconfigure files from the
-`src' directory into your project's source directory and use them
-unmodified, it is recommended that you customize them to more
-appropriately fit your needs. In particular, you will want to customize
-`configure.ac' and `Makefile.in'. `configure.ac' contains a series of
-macros which are used by Autoconf to build a portable `configure' shell
-script. This script either guesses important system settings or is
-provided them by the user. When the user invokes `configure', it uses
-`Makefile.in' as a template to create the Make recipe `Makefile'.
+Pyconfigure includes the template files that the developer will use in
+his or her projects, the 'pyconf' script to copy those files into a
+project's directory, and this documentation.  In order for their usage
+to be convenient, it is recommended to install them.  Installation of
+pyconfigure follows the standard GNU installation procedure.  Upon
+unpacking the source, navigate into its directory and run the following
+command sequence:
 
-   Several Autoconf macros are provided in the pyconfigure file
-`src/m4/python.m4' to allow the developer to write robust tests *Note
-Autoconf macros::. Note that when you distribute your software, you
-must include this directory and file with your distribution.
+     $ ./configure --prefix=/usr/local
+     $ make install
 
-   Once you modify your `configure.ac' to your liking, you must
-regenerate your `configure' script with autoreconf:
+   If you wish the files to be installed to a different, specify it
+using the '--prefix' option.
 
-     $ autoreconf -fvi
+
+File: pyconfigure.info,  Node: Invoking pyconf,  Next: Customization,  Prev: Installation,  Up: Top
 
-   A full explanation of the use of Autoconf macros is beyond the scope
-of this document, however it is worth presenting some examples.
+3 Invoking pyconf
+*****************
+
+Before invoking the 'pyconf' script, you first must decide whether you
+would prefer to have your installation logic written in Python or in
+Make.  If you choose the former, the generated Makefile will be a
+wrapper around the Python installation script (i.e.  'setup.py'), while
+if you choose the latter, the Python installation script will be a
+wrapper around the Makefile.
+
+   In the most basic case, you would navigate to your project's
+directory and simply invoke 'pyconf' on your project's 'PKG-INFO' file:
+
+     $ pyconf PKG-INFO
+
+   This will generate a 'configure.ac' Autoconf file, a 'configure'
+script generated from that Autoconf file, a 'setup.py.in' installation
+file (to be configured by the user upon the invocation of 'configure')
+and a 'Makefile.in' file which wraps the functionality of 'setup.py'.
+
+   If you wish the files to be copied into a different directory, you
+may add the '--output' option (or its short form '-o') to specify the
+directory into which you would prefer the files to be copied.
+
+     $ pyconf -output=$HOME/Projects/pyproject PKG-INFO
+
+   If you would prefer to write your installation logic using Make, pass
+the '--prefer-make' ('-m') option:
+
+     $ pyconf --prefer-make PKG-INFO
+
+   Now, the 'setup.py.in' script that is generated will instead be a
+wrapper around the 'Makefile.in' file.  You would then extend the
+installation process in the latter file.
+
+   Finally, if you would prefer a pure-Python approach, pyconf may
+optionally not generate any Makefile by passing the '--no-make' option.
+
+* Menu:
+
+* PKG-INFO metadata::
+
+
+File: pyconfigure.info,  Node: PKG-INFO metadata,  Prev: Invoking pyconf,  Up: Invoking pyconf
+
+3.1 PKG-INFO metadata
+=====================
+
+As a base, the 'pyconf' script requires a 'PKG-INFO' file containing
+metadata about the project.  This file should fit the requirements of
+the 'PKG-INFO' metadata file format as outlined in the PEP 345 document
+(http://www.python.org/dev/peps/pep-0345/).  Generally speaking, the
+file consists of several 'Key: value' pairs.  Some keys may be specified
+more than once, meaning that the package has several such values, while
+others may appear only once.  Refer to PEP 345 for the authoritative
+specification.
+
+   For the purposes of pyconfigure, only four keys are required.  The
+first, "Metadata-Version" must have a value of 1.2 or higher; earlier
+metadata specification versions are not supported.  "Name", which may
+only appear once, contains the package's name.  Similarly, "Version"
+contains the package version number.  Finally, "Author-email" contains
+the principal email address for the project.  Other keys are required to
+fully meet the PEP 345 specification; refer to that document for more
+information.
+
+
+File: pyconfigure.info,  Node: Customization,  Next: Appendix,  Prev: Invoking pyconf,  Up: Top
+
+4 Customization
+***************
+
+Once 'pyconf' has generated the files in your project's directory, you
+should customize them to meet your project's needs.
+
+   In particular, you will want to customize 'configure.ac' and
+'Makefile.in' or 'setup.py.in'.  'configure.ac' contains a series of
+macros which are used by Autoconf to build a portable 'configure' shell
+script.  This script either guesses important system settings or is
+provided them by the user.  When the user invokes 'configure', it uses
+'Makefile.in' and 'setup.py.in' as templates to create the Make recipe
+'Makefile' and the Python setup script 'setup.py'.
+
+* Menu:
+
+* configure.ac::
+* Makefile.in::
+* setup.py.in::
+
+
+File: pyconfigure.info,  Node: configure.ac,  Next: Makefile.in,  Prev: Customization,  Up: Customization
+
+4.1 configure.ac
+================
+
+There are some minimum modifications that should be made in
+'configure.ac'.  The file contains a significant amount of information
+in comment from, so it is possible to discern your needs while editing.
+For more advanced usage, it is recommended to refer to the *note
+Autoconf manual: (autoconf)Autoconf.
+
+   In this file you will see a macro called 'AC_INIT'.  This is a
+standard Autoconf macro.  The arguments to this are automatically
+generated from the 'PKG-INFO' file that you used.  These three values
+are used extensively in the files modified by the configure script, so
+it is important that they be correct.
+
+   While the default 'configure.ac' script will likely be sufficient for
+a basic Python-based project, it may be made to be much more powerful
+for packages with more complex needs.  To that end, several Autoconf
+macros are provided in the file 'm4/python.m4' to allow the developer to
+write robust tests *Note Autoconf macros::.  Note that when you
+distribute your software, you must include this directory and file with
+your distribution if you also distribute your 'configure.ac' file.
+
+   Once you modify your 'configure.ac' to your liking, you must
+regenerate your 'configure' script with the 'bootstrap.sh' script that
+is generated by pyconfigure.
+
+     $ ./bootstrap.sh
+
+   A full explanation of the general use of Autoconf macros is beyond
+the scope of this document, however it is worth presenting some
+examples.
 
 * Menu:
 
@@ -154,107 +275,98 @@ of this document, however it is worth presenting some examples.
 * Using Sphinxbuild to build documentation::
 
 
-File: pyconfigure.info,  Node: Required macros,  Next: Verifying the Python version,  Prev: Using pyconfigure,  Up: Using pyconfigure
+File: pyconfigure.info,  Node: Required macros,  Next: Verifying the Python version,  Prev: configure.ac,  Up: configure.ac
 
-2.1 Required macros
-===================
+4.1.1 Required macros
+---------------------
 
-Several macros are required in `configure.ac' to use pyconfigure. These
+Several macros are required in 'configure.ac' to use pyconfigure.  These
 are:
 
-     m4_include([m4/python.m4])
-
-   This macro imports all of the Python Autoconf macros. If you choose
-to write your own macros for other purposes, you would also include them
-in this manner.
-
-     AC_INIT(project_name, project_version)
+     AC_INIT([project_name], [project_version], [project-email])
 
    This initializes Autoconf and also substitutes your project name and
-version in any output that it generates.
+version in any output that it generates.  The initial argument values
+are automatically generated by pyconfigure when you first run the
+'pyconf' script.
 
      AC_CONFIG_MACRO_DIR([m4])
 
-   Now that Autoconf is initialized, we inform it of the location of our
-macros.
+   This macro imports all of the Python Autoconf macros.  If you choose
+to write your own macros for other purposes, you should include them in
+the 'm4' directory as well.
 
      AC_PROG_PYTHON
 
-   This is the key macro. It finds the highest-version Python
-interpreter available on the system and saves its path in the `PYTHON'
-variable.
+   This is the key macro.  It finds the highest-version Python
+interpreter available on the system and saves its path in the 'PYTHON'
+variable.  Because the other pyconfigure M4 macros depend on this one,
+you typically will not need to explicitly include it in 'configure.ac'.
 
      PC_PYTHON_SITE_PACKAGE_DIR
      PC_PYTHON_EXEC_PACKAGE_DIR
 
    These two macros figure out where Python expects packages to be
-installed (i.e. `/usr/lib/python2.7/site-packages/') and saves them in
-the variables `pkgpythondir' and `pkgpyexecdir', respectively, for use
-in `Makefile.in'
+installed (i.e.  '/usr/lib/python2.7/site-packages/') and saves them in
+the variables 'pkgpythondir' and 'pkgpyexecdir', respectively, for use
+in 'Makefile.in'
 
 
-File: pyconfigure.info,  Node: Verifying the Python version,  Next: Checking for a module or function,  Prev: Required macros,  Up: Using pyconfigure
+File: pyconfigure.info,  Node: Verifying the Python version,  Next: Checking for a module or function,  Prev: Required macros,  Up: configure.ac
 
-2.2 Verifying the Python version
-================================
+4.1.2 Verifying the Python version
+----------------------------------
 
-As described in the previous section, `AC_PROG_PYTHON' finds the Python
-interpreter with the highest version installed on the system. Often,
+As described in the previous section, 'AC_PROG_PYTHON' finds the Python
+interpreter with the highest version installed on the system.  Often,
 you will want to be sure that the user has some minimum version
-installed. There is a macro available to simplify this,
-`PC_PYTHON_VERIFY_VERSION'.
+installed.  There is a macro available to simplify this,
+'PC_PYTHON_VERIFY_VERSION'.
 
      m4_define(python_min_ver, 2.6.1)
      PC_PYTHON_VERIFY_VERSION([$PYTHON], python_min_ver, ,
                               [AC_MSG_ERROR(Python interpreter too old)])
 
    In this example, we set the minimum version to 2.6.1 through the use
-of an M4 macro. We then check if the interpreter stored in the `PYTHON'
-variable (either set by the user or found by `AC_PROG_PYTHON') is at
-least of that version. If it is not, the resulting `configure' script
+of an M4 macro.  We then check if the interpreter stored in the 'PYTHON'
+variable (either set by the user or found by 'AC_PROG_PYTHON') is at
+least of that version.  If it is not, the resulting 'configure' script
 will exit with an appropriate error message.
 
    Unfortunately, the divide between Python 2 and Python 3 and many
-programs are only compatible with Python 2. Since `AC_PROG_PYTHON' will
+programs are only compatible with Python 2.  Since 'AC_PROG_PYTHON' will
 find the latest Python interpreter, if the user has any Python version
-3.x installed, `configure' must be able to instead find the most latest
-2.x version installed. This is slightly less straight-forward, but one
+3.x installed, 'configure' must be able to instead find the most latest
+2.x version installed.  This is slightly less straight-forward, but one
 possible implementation is as follows:
 
-     PC_PYTHON_VERIFY_VERSION([$PYTHON], 3.0,
-                               py3k=true,
-                               py3k=false)
-     # If a Python 3 interpreter was found, look specifically for a Python 2 one
-     if test "$py3k" = "true" ; then
-        m4_define_default([_PYTHON2_BINS], [python2 python2.7 python2.6])
-        AC_PATH_PROGS(PYTHON, [_PYTHON2_BINS])
-     else
-     # otherwise check that the Python 2 version is sufficient
-        PC_PYTHON_VERIFY_VERSION([$PYTHON], python_min_ver, ,
-                                 [AC_MSG_ERROR(Python interpreter too old)])
+     AC_PROG_PYTHON([python2])
+     if [[ "x$PYTHON" == "x" ]]; then
+        AC_PROG_PYTHON
+        PC_PYTHON_VERIFY_VERSION(3.0, ,
+     	AC_MSG_ERROR(Python 2 (python_min_ver+) is required))
      fi
-     if test -z "$PYTHON"; then
-        AC_MSG_ERROR(No Python 2 interpreter found)
-     fi
+     PC_PYTHON_VERIFY_VERSION(python_min_ver, ,
+     	AC_MSG_ERROR(Python 2 (python_min_ver+) is required))
 
-   We first check to see if Python is version 3.0 or greater. If it is,
+   We first check to see if Python is version 3.0 or greater.  If it is,
 we create a list of compatible Python interpreters and manually check
-for them using standard Autoconf macros. Finally, we check if the
+for them using standard Autoconf macros.  Finally, we check if the
 interpreter that we found this time is of sufficient version, otherwise
-`configure' will halt with an error. Likewise, if no appropriate
-interpreter was found, an error message will be printed and `configure'
+'configure' will halt with an error.  Likewise, if no appropriate
+interpreter was found, an error message will be printed and 'configure'
 will stop.
 
 
-File: pyconfigure.info,  Node: Checking for a module or function,  Next: Writing test programs,  Prev: Verifying the Python version,  Up: Using pyconfigure
+File: pyconfigure.info,  Node: Checking for a module or function,  Next: Writing test programs,  Prev: Verifying the Python version,  Up: configure.ac
 
-2.3 Checking for a module or function
-=====================================
+4.1.3 Checking for a module or function
+---------------------------------------
 
 It's reasonable to assume that many Python packages will have
-dependencies on other, external modules. With the provided pyconfigure
-macros, this is simple. All you have to do is use the
-`PC_PYTHON_CHECK_MODULE' macro as follows:
+dependencies on other, external modules.  With the provided pyconfigure
+macros, this is simple.  All you have to do is use the
+'PC_PYTHON_CHECK_MODULE' macro as follows:
 
      PC_PYTHON_CHECK_MODULE([foo])
 
@@ -269,23 +381,22 @@ specific function:
      PC_PYTHON_CHECK_FUNC([foo], [bar], [arg1, arg2])
 
    Remember that you may omit arguments to Autoconf macros: in the above
-example, the final two arguments, which correspond to the action to
-take if the test is successful and if it fails simply are not present
-in the argument list. Similarly, if you do not need to pass arguments
-to the test function, you can entirely omit the third argument to the
-macro:
+example, the final two arguments, which correspond to the action to take
+if the test is successful and if it fails simply are not present in the
+argument list.  Similarly, if you do not need to pass arguments to the
+test function, you can entirely omit the third argument to the macro:
 
      PC_PYTHON_CHECK_FUNC([foo], [bar])
 
 
-File: pyconfigure.info,  Node: Writing test programs,  Next: Using Sphinxbuild to build documentation,  Prev: Checking for a module or function,  Up: Using pyconfigure
+File: pyconfigure.info,  Node: Writing test programs,  Next: Using Sphinxbuild to build documentation,  Prev: Checking for a module or function,  Up: configure.ac
 
-2.4 Writing test programs
-=========================
+4.1.4 Writing test programs
+---------------------------
 
 One great benefit of Autoconf is the ability to embed test programs
-inside `configure'. The pyconfigure macros allow for this by defining
-Python as a language within Autoconf. You then would proceed to write
+inside 'configure'.  The pyconfigure macros allow for this by defining
+Python as a language within Autoconf.  You then would proceed to write
 test programs as you would in any other language that Autoconf supports
 like C.
 
@@ -299,30 +410,30 @@ like C.
      ])], [ACTION-IF-SUCCESSFUL], [ACTION-IF-FAILED])
      AC_LANG_POP(Python)[]
 
-   The first argument to `AC_LANG_PROGRAM' is the so-called "prolog",
-and typically will contain your `import' statements or function
-definitions. The second argument contains the main body of the program,
-which will be in the scope of an `if __name__=="__main__":' block. So,
+   The first argument to 'AC_LANG_PROGRAM' is the so-called "prolog",
+and typically will contain your 'import' statements or function
+definitions.  The second argument contains the main body of the program,
+which will be in the scope of an 'if __name__=="__main__":' block.  So,
 you must be sure to indent the code appropriately.
 
 
-File: pyconfigure.info,  Node: Using Sphinxbuild to build documentation,  Prev: Writing test programs,  Up: Using pyconfigure
+File: pyconfigure.info,  Node: Using Sphinxbuild to build documentation,  Prev: Writing test programs,  Up: configure.ac
 
-2.5 Using Sphinxbuild to build documentation
-============================================
+4.1.5 Using Sphinxbuild to build documentation
+----------------------------------------------
 
 Using pyconfigure and Autoconf to test for other tools is quite easy.
 For example, many Python packages use Sphinxbuild to build their
-documentation. If this is the case for your project, you might do
+documentation.  If this is the case for your project, you might do
 something like the following:
 
      AC_CHECK_PROGS([SPHINXBUILD], [sphinx-build sphinx-build3 sphinx-build2], [no])
      AS_IF([test "x$SPHINXBUILD" = xno],
      	    AC_MSG_WARN(sphinx-build is required to build documentation))
 
-   We simply use Autoconf's `AC_CHECK_PROGS' macro to check for a
-series of possible Sphinxbuild binaries and save the result to the
-SPHINXBUILD variable, which may then be used in `Makefile.in':
+   We simply use Autoconf's 'AC_CHECK_PROGS' macro to check for a series
+of possible Sphinxbuild binaries and save the result to the SPHINXBUILD
+variable, which may then be used in 'Makefile.in':
 
      docs/build/index.html: $(wildcard $(srcdir)/docs/source/*)
      ifneq ($(SPHINXBUILD),no)
@@ -330,9 +441,138 @@ SPHINXBUILD variable, which may then be used in `Makefile.in':
      endif
 
 
-File: pyconfigure.info,  Node: Appendix,  Next: GNU Free Documentation License,  Prev: Using pyconfigure,  Up: Top
+File: pyconfigure.info,  Node: Makefile.in,  Next: setup.py.in,  Prev: configure.ac,  Up: Customization
 
-3 Appendix
+4.2 Makefile.in
+===============
+
+How you will customize the file 'Makefile.in' and, indeed, what you will
+find in the file when it is first generated both depend on whether you
+specified if you prefer to write your installation logic in Make *Note
+Invoking pyconf::.
+
+* Menu:
+
+* Makefile.in (distutils)::
+* Makefile.in (Make)::
+
+
+File: pyconfigure.info,  Node: Makefile.in (distutils),  Next: Makefile.in (Make),  Prev: Makefile.in,  Up: Makefile.in
+
+4.2.1 Makefile.in (distutils)
+-----------------------------
+
+If you did not specify '--prefer-make', 'Makefile.in' will be a wrapper
+around the functionality of the Python 'setup.py' script.  For a basic
+program, no great amount of customization of this file will be
+necessary.  The file contains many comments, which introduce its various
+sections.
+
+   By default, the file supports installing to a Virtualenv, depending
+on whether the user has specified to do so when running 'configure'.
+You will likely not have to change the "install" recipe.  If you have
+other files to install, it is recommended to create new targets to
+install them, and to add those targets as prerequisites to the "install"
+target.  For example, if you have extra data files to install, you might
+create a "install-data" target and corresponding recipe, and then add
+"install-data" as a prerequisite to "install":
+
+     install: installdirs install-data
+
+   If you do install more files, be sure that they are properly removed
+when the user runs 'make uninstall' by modifying the recipe for the
+"uninstall" target.  Note that, at this time, Python's 'distutils' does
+not have its own "uninstall" target, so this must be done manually.
+
+   If you intend to produce source distributions via the 'Makefile',
+which is more flexible than doing so via 'setup.py', it is important to
+modify the 'DIST_FILES' variable located near the top of 'Makefile.in'.
+Any file or directory you list there will be included in your source
+distribution.
+
+   Finally, you may write recipes to build your package's documentation,
+which may not be covered by your 'setup.py' script.  How you accomplish
+this is highly dependent upon how you have organized your documentation
+sources.  One example of how you might do it is included in the
+'Makefile.in', commented-out at the end.
+
+
+File: pyconfigure.info,  Node: Makefile.in (Make),  Prev: Makefile.in (distutils),  Up: Makefile.in
+
+4.2.2 Makefile.in (Make)
+------------------------
+
+If you passed the option '--prefer-make' to 'pyconf', 'Makefile.in' will
+contain all of the installation logic for your package.  It is highly
+recommended that you be familiar with basic Make usage.  See the *note
+Make manual: (make)Make.
+
+   By default, 'Makefile.in' will contain the logic necessary to install
+a basic Python package consisting of one or more modules.  The primary
+customization may be performed via the variables found at the beginning
+of the file: 'PYPACKAGES', 'PYPACKAGE_ROOT', 'SCRIPTS', 'PKG_DATA',
+'DATA', and 'DATA_ROOT'.
+
+   'PYPACKAGES' should contain a space-separated list of all of the
+Python modules in your package (i.e.  top-level directories containing a
+'__init__.py' file).  When your package is installed to the user's
+computer, these modules will be stored in the Python package directory
+(generally '$prefix/lib/python$version/{site,dist}-packages/').  If the
+modules are contained in a sub-directory, say 'src', of your source
+directory, you may set the 'PYPACKAGE_ROOT' variable to that directory.
+
+     PYPACKAGES = foo bar
+     PYPACKAGE_ROOT = src
+
+   In this example, there are two modules to install: "foo" and "bar".
+The modules are to be found under the 'src' directory; thus, for
+example, module "foo" is to be found at 'src/foo'.
+
+   The directories listed under 'PYPACKAGES' will only have their Python
+files installed.  If your modules depend on other, non-Python data
+files, you may list these under the 'PKG_DATA' variable.  Data files
+should be listed relative to their parent module.  Thus, if module "foo"
+contains a file called 'bar.dat', set 'PKG_DATA = foo/bar.dat'.
+
+   Other data files, which are not specific to any of the Python
+modules, may be specified under the 'DATA' variable.  As before, if your
+data files are all stored under a particular sub-directory, you may
+specify it in 'DATA_ROOT'.  Files listed under 'DATA' are installed to
+the package's data directory, which is typically
+'/usr/local/share/$package').
+
+   Finally, if your package has any scripts to install, list them under
+the 'SCRIPTS' variable.  They should be listed as files relative to the
+directory containing 'Makefile.in'.  Thus, if your script 'baz' is
+located in the sub-directory 'bin', you would set 'SCRIPTS = bin/baz'.
+
+   One particular advantage of writing the installation logic in Make is
+the ease with which you may work with non-Python code in your project,
+such as extensions written in C. How these recipes are to be written is
+dependent upon the build requirements of this code, and you are thus
+referred to the *note Make manual: (make)Make.  Any installation recipes
+should be given their own targets and made as prerequisites of the
+"install" target.
+
+
+File: pyconfigure.info,  Node: setup.py.in,  Prev: Makefile.in,  Up: Customization
+
+4.3 setup.py.in
+===============
+
+'pyconf' will automatically generate a 'setup.py.in' file, to be
+configured by the 'configure' script to produce the Python 'setup.py'
+script.  If the '--prefer-make' option was specified, this file will
+merely contain Python code which calls Make on the generated 'Makefile',
+and needs not to be modified.  Otherwise, the file will contain basic
+Python code to use 'distutils' for package installation.  The reader is
+referred to the Python documentation for more information on how to
+customize this file.
+
+
+File: pyconfigure.info,  Node: Appendix,  Next: GNU Free Documentation License,  Prev: Customization,  Up: Top
+
+5 Appendix
 **********
 
 * Menu:
@@ -340,74 +580,78 @@ File: pyconfigure.info,  Node: Appendix,  Next: GNU Free Documentation License, 
 * Autoconf macros::
 
 
-File: pyconfigure.info,  Node: Autoconf macros,  Up: Appendix
+File: pyconfigure.info,  Node: Autoconf macros,  Prev: Appendix,  Up: Appendix
 
-3.1 Autoconf macros
+5.1 Autoconf macros
 ===================
 
 Macro Name & Arguments   Description              Variables exported
---------------------------------------------------------------------------- 
-`AC_PROG_PYTHON([NAME-TO-CHECK])'Find a Python            `PYTHON'
+                                                  
+---------------------------------------------------------------------------
+'AC_PROG_PYTHON([NAME-TO-CHECK])'Find a Python    'PYTHON'
                          interpreter              
-`PC_PROG_PYTHON_CONFIG([NAME-TO-CHECK])'Find a python-config     `PYTHON_CONFIG'
+'PC_PROG_PYTHON_CONFIG([NAME-TO-CHECK])'Find a python-config'PYTHON_CONFIG'
                          program                  
-`PC_PYTHON_VERIFY_VERSION(VERSION,Verify that the Python   
-[ACTION-IF-TRUE],        interpreter is of a      
-[ACTION-IF-NOT-TRUE])'   sufficient version       
-                         number                   
-`PC_PYTHON_CHECK_VERSION'Get the version of the   `PYTHON_VERSION'
+'PC_PYTHON_VERIFY_VERSION(VERSION,Verify that the Python
+[ACTION-IF-TRUE],        interpreter is of a
+[ACTION-IF-NOT-TRUE])'   sufficient version
+                         number
+'PC_PYTHON_CHECK_VERSION'Get the version of the   'PYTHON_VERSION'
                          Python interpreter       
-`PC_PYTHON_CHECK_PREFIX' Check what Python        `PYTHON_PREFIX'
+'PC_PYTHON_CHECK_PREFIX' Check what Python        'PYTHON_PREFIX'
                          thinks is the prefix     
-`PC_PYTHON_CHECK_EXEC_PREFIX'Check what Python        `PYTHON_EXEC_PREFIX'
+'PC_PYTHON_CHECK_EXEC_PREFIX'Check what Python    'PYTHON_EXEC_PREFIX'
                          thinks is the            
-                         exec_prefix              
-`PC_PYTHON_CHECK_INCLUDES'Check the include flags  `PYTHON_INCLUDES'
-                         ('-I[header]...') for    
-                         including the Python     
-                         header files             
-`PC_PYTHON_CHECK_HEADERS'Check for the Python     `HAVE_PYTHON_H'
+                         exec_prefix
+'PC_PYTHON_CHECK_INCLUDES'Check the include       'PYTHON_INCLUDES'
+                         flags                    
+                         ('-I[header]...')  for
+                         including the Python
+                         header files
+'PC_PYTHON_CHECK_HEADERS'Check for the Python     'HAVE_PYTHON_H'
                          header files (i.e.       
-                         `Python.h')              
-`PC_PYTHON_CHECK_LIBS'   Check for the proper     `PYTHON_LIBS'
+                         'Python.h')
+'PC_PYTHON_CHECK_LIBS'   Check for the proper     'PYTHON_LIBS'
                          LIBS flags to load the   
-                         Python shared libraries  
-`PC_PYTHON_TEST_LIBS'    Test for the presence    `HAVE_LIBPYTHON'
+                         Python shared
+                         libraries
+'PC_PYTHON_TEST_LIBS'    Test for the presence    'HAVE_LIBPYTHON'
                          of the Python shared     
-                         libraries                
-`PC_PYTHON_CHECK_CFLAGS' Find the CFLAGS that     `PYTHON_CFLAGS'
+                         libraries
+'PC_PYTHON_CHECK_CFLAGS' Find the CFLAGS that     'PYTHON_CFLAGS'
                          Python expects           
-`PC_PYTHON_CHECK_LDFLAGS'Find the LDFLAGS that    `PYTHON_LDFLAGS'
+'PC_PYTHON_CHECK_LDFLAGS'Find the LDFLAGS that    'PYTHON_LDFLAGS'
                          Python expects           
-`PC_PYTHON_CHECK_EXTENSION_SUFFIX'Check the extension      `PYTHON_EXTENSION_SUFFIX'
+'PC_PYTHON_CHECK_EXTENSION_SUFFIX'Check the extension'PYTHON_EXTENSION_SUFFIX'
                          suffix given to Python   
-                         extension modules        
-                         (Python 3 only)          
-`PC_PYTHON_CHECK_ABI_FLAGS'Check the ABI flags      `PC_PYTHON_ABI_FLAGS'
+                         extension modules
+                         (Python 3 only)
+'PC_PYTHON_CHECK_ABI_FLAGS'Check the ABI flags    'PC_PYTHON_ABI_FLAGS'
                          used by Python (Python   
-                         3 only)                  
-`PC_PYTHON_CHECK_PLATFORM'Check what platform      
-                         Python thinks this is    
-                         `PYTHON_PLATFORM'        
-`PC_PYTHON_CHECK_SITE_DIR'Check the appropriate    `pythondir'
-                         place to install Python  
-                         packages (i.e.           
-                         `$(prefix)/lib/python2.7/site-packages')
-`PC_PYTHON_SITE_PACKAGE_DIR'A convenience macro;     `pkgpythondir'
-                         adds the package's name  
-                         to `pythondir'           
-`PC_PYTHON_CHECK_EXEC_DIR'Check directory for      `pyexecdir'
+                         3 only)
+'PC_PYTHON_CHECK_PLATFORM'Check what platform
+                         Python thinks this is
+                         'PYTHON_PLATFORM'
+                         
+'PC_PYTHON_CHECK_SITE_DIR'Check the appropriate   'pythondir'
+                         place to install         
+                         Python packages (i.e.
+                         '$(prefix)/lib/python2.7/site-packages')
+'PC_PYTHON_SITE_PACKAGE_DIR'A convenience macro;  'pkgpythondir'
+                         adds the package's       
+                         name to 'pythondir'
+'PC_PYTHON_CHECK_EXEC_DIR'Check directory for     'pyexecdir'
                          installing Python        
-                         extension modules        
-`PC_PYTHON_EXEC_PACKAGE_DIR'A convenience macro;     `pkgpyexecdir'
-                         adds the package's name  
-                         to `pyexecdir'           
-`PC_PYTHON_CHECK_MODULE' Test if a given Python   
-                         module can be            
-                         successfully loaded      
-`PC_PYTHON_CHECK_FUNC'   Test if a given Python   
-                         function can be called   
-                         successfully.            
+                         extension modules
+'PC_PYTHON_EXEC_PACKAGE_DIR'A convenience macro;  'pkgpyexecdir'
+                         adds the package's       
+                         name to 'pyexecdir'
+'PC_PYTHON_CHECK_MODULE' Test if a given Python   
+                         module can be
+                         successfully loaded
+'PC_PYTHON_CHECK_FUNC'   Test if a given Python
+                         function can be called
+                         successfully.
 
 
 File: pyconfigure.info,  Node: GNU Free Documentation License,  Prev: Appendix,  Up: Top
@@ -418,7 +662,7 @@ Appendix A GNU Free Documentation License
                      Version 1.3, 3 November 2008
 
      Copyright (C) 2000, 2001, 2002, 2007, 2008 Free Software Foundation, Inc.
-     `http://fsf.org/'
+     <http://fsf.org/>
 
      Everyone is permitted to copy and distribute verbatim copies
      of this license document, but changing it is not allowed.
@@ -443,21 +687,21 @@ Appendix A GNU Free Documentation License
      free program should come with manuals providing the same freedoms
      that the software does.  But this License is not limited to
      software manuals; it can be used for any textual work, regardless
-     of subject matter or whether it is published as a printed book.
-     We recommend this License principally for works whose purpose is
+     of subject matter or whether it is published as a printed book.  We
+     recommend this License principally for works whose purpose is
      instruction or reference.
 
   1. APPLICABILITY AND DEFINITIONS
 
      This License applies to any manual or other work, in any medium,
-     that contains a notice placed by the copyright holder saying it
-     can be distributed under the terms of this License.  Such a notice
+     that contains a notice placed by the copyright holder saying it can
+     be distributed under the terms of this License.  Such a notice
      grants a world-wide, royalty-free license, unlimited in duration,
      to use that work under the conditions stated herein.  The
      "Document", below, refers to any such manual or work.  Any member
-     of the public is a licensee, and is addressed as "you".  You
-     accept the license if you copy, modify or distribute the work in a
-     way requiring permission under copyright law.
+     of the public is a licensee, and is addressed as "you".  You accept
+     the license if you copy, modify or distribute the work in a way
+     requiring permission under copyright law.
 
      A "Modified Version" of the Document means any work containing the
      Document or a portion of it, either copied verbatim, or with
@@ -475,12 +719,12 @@ Appendix A GNU Free Documentation License
      regarding them.
 
      The "Invariant Sections" are certain Secondary Sections whose
-     titles are designated, as being those of Invariant Sections, in
-     the notice that says that the Document is released under this
-     License.  If a section does not fit the above definition of
-     Secondary then it is not allowed to be designated as Invariant.
-     The Document may contain zero Invariant Sections.  If the Document
-     does not identify any Invariant Sections then there are none.
+     titles are designated, as being those of Invariant Sections, in the
+     notice that says that the Document is released under this License.
+     If a section does not fit the above definition of Secondary then it
+     is not allowed to be designated as Invariant.  The Document may
+     contain zero Invariant Sections.  If the Document does not identify
+     any Invariant Sections then there are none.
 
      The "Cover Texts" are certain short passages of text that are
      listed, as Front-Cover Texts or Back-Cover Texts, in the notice
@@ -491,27 +735,27 @@ Appendix A GNU Free Documentation License
      A "Transparent" copy of the Document means a machine-readable copy,
      represented in a format whose specification is available to the
      general public, that is suitable for revising the document
-     straightforwardly with generic text editors or (for images
-     composed of pixels) generic paint programs or (for drawings) some
-     widely available drawing editor, and that is suitable for input to
-     text formatters or for automatic translation to a variety of
-     formats suitable for input to text formatters.  A copy made in an
-     otherwise Transparent file format whose markup, or absence of
-     markup, has been arranged to thwart or discourage subsequent
-     modification by readers is not Transparent.  An image format is
-     not Transparent if used for any substantial amount of text.  A
-     copy that is not "Transparent" is called "Opaque".
+     straightforwardly with generic text editors or (for images composed
+     of pixels) generic paint programs or (for drawings) some widely
+     available drawing editor, and that is suitable for input to text
+     formatters or for automatic translation to a variety of formats
+     suitable for input to text formatters.  A copy made in an otherwise
+     Transparent file format whose markup, or absence of markup, has
+     been arranged to thwart or discourage subsequent modification by
+     readers is not Transparent.  An image format is not Transparent if
+     used for any substantial amount of text.  A copy that is not
+     "Transparent" is called "Opaque".
 
      Examples of suitable formats for Transparent copies include plain
      ASCII without markup, Texinfo input format, LaTeX input format,
-     SGML or XML using a publicly available DTD, and
-     standard-conforming simple HTML, PostScript or PDF designed for
-     human modification.  Examples of transparent image formats include
-     PNG, XCF and JPG.  Opaque formats include proprietary formats that
-     can be read and edited only by proprietary word processors, SGML or
-     XML for which the DTD and/or processing tools are not generally
-     available, and the machine-generated HTML, PostScript or PDF
-     produced by some word processors for output purposes only.
+     SGML or XML using a publicly available DTD, and standard-conforming
+     simple HTML, PostScript or PDF designed for human modification.
+     Examples of transparent image formats include PNG, XCF and JPG.
+     Opaque formats include proprietary formats that can be read and
+     edited only by proprietary word processors, SGML or XML for which
+     the DTD and/or processing tools are not generally available, and
+     the machine-generated HTML, PostScript or PDF produced by some word
+     processors for output purposes only.
 
      The "Title Page" means, for a printed book, the title page itself,
      plus such following pages as are needed to hold, legibly, the
@@ -549,8 +793,8 @@ Appendix A GNU Free Documentation License
      may not use technical measures to obstruct or control the reading
      or further copying of the copies you make or distribute.  However,
      you may accept compensation in exchange for copies.  If you
-     distribute a large enough number of copies you must also follow
-     the conditions in section 3.
+     distribute a large enough number of copies you must also follow the
+     conditions in section 3.
 
      You may also lend copies, under the same conditions stated above,
      and you may publicly display copies.
@@ -564,12 +808,11 @@ Appendix A GNU Free Documentation License
      these Cover Texts: Front-Cover Texts on the front cover, and
      Back-Cover Texts on the back cover.  Both covers must also clearly
      and legibly identify you as the publisher of these copies.  The
-     front cover must present the full title with all words of the
-     title equally prominent and visible.  You may add other material
-     on the covers in addition.  Copying with changes limited to the
-     covers, as long as they preserve the title of the Document and
-     satisfy these conditions, can be treated as verbatim copying in
-     other respects.
+     front cover must present the full title with all words of the title
+     equally prominent and visible.  You may add other material on the
+     covers in addition.  Copying with changes limited to the covers, as
+     long as they preserve the title of the Document and satisfy these
+     conditions, can be treated as verbatim copying in other respects.
 
      If the required texts for either cover are too voluminous to fit
      legibly, you should put the first ones listed (as many as fit
@@ -577,40 +820,39 @@ Appendix A GNU Free Documentation License
      adjacent pages.
 
      If you publish or distribute Opaque copies of the Document
-     numbering more than 100, you must either include a
-     machine-readable Transparent copy along with each Opaque copy, or
-     state in or with each Opaque copy a computer-network location from
-     which the general network-using public has access to download
-     using public-standard network protocols a complete Transparent
-     copy of the Document, free of added material.  If you use the
-     latter option, you must take reasonably prudent steps, when you
-     begin distribution of Opaque copies in quantity, to ensure that
-     this Transparent copy will remain thus accessible at the stated
-     location until at least one year after the last time you
-     distribute an Opaque copy (directly or through your agents or
-     retailers) of that edition to the public.
+     numbering more than 100, you must either include a machine-readable
+     Transparent copy along with each Opaque copy, or state in or with
+     each Opaque copy a computer-network location from which the general
+     network-using public has access to download using public-standard
+     network protocols a complete Transparent copy of the Document, free
+     of added material.  If you use the latter option, you must take
+     reasonably prudent steps, when you begin distribution of Opaque
+     copies in quantity, to ensure that this Transparent copy will
+     remain thus accessible at the stated location until at least one
+     year after the last time you distribute an Opaque copy (directly or
+     through your agents or retailers) of that edition to the public.
 
      It is requested, but not required, that you contact the authors of
-     the Document well before redistributing any large number of
-     copies, to give them a chance to provide you with an updated
-     version of the Document.
+     the Document well before redistributing any large number of copies,
+     to give them a chance to provide you with an updated version of the
+     Document.
 
   4. MODIFICATIONS
 
      You may copy and distribute a Modified Version of the Document
      under the conditions of sections 2 and 3 above, provided that you
-     release the Modified Version under precisely this License, with
-     the Modified Version filling the role of the Document, thus
-     licensing distribution and modification of the Modified Version to
-     whoever possesses a copy of it.  In addition, you must do these
-     things in the Modified Version:
+     release the Modified Version under precisely this License, with the
+     Modified Version filling the role of the Document, thus licensing
+     distribution and modification of the Modified Version to whoever
+     possesses a copy of it.  In addition, you must do these things in
+     the Modified Version:
 
        A. Use in the Title Page (and on the covers, if any) a title
-          distinct from that of the Document, and from those of
-          previous versions (which should, if there were any, be listed
-          in the History section of the Document).  You may use the
-          same title as a previous version if the original publisher of
-          that version gives permission.
+          distinct from that of the Document, and from those of previous
+          versions (which should, if there were any, be listed in the
+          History section of the Document).  You may use the same title
+          as a previous version if the original publisher of that
+          version gives permission.
 
        B. List on the Title Page, as authors, one or more persons or
           entities responsible for authorship of the modifications in
@@ -640,31 +882,30 @@ Appendix A GNU Free Documentation License
 
        I. Preserve the section Entitled "History", Preserve its Title,
           and add to it an item stating at least the title, year, new
-          authors, and publisher of the Modified Version as given on
-          the Title Page.  If there is no section Entitled "History" in
-          the Document, create one stating the title, year, authors,
-          and publisher of the Document as given on its Title Page,
-          then add an item describing the Modified Version as stated in
-          the previous sentence.
+          authors, and publisher of the Modified Version as given on the
+          Title Page.  If there is no section Entitled "History" in the
+          Document, create one stating the title, year, authors, and
+          publisher of the Document as given on its Title Page, then add
+          an item describing the Modified Version as stated in the
+          previous sentence.
 
        J. Preserve the network location, if any, given in the Document
           for public access to a Transparent copy of the Document, and
           likewise the network locations given in the Document for
-          previous versions it was based on.  These may be placed in
-          the "History" section.  You may omit a network location for a
-          work that was published at least four years before the
-          Document itself, or if the original publisher of the version
-          it refers to gives permission.
+          previous versions it was based on.  These may be placed in the
+          "History" section.  You may omit a network location for a work
+          that was published at least four years before the Document
+          itself, or if the original publisher of the version it refers
+          to gives permission.
 
        K. For any section Entitled "Acknowledgements" or "Dedications",
-          Preserve the Title of the section, and preserve in the
-          section all the substance and tone of each of the contributor
+          Preserve the Title of the section, and preserve in the section
+          all the substance and tone of each of the contributor
           acknowledgements and/or dedications given therein.
 
-       L. Preserve all the Invariant Sections of the Document,
-          unaltered in their text and in their titles.  Section numbers
-          or the equivalent are not considered part of the section
-          titles.
+       L. Preserve all the Invariant Sections of the Document, unaltered
+          in their text and in their titles.  Section numbers or the
+          equivalent are not considered part of the section titles.
 
        M. Delete any section Entitled "Endorsements".  Such a section
           may not be included in the Modified Version.
@@ -677,11 +918,11 @@ Appendix A GNU Free Documentation License
 
      If the Modified Version includes new front-matter sections or
      appendices that qualify as Secondary Sections and contain no
-     material copied from the Document, you may at your option
-     designate some or all of these sections as invariant.  To do this,
-     add their titles to the list of Invariant Sections in the Modified
-     Version's license notice.  These titles must be distinct from any
-     other section titles.
+     material copied from the Document, you may at your option designate
+     some or all of these sections as invariant.  To do this, add their
+     titles to the list of Invariant Sections in the Modified Version's
+     license notice.  These titles must be distinct from any other
+     section titles.
 
      You may add a section Entitled "Endorsements", provided it contains
      nothing but endorsements of your Modified Version by various
@@ -690,15 +931,15 @@ Appendix A GNU Free Documentation License
      definition of a standard.
 
      You may add a passage of up to five words as a Front-Cover Text,
-     and a passage of up to 25 words as a Back-Cover Text, to the end
-     of the list of Cover Texts in the Modified Version.  Only one
-     passage of Front-Cover Text and one of Back-Cover Text may be
-     added by (or through arrangements made by) any one entity.  If the
-     Document already includes a cover text for the same cover,
-     previously added by you or by arrangement made by the same entity
-     you are acting on behalf of, you may not add another; but you may
-     replace the old one, on explicit permission from the previous
-     publisher that added the old one.
+     and a passage of up to 25 words as a Back-Cover Text, to the end of
+     the list of Cover Texts in the Modified Version.  Only one passage
+     of Front-Cover Text and one of Back-Cover Text may be added by (or
+     through arrangements made by) any one entity.  If the Document
+     already includes a cover text for the same cover, previously added
+     by you or by arrangement made by the same entity you are acting on
+     behalf of, you may not add another; but you may replace the old
+     one, on explicit permission from the previous publisher that added
+     the old one.
 
      The author(s) and publisher(s) of the Document do not by this
      License give permission to use their names for publicity for or to
@@ -708,8 +949,8 @@ Appendix A GNU Free Documentation License
 
      You may combine the Document with other documents released under
      this License, under the terms defined in section 4 above for
-     modified versions, provided that you include in the combination
-     all of the Invariant Sections of all of the original documents,
+     modified versions, provided that you include in the combination all
+     of the Invariant Sections of all of the original documents,
      unmodified, and list them all as Invariant Sections of your
      combined work in its license notice, and that you preserve all
      their Warranty Disclaimers.
@@ -736,20 +977,20 @@ Appendix A GNU Free Documentation License
      documents released under this License, and replace the individual
      copies of this License in the various documents with a single copy
      that is included in the collection, provided that you follow the
-     rules of this License for verbatim copying of each of the
-     documents in all other respects.
+     rules of this License for verbatim copying of each of the documents
+     in all other respects.
 
      You may extract a single document from such a collection, and
      distribute it individually under this License, provided you insert
-     a copy of this License into the extracted document, and follow
-     this License in all other respects regarding verbatim copying of
-     that document.
+     a copy of this License into the extracted document, and follow this
+     License in all other respects regarding verbatim copying of that
+     document.
 
   7. AGGREGATION WITH INDEPENDENT WORKS
 
      A compilation of the Document or its derivatives with other
-     separate and independent documents or works, in or on a volume of
-     a storage or distribution medium, is called an "aggregate" if the
+     separate and independent documents or works, in or on a volume of a
+     storage or distribution medium, is called an "aggregate" if the
      copyright resulting from the compilation is not used to limit the
      legal rights of the compilation's users beyond what the individual
      works permit.  When the Document is included in an aggregate, this
@@ -794,8 +1035,8 @@ Appendix A GNU Free Documentation License
 
      However, if you cease all violation of this License, then your
      license from a particular copyright holder is reinstated (a)
-     provisionally, unless and until the copyright holder explicitly
-     and finally terminates your license, and (b) permanently, if the
+     provisionally, unless and until the copyright holder explicitly and
+     finally terminates your license, and (b) permanently, if the
      copyright holder fails to notify you of the violation by some
      reasonable means prior to 60 days after the cessation.
 
@@ -807,33 +1048,33 @@ Appendix A GNU Free Documentation License
      after your receipt of the notice.
 
      Termination of your rights under this section does not terminate
-     the licenses of parties who have received copies or rights from
-     you under this License.  If your rights have been terminated and
-     not permanently reinstated, receipt of a copy of some or all of
-     the same material does not give you any rights to use it.
+     the licenses of parties who have received copies or rights from you
+     under this License.  If your rights have been terminated and not
+     permanently reinstated, receipt of a copy of some or all of the
+     same material does not give you any rights to use it.
 
- 10. FUTURE REVISIONS OF THIS LICENSE
+  10. FUTURE REVISIONS OF THIS LICENSE
 
      The Free Software Foundation may publish new, revised versions of
      the GNU Free Documentation License from time to time.  Such new
      versions will be similar in spirit to the present version, but may
      differ in detail to address new problems or concerns.  See
-     `http://www.gnu.org/copyleft/'.
+     <http://www.gnu.org/copyleft/>.
 
      Each version of the License is given a distinguishing version
      number.  If the Document specifies that a particular numbered
      version of this License "or any later version" applies to it, you
      have the option of following the terms and conditions either of
      that specified version or of any later version that has been
-     published (not as a draft) by the Free Software Foundation.  If
-     the Document does not specify a version number of this License,
-     you may choose any version ever published (not as a draft) by the
-     Free Software Foundation.  If the Document specifies that a proxy
-     can decide which future versions of this License can be used, that
+     published (not as a draft) by the Free Software Foundation.  If the
+     Document does not specify a version number of this License, you may
+     choose any version ever published (not as a draft) by the Free
+     Software Foundation.  If the Document specifies that a proxy can
+     decide which future versions of this License can be used, that
      proxy's public statement of acceptance of a version permanently
      authorizes you to choose that version for the Document.
 
- 11. RELICENSING
+  11. RELICENSING
 
      "Massive Multiauthor Collaboration Site" (or "MMC Site") means any
      World Wide Web server that publishes copyrightable works and also
@@ -863,7 +1104,6 @@ Appendix A GNU Free Documentation License
      site under CC-BY-SA on the same site at any time before August 1,
      2009, provided the MMC is eligible for relicensing.
 
-
 ADDENDUM: How to use this License for your documents
 ====================================================
 
@@ -880,7 +1120,7 @@ notices just after the title page:
        Free Documentation License''.
 
    If you have Invariant Sections, Front-Cover Texts and Back-Cover
-Texts, replace the "with...Texts." line with this:
+Texts, replace the "with...Texts."  line with this:
 
          with the Invariant Sections being LIST THEIR TITLES, with
          the Front-Cover Texts being LIST, and with the Back-Cover Texts
@@ -891,24 +1131,32 @@ combination of the three, merge those two alternatives to suit the
 situation.
 
    If your document contains nontrivial examples of program code, we
-recommend releasing these examples in parallel under your choice of
-free software license, such as the GNU General Public License, to
-permit their use in free software.
+recommend releasing these examples in parallel under your choice of free
+software license, such as the GNU General Public License, to permit
+their use in free software.
 
 
 
 Tag Table:
-Node: Top806
-Node: Introduction1407
-Node: Configuring Python packages2838
-Node: Using pyconfigure4062
-Node: Required macros5530
-Node: Verifying the Python version6710
-Node: Checking for a module or function9227
-Node: Writing test programs10447
-Node: Using Sphinxbuild to build documentation11541
-Node: Appendix12551
-Node: Autoconf macros12722
-Node: GNU Free Documentation License16420
+Node: Top760
+Node: Introduction1463
+Node: Configuring Python packages2472
+Node: Installation3830
+Node: Invoking pyconf4559
+Node: PKG-INFO metadata6272
+Node: Customization7432
+Node: configure.ac8214
+Node: Required macros9970
+Node: Verifying the Python version11310
+Node: Checking for a module or function13461
+Node: Writing test programs14683
+Node: Using Sphinxbuild to build documentation15780
+Node: Makefile.in16790
+Node: Makefile.in (distutils)17226
+Node: Makefile.in (Make)19182
+Node: setup.py.in22050
+Node: Appendix22678
+Node: Autoconf macros22845
+Node: GNU Free Documentation License26462
 
 End Tag Table
