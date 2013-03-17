@@ -19,7 +19,8 @@
 
 
 from __future__ import print_function
-import os.path
+import os
+import stat
 import sys
 import getopt
 import shutil
@@ -106,8 +107,12 @@ def gen_configure(pkg_meta, output):
     subst_meta(config_src, config_dst, pkg_meta)
     print("Copying `bootstrap.sh'")
     shutil.copy(bootstrap, output)
+    os.chmod(os.path.join(output, "bootstrap.sh",
+                          stat.IXUSR | stat.IXGRP | stat.IXOTH))
     print("Copying `install-sh'")
     shutil.copy(install_sh, output)
+    os.chmod(os.path.join(output, "install-sh",
+                          stat.IXUSR | stat.IXGRP | stat.IXOTH))
     print("Copying Python m4 macros")
     try:
         os.mkdir(macro_dir)
@@ -159,7 +164,8 @@ OPTIONS
     -m, --prefer-make   prefer using Make for performing installation 
                         logic, instead of the Python-based TARGET
     --no-make           do not generate a Makefile
-    --help              show this information
+    --help              show this information and exit
+    --version           output version information and exit
 TARGETS:
     distutils (default)
 
@@ -176,10 +182,20 @@ pyconfigure home page: <http://www.gnu.org/software/pyconfigure/>
 General help using GNU software: <http://www.gnu.org/get/help/>""")
 
 
+def print_version():
+    print("""pyconf (GNU pyconfigure) @PACKAGE_VERSION@
+Copyright (C) 2013 Brandon Invergo
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by Brandon Invergo.""")
+
+
 if __name__ == "__main__":
-    long_args = ["help", "output", "prefer-make", "no-make"]
+    long_args = ["help", "version", "output", "prefer-make", "no-make"]
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], "ho:m", long_args)
+        opts, args = getopt.gnu_getopt(sys.argv[1:], "hvo:m", long_args)
     except getopt.GetoptError as err:
         print(str(err))
         print_usage()
@@ -190,6 +206,9 @@ if __name__ == "__main__":
     for o, a in opts:
         if o in ["-h", "--help"]:
             print_usage()
+            sys.exit()
+        if o in ["-v", "--version"]:
+            print_version()
             sys.exit()
         if o in ["-o", "--output"]:
             output = a
