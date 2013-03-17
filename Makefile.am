@@ -1,7 +1,9 @@
 bin_SCRIPTS = pyconf
 dist_pkgdata_DATA = src/Makefile.in.distutils src/Makefile.in.make \
 src/bootstrap.sh src/configure.ac src/install-sh \
-src/setup.py.in.distutils src/setup.py.in.make src/m4/python.m4
+src/setup.py.in.distutils src/setup.py.in.make
+m4dir = $(pkgdatadir)/m4
+dist_m4_DATA = src/m4/python.m4
 info_TEXINFOS = doc/pyconfigure.texi
 doc_COPYING = COPYING COPYING.GPLv4 src/m4/COPYING.EXCEPTION
 
