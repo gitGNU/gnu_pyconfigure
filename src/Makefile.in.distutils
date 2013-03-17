@@ -92,10 +92,10 @@ distclean:
 # You can either use the setup.py sdist command or you can roll your own here
 dist:
 #	$(PYTHON) setup.py sdist
-	@mkdir $(PACKAGE_DISTNAME)
-	@cp -r $(DISTFILES) $(PACKAGE_DISTNAME)
-	@tar -czf $(PACKAGE_DISTNAME).tar.gz $(PACKAGE_DISTNAME)
-	@rm -rf $(PACKAGE_DISTNAME)
+	mkdir $(PACKAGE_DISTNAME)
+	cp -r $(DISTFILES) $(PACKAGE_DISTNAME)
+	tar -czf $(PACKAGE_DISTNAME).tar.gz $(PACKAGE_DISTNAME)
+	rm -rf $(PACKAGE_DISTNAME)
 
 # Use the setup.py check command
 check:
