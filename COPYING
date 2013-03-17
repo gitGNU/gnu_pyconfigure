@@ -13,7 +13,8 @@ information.
 
 The included file `python.m4', contained in the src/m4/ directory, is
 released under the terms of the GNU General Public License Version 3,
-as defined by the Free Software Foundation, with additional
-permissions granted under Section 7 in the Autoconf Configure Script
-Exception. Please refer to the files `COPYING' and `COPYING.EXCEPTION'
-located in that directory. 
+or any later version, as defined by the Free Software Foundation, with
+additional permissions granted under Section 7 in the Autoconf
+Configure Script Exception. Please refer to the file
+`COPYING.EXCEPTION' located in that directory for more information on
+the additional permissions.
