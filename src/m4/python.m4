@@ -110,7 +110,6 @@ m4_define([_AC_LANG_CALL(Python)],
 AC_DEFUN([AC_LANG_COMPILER(Python)],
 [AC_REQUIRE([AC_PROG_PYTHON])])
 
-
 # AC_PROG_PYTHON(PROG-TO-CHECK-FOR)
 # ---------------------------------
 # Find a Python interpreter.  Python versions prior to 2.0 are not
@@ -139,17 +138,18 @@ m4_ifval([$1],
 ]) # PC_PYTHON_PROG_PYTHON_CONFIG
 
 
-# PC_PYTHON_VERIFY_VERSION(VERSION, [ACTION-IF-TRUE], [ACTION-IF-NOT-FOUND])
+# PC_PYTHON_VERIFY_VERSION(RELATION, VERSION, [ACTION-IF-TRUE], [ACTION-IF-NOT-FOUND])
 # ---------------------------------------------------------------------------
 # Run ACTION-IF-TRUE if the Python interpreter PROG has version >= VERSION.
 # Run ACTION-IF-FALSE otherwise.
+# Specify RELATION as any mathematical comparison "<", ">", "<=", ">=", "==" or "!="
 # This test uses sys.hexversion instead of the string equivalent (first
 # word of sys.version), in order to cope with versions such as 2.2c1.
 # This supports Python 2.0 or higher. (2.0 was released on October 16, 2000).
 AC_DEFUN([PC_PYTHON_VERIFY_VERSION],
 [AC_REQUIRE([AC_PROG_PYTHON])[]dnl
-m4_define([pc_python_safe_ver], m4_bpatsubsts($1, [\.], [_]))
-AC_CACHE_CHECK([if Python >= '$1'],
+m4_define([pc_python_safe_ver], m4_bpatsubsts($2, [\.], [_]))
+AC_CACHE_CHECK([if Python $1 '$2'],
     [[pc_cv_python_min_version_]pc_python_safe_ver],
     [AC_LANG_PUSH(Python)[]dnl
      AC_RUN_IFELSE(
@@ -159,18 +159,21 @@ import sys
     # split strings by '.' and convert to numeric.  Append some zeros
     # because we need at least 4 digits for the hex conversion.
     # map returns an iterator in Python 3.0 and a list in 2.x
-    minver = list(map(int, '$1'.split('.'))) + [[0, 0, 0]]
-    minverhex = 0
+    reqver = list(map(int, '$2'.split('.'))) + [[0, 0, 0]]
+    reqverhex = 0
     # xrange is not present in Python 3.0 and range returns an iterator
     for i in list(range(4)):
-        minverhex = (minverhex << 8) + minver[[i]]
-    sys.exit(sys.hexversion < minverhex)
+        reqverhex = (reqverhex << 8) + reqver[[i]]
+    if sys.hexversion $1 reqverhex:
+        sys.exit()
+    else:
+        sys.exit(1)
 ])], 
-         [[pc_cv_python_min_version_]pc_python_safe_ver="yes"], 
-         [[pc_cv_python_min_version_]pc_python_safe_ver="no"])
+         [[pc_cv_python_req_version_]pc_python_safe_ver="yes"], 
+         [[pc_cv_python_req_version_]pc_python_safe_ver="no"])
      AC_LANG_POP(Python)[]dnl
     ])
-AS_IF([test "$[pc_cv_python_min_version_]pc_python_safe_ver" = "no"], [$3], [$2])
+AS_IF([test "$[pc_cv_python_req_version_]pc_python_safe_ver" = "no"], [$4], [$3])
 ])# PC_PYTHON_VERIFY_VERSION
 
 
