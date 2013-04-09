@@ -1,3 +1,13 @@
+2013-04-10  Brandon Invergo  <brandon@invergo.net>
+
+	* src/m4/python.m4 (PC_INIT): Add initial version of the PC_INIT
+	macro
+
+2013-04-08  Brandon Invergo  <brandon@invergo.net>
+
+	* src/m4/python.m4 (PC_PYTHON_VERIFY_VERSIN): Support any
+	comparison operator (i.e. "<", ">", "==", etc.)
+
 2013-03-17  Brandon Invergo  <brandon@invergo.net>
 
 	* src/Makefile.in.distutils (dist): Un-silence the dist procedure
