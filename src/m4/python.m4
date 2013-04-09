@@ -110,6 +110,27 @@ m4_define([_AC_LANG_CALL(Python)],
 AC_DEFUN([AC_LANG_COMPILER(Python)],
 [AC_REQUIRE([AC_PROG_PYTHON])])
 
+# PC_INIT([MIN_VER], [MAX_VER]) 
+# -----------------------------
+# Initialize pyconfigure, finding a Python interpreter with a given
+# minimum and/or maximum version. 
+AC_DEFUN([PC_INIT],
+[AC_ARG_VAR([PYTHON], [the Python interpreter])
+m4_define_default([pc_min_ver], m4_ifval([$1], [$1], [2.0]))
+m4_define_default([pc_max_ver], m4_ifval([$2], [$2], [3.3]))
+m4_define_default([_PC_PYTHON_INTERPRETER_LIST],
+        [m4_foreach([pc_ver], 
+                    m4_esyscmd_s(seq -s[[", "]] -f["[[%.1f]]"] pc_max_ver -0.1 pc_min_ver),
+                    [[python]pc_ver] )python python3 python2])
+AC_PATH_PROGS(PYTHON, [_PC_PYTHON_INTERPRETER_LIST])
+m4_ifval([PYTHON],
+        [PC_PYTHON_VERIFY_VERSION([>=], [pc_min_ver],
+                  [PC_PYTHON_VERIFY_VERSION([<=], [pc_max_ver], [], 
+                            [AC_MSG_ERROR([No compatible Python interpreter found])])], 
+                  [AC_MSG_ERROR([No compatible Python interpreter found])])],
+        [AC_MSG_ERROR([No Python interpreter found])])
+])
+
 # AC_PROG_PYTHON(PROG-TO-CHECK-FOR)
 # ---------------------------------
 # Find a Python interpreter.  Python versions prior to 2.0 are not
@@ -117,7 +138,7 @@ AC_DEFUN([AC_LANG_COMPILER(Python)],
 AC_DEFUN([AC_PROG_PYTHON],
 [AC_ARG_VAR([PYTHON], [the Python interpreter])
 m4_define_default([_PC_PYTHON_INTERPRETER_LIST],
-                  [python python3 python 3.3 python3.2 python3.1 python3.0 python2 python2.7 dnl
+                  [python python3 python3.3 python3.2 python3.1 python3.0 python2 python2.7 dnl
                    python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0])
 m4_ifval([$1],
 	[AC_PATH_PROGS(PYTHON, [$1 _PC_PYTHON_INTERPRETER_LIST])],
@@ -147,8 +168,7 @@ m4_ifval([$1],
 # word of sys.version), in order to cope with versions such as 2.2c1.
 # This supports Python 2.0 or higher. (2.0 was released on October 16, 2000).
 AC_DEFUN([PC_PYTHON_VERIFY_VERSION],
-[AC_REQUIRE([AC_PROG_PYTHON])[]dnl
-m4_define([pc_python_safe_ver], m4_bpatsubsts($2, [\.], [_]))
+[m4_define([pc_python_safe_ver], m4_bpatsubsts($2, [\.], [_]))
 AC_CACHE_CHECK([if Python $1 '$2'],
     [[pc_cv_python_min_version_]pc_python_safe_ver],
     [AC_LANG_PUSH(Python)[]dnl
