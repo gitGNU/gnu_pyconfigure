@@ -1,4 +1,12 @@
 python-configure TODO    -*- mode: org; -*-
 
-* TODO replicate setup.py installation of files in Makefile.in
-* TODO add metadata like setup.py and add `make egg'
+* DONE replicate setup.py installation of files in Makefile.in
+  CLOSED: [2013-04-16 Tue 00:00]
+* DONE add metadata like setup.py
+  CLOSED: [2013-04-16 Tue 00:01]
+* TODO add "make egg" target?
+* TODO Fix erroneous last python interpreter check in PC_INIT
+It seems that instead of checking for "python" as the last
+interpreter to check, PC_INIT re-checks the max-version
+* TODO Remove dependencies between macros and AC_PROG_PYTHON, 
+since it has been superceded by PC_INIT
