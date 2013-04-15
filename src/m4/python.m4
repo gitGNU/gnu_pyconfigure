@@ -116,19 +116,36 @@ AC_DEFUN([AC_LANG_COMPILER(Python)],
 # minimum and/or maximum version. 
 AC_DEFUN([PC_INIT],
 [AC_ARG_VAR([PYTHON], [the Python interpreter])
+dnl The default minimum version is 2.0
 m4_define_default([pc_min_ver], m4_ifval([$1], [$1], [2.0]))
+dnl The default maximum version is 3.3
 m4_define_default([pc_max_ver], m4_ifval([$2], [$2], [3.3]))
+dnl Build up a list of possible interpreter names. 
 m4_define_default([_PC_PYTHON_INTERPRETER_LIST],
+dnl Construct a comma-separated list of interpreter names (python2.6, 
+dnl python2.7, etc). 
         [m4_foreach([pc_ver], 
                     m4_esyscmd_s(seq -s[[", "]] -f["[[%.1f]]"] pc_max_ver -0.1 pc_min_ver),
-                    [[python]pc_ver] )python python3 python2])
+dnl Remove python2.8 and python2.9 since they will never exist
+                    [m4_bmatch(pc_ver, [2.[89]], [], [python]pc_ver)] ) \
+dnl If we want some Python 3 versions (max version >= 3.0), 
+dnl also search for "python3"
+m4_if(m4_version_compare(pc_max_ver, [2.9]), [1], [python3], []) \
+dnl If we want some Python 2 versions (min version <= 2.7),
+dnl also search for "python2". Finally, also search for plain ol' "python"
+m4_if(m4_version_compare(pc_min_ver, [2.8]), [-1], [python2], []) [python]])
+dnl Do the actual search at last.
 AC_PATH_PROGS(PYTHON, [_PC_PYTHON_INTERPRETER_LIST])
+dnl If we found something, do a sanity check that the interpreter really
+dnl has the version its name would suggest.
 m4_ifval([PYTHON],
         [PC_PYTHON_VERIFY_VERSION([>=], [pc_min_ver],
-                  [PC_PYTHON_VERIFY_VERSION([<=], [pc_max_ver], [], 
-                            [AC_MSG_ERROR([No compatible Python interpreter found])])], 
-                  [AC_MSG_ERROR([No compatible Python interpreter found])])],
-        [AC_MSG_ERROR([No Python interpreter found])])
+                  [AC_MSG_RESULT([yes])],
+                  [AC_MSG_FAILURE([No compatible Python interpreter found. If you're sure that you have one, try setting the PYTHON environment variable to the location of the interpreter.])])])
+m4_ifval([PYTHON],
+        [PC_PYTHON_VERIFY_VERSION([<=], [pc_max_ver], 
+                  [AC_MSG_RESULT([yes])], 
+                  [AC_MSG_FAILURE([No compatible Python interpreter found. If you're sure that you have one, try setting the PYTHON environment variable to the location of the interpreter.])])])
 ])
 
 # AC_PROG_PYTHON(PROG-TO-CHECK-FOR)
