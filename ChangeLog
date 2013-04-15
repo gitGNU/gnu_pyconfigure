@@ -1,3 +1,8 @@
+2013-04-15  Brandon Invergo  <brandon@invergo.net>
+
+	* src/m4/python.m4 (PC_INIT): Make PC_INIT much more flexible and
+	robust. 
+
 2013-04-10  Brandon Invergo  <brandon@invergo.net>
 
 	* src/m4/python.m4 (PC_INIT): Add initial version of the PC_INIT
