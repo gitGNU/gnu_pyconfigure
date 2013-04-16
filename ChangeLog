@@ -1,7 +1,14 @@
+2013-04-16  Brandon Invergo  <brandon@invergo.net>
+
+	* src/configure.ac: Update to include PC_INIT
+
+	* src/m4/python.m4 (PC_INIT): Allow full version strings to be
+	used for the min/max versions
+
 2013-04-15  Brandon Invergo  <brandon@invergo.net>
 
 	* src/m4/python.m4 (PC_INIT): Make PC_INIT much more flexible and
-	robust. 
+	robust.
 
 2013-04-10  Brandon Invergo  <brandon@invergo.net>
 

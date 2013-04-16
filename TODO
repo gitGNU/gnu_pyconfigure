@@ -1,12 +1,23 @@
 python-configure TODO    -*- mode: org; -*-
 
-* DONE replicate setup.py installation of files in Makefile.in
-  CLOSED: [2013-04-16 Tue 00:00]
-* DONE add metadata like setup.py
-  CLOSED: [2013-04-16 Tue 00:01]
-* TODO add "make egg" target?
-* TODO Fix erroneous last python interpreter check in PC_INIT
+* TODO v0.3
+** TODO add "make egg" target?
+
+** TODO add setuputis "backend"
+** TODO add bento "backend"
+* TODO v0.2
+** DONE replicate setup.py installation of files in Makefile.in
+   CLOSED: [2013-04-16 Tue 00:00]
+** DONE add metadata like setup.py
+   CLOSED: [2013-04-16 Tue 00:01]
+** TODO Fix erroneous last python interpreter check in PC_INIT
 It seems that instead of checking for "python" as the last
 interpreter to check, PC_INIT re-checks the max-version
-* TODO Remove dependencies between macros and AC_PROG_PYTHON, 
+** DONE Remove dependencies between macros and AC_PROG_PYTHON, 
+   CLOSED: [2013-04-16 Tue 23:47]
 since it has been superceded by PC_INIT
+** DONE Clean up configure.ac
+   CLOSED: [2013-04-16 Tue 23:47]
+** DONE Comment/document better python.m4
+   CLOSED: [2013-04-16 Tue 23:47]
+** TODO Update documentation
