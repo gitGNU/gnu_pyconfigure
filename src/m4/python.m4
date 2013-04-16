@@ -148,7 +148,7 @@ m4_ifval([PYTHON],
         [PC_PYTHON_VERIFY_VERSION([<=], [pc_max_ver], 
                   [AC_MSG_RESULT([yes])], 
                   [AC_MSG_FAILURE([No compatible Python interpreter found. If you're sure that you have one, try setting the PYTHON environment variable to the location of the interpreter.])])])
-])
+])# PC_INIT
 
 # AC_PROG_PYTHON(PROG-TO-CHECK-FOR)
 # ---------------------------------
@@ -171,6 +171,8 @@ m4_ifval([$1],
 AC_DEFUN([PC_PYTHON_PROG_PYTHON_CONFIG],
 [AC_REQUIRE([PC_INIT])[]dnl
 AC_ARG_VAR([PYTHON_CONFIG], [the Python-config program])
+dnl python-config's binary name is normally based on the Python interpreter's
+dnl binary name (i.e. python2.7 -> python2.7-config)
 m4_define([_PYTHON_BASENAME], [`basename $PYTHON`])
 m4_ifval([$1],
 	[AC_PATH_PROGS(PYTHON_CONFIG, [$1 _PYTHON_BASENAME-config])],
@@ -244,9 +246,10 @@ AC_SUBST([PYTHON_VERSION], [$pc_cv_python_version])
 # Use the value of $prefix for the corresponding value of
 # PYTHON_PREFIX. This is made a distinct variable so it can be
 # overridden if need be.  However, general consensus is that you
-# shouldn't need this ability.
+# shouldn't need this ability. 
 AC_DEFUN([PC_PYTHON_CHECK_PREFIX],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
+dnl Try to get it with python-config otherwise do it from within Python
 AC_CACHE_CHECK([for Python prefix], [pc_cv_python_prefix],
 [if test -x "$PYTHON_CONFIG"; then
     pc_cv_python_prefix=`$PYTHON_CONFIG --prefix 2>&AS_MESSAGE_LOG_FD`
@@ -267,6 +270,7 @@ AC_SUBST([PYTHON_PREFIX], [$pc_cv_python_prefix])])
 # Like above, but for $exec_prefix
 AC_DEFUN([PC_PYTHON_CHECK_EXEC_PREFIX],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
+dnl Try to get it with python-config otherwise do it from within Python
 AC_CACHE_CHECK([for Python exec-prefix], [pc_cv_python_exec_prefix],
 [if test -x "$PYTHON_CONFIG"; then
     pc_cv_python_exec_prefix=`$PYTHON_CONFIG --exec-prefix 2>&AS_MESSAGE_LOG_FD`
@@ -289,6 +293,7 @@ AC_SUBST([PYTHON_EXEC_PREFIX], [$pc_cv_python_exec_prefix])])
 # '-I/usr/include/python')
 AC_DEFUN([PC_PYTHON_CHECK_INCLUDES],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
+dnl Try to find the headers location with python-config otherwise guess
 AC_CACHE_CHECK([for Python includes], [pc_cv_python_includes],
 [if test -x "$PYTHON_CONFIG"; then
     pc_cv_python_includes=`$PYTHON_CONFIG --includes 2>&AS_MESSAGE_LOG_FD`
@@ -317,6 +322,7 @@ CPPFLAGS=$pc_cflags_store
 # Find the Python lib flags (ie '-lpython')
 AC_DEFUN([PC_PYTHON_CHECK_LIBS],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
+dnl Try to find the lib flags with python-config otherwise guess
 AC_CACHE_CHECK([for Python libs], [pc_cv_python_libs],
 [if test -x "$PYTHON_CONFIG"; then
     pc_cv_python_libs=`$PYTHON_CONFIG --libs 2>&AS_MESSAGE_LOG_FD`
@@ -350,6 +356,7 @@ AC_CHECK_LIB([$pc_libpython], [$1], [$2], [$3])])
 # Find the Python CFLAGS
 AC_DEFUN([PC_PYTHON_CHECK_CFLAGS],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
+dnl Try to find the CFLAGS with python-config otherwise give up
 AC_CACHE_CHECK([for Python CFLAGS], [pc_cv_python_cflags],
 [if test -x "$PYTHON_CONFIG"; then
     pc_cv_python_cflags=`$PYTHON_CONFIG --cflags 2>&AS_MESSAGE_LOG_FD`
@@ -365,6 +372,7 @@ AC_SUBST([PYTHON_CFLAGS], [$pc_cv_python_cflags])])
 # Find the Python LDFLAGS
 AC_DEFUN([PC_PYTHON_CHECK_LDFLAGS],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
+dnl Try to find the LDFLAGS with python-config otherwise give up
 AC_CACHE_CHECK([for Python LDFLAGS], [pc_cv_python_ldflags],
 [if test -x "$PYTHON_CONFIG"; then
     pc_cv_python_ldflags=`$PYTHON_CONFIG --ldflags 2>&AS_MESSAGE_LOG_FD`
@@ -380,6 +388,7 @@ AC_SUBST([PYTHON_LDFLAGS], [$pc_cv_python_ldflags])])
 # Find the Python extension suffix (i.e. '.cpython-32.so')
 AC_DEFUN([PC_PYTHON_CHECK_EXTENSION_SUFFIX],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
+dnl Try to find the suffix with python-config otherwise give up
 AC_CACHE_CHECK([for Python extension suffix], [pc_cv_python_extension_suffix],
 [if test -x "$PYTHON_CONFIG"; then
      pc_cv_python_extension_suffix=`$PYTHON_CONFIG --extension-suffix 2>&AS_MESSAGE_LOG_FD`
@@ -395,6 +404,7 @@ AC_SUBST([PYTHON_EXTENSION_SUFFIX], [$pc_cv_python_extension_suffix])])
 # Find the Python ABI flags
 AC_DEFUN([PC_PYTHON_CHECK_ABI_FLAGS],
 [AC_REQUIRE([PC_PYTHON_PROG_PYTHON_CONFIG])[]dnl
+dnl Try to find the ABI flags with python-config otherwise give up
 AC_CACHE_CHECK([for Python ABI flags], [pc_cv_python_abi_flags],
 [if test -x "$PYTHON_CONFIG"; then
      pc_cv_python_abi_flags=`$PYTHON_CONFIG --abiflags 2>&AS_MESSAGE_LOG_FD`
@@ -411,6 +421,7 @@ AC_SUBST([PYTHON_ABI_FLAGS], [$pc_cv_python_abi_flags])])
 # to know which OS platform Python thinks this is.
 AC_DEFUN([PC_PYTHON_CHECK_PLATFORM],
 [AC_REQUIRE([PC_INIT])[]dnl
+dnl Get the platform from within Python (sys.platform)
 AC_CACHE_CHECK([for Python platform], 
     [pc_cv_python_platform],
     [AC_LANG_PUSH(Python)[]dnl
