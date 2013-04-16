@@ -21,3 +21,4 @@ since it has been superceded by PC_INIT
 ** DONE Comment/document better python.m4
    CLOSED: [2013-04-16 Tue 23:47]
 ** TODO Update documentation
+** TODO Don't clobber already-existing files with pyconf script
