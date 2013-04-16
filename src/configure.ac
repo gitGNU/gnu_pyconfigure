@@ -31,24 +31,6 @@ dnl
 dnl Wherever pyconfigure-specific macros are used, extra comments are
 dnl included to describe the macros.
 
-dnl############
-dnl M4 macros #
-dnl############
-dnl
-dnl In general, large M4 macros should be defined in files in the "m4" 
-dnl directory but here you can define some short ones that you will use 
-dnl in this file.
-
-dnl----
-dnl Set the minimum-required Python version(s).
-dnl You can use these macros later in this file to do
-dnl version checking
-dnl----
-dnl
-dnl m4_define([python_min_ver], [2.7.2])
-dnl m4_define([python3_min_ver], [3.2.1])
-
-
 dnl######################
 dnl Package Information #
 dnl######################
@@ -90,19 +72,34 @@ dnl
 dnl In this section, we check for the presence of important commands
 dnl and programs.
 
-dnl--AC_PROG_PYTHON---------------------------------------------------
-dnl This line is the bare minimum that needs to be included. It 
-dnl locates the Python interpreter binary. You may optionally pass it
-dnl an argument to pass a path to a binary. By default, this will
-dnl first check for a binary called "python" and then from there it
-dnl will check for version-specific binaries (ie "python3",
-dnl "python2.7") in decending version order. Thus, the highest version
-dnl binary will be found first. Note that if you call any of the
-dnl following macros, you probably won't have to include this one at
-dnl all, since most of the macros depend on this one.
+dnl--PC_INIT----------------------------------------------------------
+dnl This is the only required macro. Its primary function is to find
+dnl a Python interpreter that is compatible with the package and set 
+dnl the PYTHON variable to hold its path. It can optionally take
+dnl arguments to specify minimum and/or maximum versions:
+dnl PC_INIT: find an interpreter with a version between 2.0 and 3.3.99
+dnl          (in other words, up to and including any possible release
+dnl          in the 3.3 series)
+dnl PC_INIT([MIN_VER], [MAX_VER]): Find an interpreter that is between
+dnl          the minimum and maximum version. If the min is in the 2.0
+dnl          series and the max is in the 3.0 series, non-existent 
+dnl          releases (2.8 & 2.9) will be correctly skipped.
 dnl----
 dnl
-AC_PROG_PYTHON
+PC_INIT([2.7], [3.3.1])
+
+
+dnl--AC_PROG_PYTHON---------------------------------------------------
+dnl This macro provides another means of finding a Python interpreter.
+dnl It does not do any version checking like PC_INIT. You may
+dnl optionally pass it argument to pass a path to a binary to check 
+dnl for first. By default, this will first check for a binary called 
+dnl "python" and then from there it will check for version-specific
+dnl binaries (ie "python3", "python2.7") in decending version order. 
+dnl Thus, the highest version binary will be found first. 
+dnl----
+dnl
+dnl AC_PROG_PYTHON
 
 
 dnl--PC_PYTHON_PROG_PYTHON_CONFIG-------------------------------------
@@ -151,7 +148,8 @@ dnl this to create a SPHINXBUILD variable in the Makefile pointing to
 dnl the program. Thus, the user would specify 
 dnl SPHINXBUILD=/path/to/sphinx-build as an argument to the configure
 dnl script. Since building the documentation should be optional, just
-dnl print a warning.
+dnl print a warning. If the program uses some other documentation
+dnl system, you can do something similar with it.
 dnl----
 dnl
 dnl# Check for sphinx-build
@@ -162,8 +160,7 @@ dnl	    AC_MSG_WARN(sphinx-build is required to build documentation))
 
 dnl----
 dnl These two are standard Autoconf macros which check for the 
-dnl presence of some standard programs that we will use in the 
-dnl Makefile.
+dnl presence of some programs that we will use in the Makefile.
 dnl----
 dnl
 AC_PROG_MKDIR_P
@@ -177,29 +174,21 @@ dnl
 dnl In this section, we test for various aspects of the Python 
 dnl installation on the user's computer. 
 
-dnl--PC_PYTHON_VERIFY_VERSION------------------------------------------
-dnl This macro is used to check if the version of the discovered
-dnl Python binary meets some minimum requirement. You may optionally
-dnl provide actions to take if it does or if it doesn't meet the
+dnl--PC_PYTHON_VERIFY_VERSION & PC_PYTHON_CHECK_VERSION----------------
+dnl PC_PYTHON_VERIFY_VERSION is used to check if the version of the 
+dnl discovered Python binary meets some requirement. The first argument 
+dnl should be a Python-compatible numerical comparison operator (i.e. 
+dnl "==", "<", ">=", etc.). The second argument should be the version to 
+dnl test against. Finally, you may optionally provide actions to take if 
+dnl it does (3rd argument) or if it does not (4th argument) meet the 
 dnl requirement.
 dnl
-dnl If your package only supports Python 2 you'll have to do some extra tests
-dnl since by default AC_PROG_PYTHON will find the highest-version python binary,
-dnl which may be Python 3.x
+dnl PC_PYTHON_CHECK_VERSION simply fetches the version number of the
+dnl Python interpreter stored in the PYTHON variable
 dnl----
 dnl
-dnl # First, look for a binary called "python2". If it can't be found, try just 
-dnl # searching for "python", but exit with an error if that binary is Python 3+
-dnl AC_PROG_PYTHON([python2])
-dnl if [[ "x$PYTHON" == "x" ]]; then
-dnl   AC_PROG_PYTHON
-dnl   PC_PYTHON_VERIFY_VERSION(3.0, ,
-dnl	AC_MSG_ERROR(Python 2 (python_min_ver+) is required))
-dnl fi
-dnl # Ok, we hopefully have a Python 2 interpreter if we made it this far, now 
-dnl # check if it is of the minimum version, otherwise exit with an error
-dnl PC_PYTHON_VERIFY_VERSION(python_min_ver, ,
-dnl	AC_MSG_ERROR(Python 2 (python_min_ver+) is required))
+dnl PC_PYTHON_VERIFY_VERSION([>=], [2.7.1], [AC_MSG_RESULT([yes])],
+dnl	AC_MSG_FAILURE(Python 2 (python_min_ver+) is required))
 
 
 dnl--PC_PYTHON_CHECK_PREFIX--------------------------------------------
