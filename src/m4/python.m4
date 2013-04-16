@@ -101,7 +101,6 @@ m4_define([_AC_LANG_CALL(Python)],
 [AC_LANG_PROGRAM([$1], [$2])])
 
 
-
 ## -------------------------------------------- ##
 ## 3. Looking for Compilers and Interpreters.   ##
 ## -------------------------------------------- ##
@@ -109,6 +108,7 @@ m4_define([_AC_LANG_CALL(Python)],
 
 AC_DEFUN([AC_LANG_COMPILER(Python)],
 [AC_REQUIRE([AC_PROG_PYTHON])])
+
 
 # PC_INIT([MIN_VER], [MAX_VER]) 
 # -----------------------------
@@ -123,9 +123,11 @@ m4_define_default([pc_max_ver], m4_ifval([$2], [$2], [3.3]))
 dnl Build up a list of possible interpreter names. 
 m4_define_default([_PC_PYTHON_INTERPRETER_LIST],
 dnl Construct a comma-separated list of interpreter names (python2.6, 
-dnl python2.7, etc). 
+dnl python2.7, etc). We only care about the first 3 characters of the
+dnl version strings (major-dot-minor; not 
+dnl major-dot-minor-dot-bugfix[-dot-whatever])
         [m4_foreach([pc_ver], 
-                    m4_esyscmd_s(seq -s[[", "]] -f["[[%.1f]]"] pc_max_ver -0.1 pc_min_ver),
+                    m4_esyscmd_s(seq -s[[", "]] -f["[[%.1f]]"] m4_substr(pc_max_ver, [0], [3]) -0.1 m4_substr(pc_min_ver, [0], [3])),
 dnl Remove python2.8 and python2.9 since they will never exist
                     [m4_bmatch(pc_ver, [2.[89]], [], [python]pc_ver)] ) \
 dnl If we want some Python 3 versions (max version >= 3.0), 
@@ -167,7 +169,7 @@ m4_ifval([$1],
 # ----------------------------------------------
 # Find the python-config program
 AC_DEFUN([PC_PYTHON_PROG_PYTHON_CONFIG],
-[AC_REQUIRE([AC_PROG_PYTHON])[]dnl
+[AC_REQUIRE([PC_INIT])[]dnl
 AC_ARG_VAR([PYTHON_CONFIG], [the Python-config program])
 m4_define([_PYTHON_BASENAME], [`basename $PYTHON`])
 m4_ifval([$1],
@@ -220,7 +222,7 @@ AS_IF([test "$[pc_cv_python_req_version_]pc_python_safe_ver" = "no"], [$4], [$3]
 # the best way to do this; it's what "site.py" does in the standard
 # library.
 AC_DEFUN([PC_PYTHON_CHECK_VERSION],
-[AC_REQUIRE([AC_PROG_PYTHON])[]dnl
+[AC_REQUIRE([PC_INIT])[]dnl
 AC_CACHE_CHECK([for $1 version], 
     [pc_cv_python_version],
     [AC_LANG_PUSH(Python)[]dnl
@@ -408,7 +410,7 @@ AC_SUBST([PYTHON_ABI_FLAGS], [$pc_cv_python_abi_flags])])
 # At times (like when building shared libraries) you may want
 # to know which OS platform Python thinks this is.
 AC_DEFUN([PC_PYTHON_CHECK_PLATFORM],
-[AC_REQUIRE([AC_PROG_PYTHON])[]dnl
+[AC_REQUIRE([PC_INIT])[]dnl
 AC_CACHE_CHECK([for Python platform], 
     [pc_cv_python_platform],
     [AC_LANG_PUSH(Python)[]dnl
@@ -430,7 +432,7 @@ AC_SUBST([PYTHON_PLATFORM], [$pc_cv_python_platform])
 # The directory to which new libraries are installed (i.e. the
 # "site-packages" directory.
 AC_DEFUN([PC_PYTHON_CHECK_SITE_DIR],
-[AC_REQUIRE([AC_PROG_PYTHON])AC_REQUIRE([PC_PYTHON_CHECK_PREFIX])[]dnl
+[AC_REQUIRE([PC_INIT])AC_REQUIRE([PC_PYTHON_CHECK_PREFIX])[]dnl
 AC_CACHE_CHECK([for Python site-packages directory],
     [pc_cv_python_site_dir],
     [AC_LANG_PUSH(Python)[]dnl
@@ -494,7 +496,7 @@ AC_SUBST([pkgpythondir], [\${pythondir}/$PACKAGE])])
 # ------------------------
 # directory for installing python extension modules (shared libraries)
 AC_DEFUN([PC_PYTHON_CHECK_EXEC_DIR],
-[AC_REQUIRE([AC_PROG_PYTHON])AC_REQUIRE([PC_PYTHON_CHECK_EXEC_PREFIX])[]dnl
+[AC_REQUIRE([PC_INIT])AC_REQUIRE([PC_PYTHON_CHECK_EXEC_PREFIX])[]dnl
   AC_CACHE_CHECK([for Python extension module directory],
     [pc_cv_python_exec_dir],
     [AC_LANG_PUSH(Python)[]dnl
@@ -564,7 +566,7 @@ AC_SUBST([pkgpyexecdir], [\${pyexecdir}/$PACKAGE])])
 # ----------------------------------------------------------------------
 # Macro for checking if a Python library is installed
 AC_DEFUN([PC_PYTHON_CHECK_MODULE],
-[AC_REQUIRE([AC_PROG_PYTHON])[]dnl
+[AC_REQUIRE([PC_INIT])[]dnl
 m4_define([pc_python_safe_mod], m4_bpatsubsts($1, [\.], [_]))
 AC_CACHE_CHECK([for Python '$1' library],
     [[pc_cv_python_module_]pc_python_safe_mod],
@@ -592,7 +594,7 @@ AS_IF([test "$[pc_cv_python_module_]pc_python_safe_mod" = "no"], [$3], [$2])
 # Check to see if a given function call, optionally from a module, can
 # be successfully called
 AC_DEFUN([PC_PYTHON_CHECK_FUNC],
-[AC_REQUIRE([AC_PROG_PYTHON])[]dnl
+[AC_REQUIRE([PC_INIT])[]dnl
 m4_define([pc_python_safe_mod], m4_bpatsubsts($1, [\.], [_]))
 AC_CACHE_CHECK([for Python m4_ifnblank($1, '$1.$2()', '$2()') function],
     [[pc_cv_python_func_]pc_python_safe_mod[_$2]],
