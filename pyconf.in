@@ -25,9 +25,17 @@ import sys
 import getopt
 import shutil
 import subprocess
+import warnings
 
 
 DATADIR = "@pkgdatadir@"
+
+
+def safe_copy(src, dst, overwrite=False):
+    if not overwrite and os.path.exists(dst):
+        warnings.warn("{0} exists. Skipping.".format(dst))
+    else:
+        shutil.copy(src, dst)
 
 
 def parse_pkg_info(pkg_info):
@@ -102,11 +110,13 @@ def copy_aux_files(output):
     print("Copying bootstrap.sh")
     shutil.copy(bootstrap, output)
     os.chmod(os.path.join(output, "bootstrap.sh"),
-                          stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+                          stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | \
+             stat.S_IROTH | stat.S_IXOTH)
     print("Copying install-sh")
     shutil.copy(install_sh, output)
     os.chmod(os.path.join(output, "install-sh"),
-                          stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+                          stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | \
+             stat.S_IROTH | stat.S_IXOTH)
     
 
 def copy_macros(output):
@@ -122,19 +132,22 @@ def copy_macros(output):
     shutil.copy(macros, macro_dir)
 
 
-def gen_configure(pkg_meta, output):
+def gen_configure(pkg_meta, output, overwrite):
     """Generate the configure script. Copy the source files into the project
     directory and then run autoreconf to generate the configure script"""
     
     config_src = os.path.join(DATADIR, "configure.ac")
     config_dst = os.path.join(output, "configure.ac")
     print("Generating configure.ac")
-    subst_meta(config_src, config_dst, pkg_meta)
+    if not overwrite and os.path.exists(config_dst):
+        warnings.warn("configure.ac exists. Skipping.")
+    else:
+        subst_meta(config_src, config_dst, pkg_meta)
     print("Generating configure")
     subprocess.call(["autoreconf", "-fvi", output])
 
 
-def gen_makefile(pkg_meta, output, prefer_make):
+def gen_makefile(pkg_meta, output, prefer_make, overwrite):
     """Generate the Makefile. If the --prefer-make option was passed, copy the
     Makefile that contains the installation logic written in Make, otherwise
     copy the Makefile that acts as a wrapper around Distutils"""
@@ -143,12 +156,12 @@ def gen_makefile(pkg_meta, output, prefer_make):
         makefile_src = os.path.join(DATADIR, "Makefile.in.make")
     else:
         makefile_src = os.path.join(DATADIR, "Makefile.in.distutils")
-    print("Generating Makefile.in")
     makefile_dst = os.path.join(output, "Makefile.in")
-    shutil.copy(makefile_src, makefile_dst)
+    print("Generating Makefile.in")
+    safe_copy(makefile_src, makefile_dst, overwrite)
 
 
-def gen_distutils(pkg_meta, output, prefer_make, target):
+def gen_distutils(pkg_meta, output, prefer_make, target, overwrite):
     """Generate the setup.py.in script. If the --prefer-make option was passed,
     copy the setup.py.in that wraps the Makefile, otherwise script that uses
     'target'. 'target' is a number representing which Python-based distribution
@@ -164,8 +177,12 @@ def gen_distutils(pkg_meta, output, prefer_make, target):
     setup_py_dst = os.path.join(output, "setup.py.in")
     print("Generating setup.py.in")
     if not prefer_make:
-        subst_meta(setup_py_src, setup_py_dst, pkg_meta)
-    shutil.copy(setup_py_src, setup_py_dst)
+        if not overwrite and os.path.exists(setup_py_dst):
+            warnings.warn("setup.py.in exists. Skipping.")
+        else:
+            subst_meta(setup_py_src, setup_py_dst, pkg_meta)
+    else:
+        safe_copy(setup_py_src, setup_py_dst, overwrite)
 
 
 def print_usage():
@@ -180,6 +197,7 @@ OPTIONS
     --macros-only       copy the pyconfigure M4 macros to the output
                         directory and exit
     --no-make           do not generate a Makefile
+    --overwrite         overwrite existing files
     --help              show this information and exit
     --version           output version information and exit
 TARGETS:
@@ -208,7 +226,7 @@ There is NO WARRANTY, to the extent permitted by law.""")
 
 if __name__ == "__main__":
     long_args = ["help", "version", "output", "prefer-make", "no-make",
-                 "macros-only"]
+                 "overwrite", "macros-only"]
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "hvo:m", long_args)
     except getopt.GetoptError as err:
@@ -219,22 +237,25 @@ if __name__ == "__main__":
     prefer_make = False
     no_make = False
     macros_only = False
+    overwrite = False
     for o, a in opts:
         if o in ["-h", "--help"]:
             print_usage()
             sys.exit()
-        if o in ["-v", "--version"]:
+        elif o in ["-v", "--version"]:
             print_version()
             sys.exit()
-        if o in ["-o", "--output"]:
+        elif o in ["-o", "--output"]:
             output = a
-        if o in ["-m", "--prefer-make"]:
+        elif o in ["-m", "--prefer-make"]:
             prefer_make = True
-        if o in ["--no-make"]:
+        elif o == "--no-make":
             no_make = True
             prefer_make = False
-        if o in ["--macros-only"]:
+        elif o == "--macros-only":
             macros_only = True
+        elif o == "--overwrite":
+            overwrite = True
         else:
             print("Warning: unhandled option")
     if len(args) == 0:
@@ -263,12 +284,12 @@ if __name__ == "__main__":
     print("Parsing metadata...")
     pkg_meta = parse_pkg_info(pkg_info)
     copy_aux_files(output)
-    gen_configure(pkg_meta, output)
+    gen_configure(pkg_meta, output, overwrite)
     if not no_make:
-        gen_makefile(pkg_meta, output, prefer_make)
+        gen_makefile(pkg_meta, output, prefer_make, overwrite)
     # also with an eye to the future. This will be a list of gen_TARGET functions
     # and the function is chosen according to the index number 'target'. Since
     # only distutils is supported, the list has one element, gen_distutils, and
     # only target 0 works
-    [gen_distutils][target](pkg_meta, output, prefer_make, target)
+    [gen_distutils][target](pkg_meta, output, prefer_make, target, overwrite)
     sys.exit(0)
