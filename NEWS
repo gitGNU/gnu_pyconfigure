@@ -1,6 +1,6 @@
 # -*- org -*-
 
-Copyright (C) 2012 Brandon Invergo <brandon@invergo.net>
+Copyright (C) 2012, 2013 Brandon Invergo <brandon@invergo.net>
 
 This file is part of pyconfigure.
 
@@ -16,6 +16,43 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with pyconfigure.  If not, see <http://www.gnu.org/licenses/>.
+
+* 0.2
+This release introduces a major restructuring of pyconfigure, making
+it easier to use for projects with different needs. Please read the
+documentation to learn more about the changes.
+
+** The new 'pyconf' script makes starting a new project easier.
+Previously, pyconfigure's template files had to be manually copied
+into new projects.  Now this process is simplified by the 'pyconf'
+script that is installed with pyconfigure.  This script is called
+from within a Python project's directory and copies/generates all of
+the necessary files into the directory for you.  Its command-line
+options support several different project needs.
+
+** Writing your build/install logic in Make is now supported.
+In addition to having the Makefile be a wrapper around setup.py, it
+is now possible to do the opposite and have setup.py be a wrapper
+around the Makefile.  This allows you to write all of your build and
+install logic in Make.
+
+** The template files contain more comments.
+Many of the template files have been filled with even more useful
+comments, making the process of setting up pyconfigure for your
+project even easier. Also, the 'configure.ac' template has been
+rearranged into a more logical structure.
+
+** The new PC_INIT Autoconf macro simplifies getting started.
+This macro makes finding a Python interpreter even easier and more
+flexible by letting you specify minimum and maximum versions, freeing
+you from having to write this version checking code yourself in
+'configure.ac'.
+
+** The PC_PYTHON_VERIFY_VERSION macro has been made more flexible.
+Of course, if you *do* want to do some kind of version checking, it
+has been made even easier. You can now perform any kind of version
+test with PC_PYTHON_VERIFY_VERSION: greater-than, less-than, equals,
+etc.
 
 * 0.1.1
 This is a bugfix/cleanup release, correcting several problems with
