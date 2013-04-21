@@ -20,7 +20,7 @@ PYPACKAGES = foo bar
 # directory here. For example, if package "foo" is under the "src"
 # directory in your source, Set PYPACKAGE_ROOT to "src". Leave this
 # variable empty if "foo" is in the same directory as this Makefile.
-PYPACKAGE_ROOT = 
+PYPACKAGE_ROOT ?= .
 
 # List any files that should be installed as executable scripts
 # here. Write their path relative to this Makefile. If binary "baz" is
@@ -97,11 +97,22 @@ empty:=
 space:= $(empty) $(empty)
 comma:= ,
 
-all: install
 
-.PHONY: all install install-virtualenv install-pypkgs install-scripts \
-install-pkgdata install-data uninstall distclean info install-html html \
-install-pdf pdf install-dvi dvi install-ps ps clean dist check installdirs
+all: build 
+
+
+.PHONY: all build byte-compile install install-virtualenv				\
+install-pypkgs install-scripts install-pkgdata install-data uninstall	\
+distclean info install-html html install-pdf pdf install-dvi dvi		\
+install-ps ps clean dist check installdirs
+
+
+build: byte-compile
+
+
+byte-compile:
+	$(PYTHON) -m compileall $(PYPACKAGE_ROOT)/$(PYPACKAGES)
+
 
 ifneq ($(VIRTUALENV),no)
 install: install-dirs install-virtualenv install-pypkgs install-scripts \
