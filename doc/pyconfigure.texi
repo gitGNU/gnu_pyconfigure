@@ -274,7 +274,7 @@ specification; refer to that document for more information.
 Metadata-Version: 1.2
 Name: foo
 Version: 1.5
-Author-email: bug-foo@gnu.org
+Author-email: bug-foo@@gnu.org
 @end example
 
 @c *******************************************************************
@@ -288,7 +288,7 @@ would be to run @command{pyconf} to copy all of the files into your
 project's directory. Next, you simply need to copy the contents of
 your @file{setup.py} script into @file{setup.py.in}. Be sure not to
 just overwrite the file directly! Inside @file{setup.py.in} you will
-see several strings like @code{@PACKAGE_NAME@}. These are strings that
+see several strings like @code{@@PACKAGE_NAME@@}. These are strings that
 will be replaced by the configure script and they should remain
 as they are. Most of the contents of the standard @code{setup}
 function should have already been filled in through the information in
@@ -697,7 +697,7 @@ Description
 Variables exported
 
 @item
-@code{PC_INIT([MINIMUM-VERSION], [MAXIMUM-VERSION])
+@code{PC_INIT([MINIMUM-VERSION], [MAXIMUM-VERSION])}
 @tab
 Initialize pyconfigure by finding the highest-version Python
 interpreter that meets the specified requirements.
