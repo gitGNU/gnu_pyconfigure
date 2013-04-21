@@ -10,9 +10,6 @@ python-configure TODO    -*- mode: org; -*-
    CLOSED: [2013-04-16 Tue 00:00]
 ** DONE add metadata like setup.py
    CLOSED: [2013-04-16 Tue 00:01]
-** TODO Fix erroneous last python interpreter check in PC_INIT
-It seems that instead of checking for "python" as the last
-interpreter to check, PC_INIT re-checks the max-version
 ** DONE Remove dependencies between macros and AC_PROG_PYTHON, 
    CLOSED: [2013-04-16 Tue 23:47]
 since it has been superceded by PC_INIT
@@ -20,5 +17,7 @@ since it has been superceded by PC_INIT
    CLOSED: [2013-04-16 Tue 23:47]
 ** DONE Comment/document better python.m4
    CLOSED: [2013-04-16 Tue 23:47]
-** TODO Update documentation
-** TODO Don't clobber already-existing files with pyconf script
+** DONE Update documentation
+   CLOSED: [2013-04-21 Sun 13:32]
+** DONE Don't clobber already-existing files with pyconf script
+   CLOSED: [2013-04-21 Sun 11:46]

@@ -1,3 +1,12 @@
+2013-04-21  Brandon Invergo  <brandon@invergo.net>
+
+	* src/Makefile.in.make (byte-compile): Add target to byte-compile
+	Python libraries
+	(build): Add general build target
+
+	* pyconf.in: Add --overwrite option to protect from clobbering
+	existing files.
+
 2013-04-16  Brandon Invergo  <brandon@invergo.net>
 
 	* src/configure.ac: Update to include PC_INIT
