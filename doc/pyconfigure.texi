@@ -42,39 +42,53 @@ Documentation License.''
 
 @ifnottex
 @node Top, Introduction, (dir), (dir)
-@top GNU Source Release Collection
+@top pyconfigure
 
 This manual is for pyconfigure (version @value{VERSION}, @value{UPDATED}).
 @end ifnottex
 
 @menu
-* Introduction::        pyconfigure in brief.
-* Installation::        How to install pyconfigure.
-* Invoking pyconf::     How to invoke the pyconf script.
-* Customization::       How to customize the template files for your package
+* Introduction::                pyconfigure in brief.
+* Installation::                How to install pyconfigure.
+* Invoking pyconf::             How to invoke the pyconf script.
+* Existing projects::
+* Customization::               How to customize the template files for your package
 * Appendix::
 * GNU Free Documentation License::
 
 @detailmenu
---- The Detailed Node Listing ---
+ --- The Detailed Node Listing ---
 
 Introduction
 
-* Configuring Python packages
+* Configuring Python packages::
 
 Invoking pyconf
 
-* PKG-INFO metadata
+* PKG-INFO metadata::
 
 Customization
 
-* configure.ac
-* Makefile.in
-* setup.py.in
+* configure.ac::
+* Makefile.in::
+* setup.py.in::
+
+configure.ac
+
+* Required macros::
+* Verifying the Python version::
+* Checking for a module or function::
+* Writing test programs::
+* Using Sphinxbuild to build documentation::
+
+Makefile.in
+
+* Makefile.in (distutils)::
+* Makefile.in (Make)::
 
 Appendix
 
-* Autoconf macros
+* Autoconf macros::
 
 @end detailmenu
 @end menu
@@ -96,9 +110,9 @@ The configuration and installation of GNU software and many other
 programs, on the other hand, is done according to the use of standard
 @file{configure} scripts and Make recipes. This method has the
 advantage of being language-agnostic, very flexible, and
-time-proven. pyconfigure consists of all the files necessary to use
-the standard GNU build process to configure and install Python
-packages.
+time-proven. pyconfigure consists of all the files necessary to begin
+using the standard GNU build process to configure and install a Python
+package.
 
 @menu
 * Configuring Python packages::
@@ -118,9 +132,6 @@ $ make
 $ make install
 @end example
 
-In fact, since most programs do not have anything to build, the second
-step can usually be skipped.
-
 As usual, the user may pass arguments to @file{configure} in order to
 specify how she wants the software to be installed. By default, the
 generated @file{configure} script takes the following useful
@@ -133,22 +144,22 @@ Argument
 Description
 
 @item
-@code{--prefix}
+@option{--prefix}
 @tab
 Set the root directory in which to install files (default=/usr/local)
 
 @item
-@code{--with-virtualenv}
+@option{--with-virtualenv}
 @tab
 Install to a virtualenv at @code{$prefix}
 
 @item
-@code{PYTHON}
+@env{PYTHON}
 @tab
 Path to the Python interpreter to use
 
 @item
-@code{PYTHONPATH}
+@env{PYTHONPATH}
 @tab
 The PYTHONPATH to use during the installation
 
@@ -175,11 +186,11 @@ $ ./configure --prefix=/usr/local
 $ make install
 @end example
 
-If you wish the files to be installed to a different, specify it using
-the @code{--prefix} option.
+If you wish the files to be installed to a different location, specify
+it using the @option{--prefix} option.
 
 @c *******************************************************************
-@node Invoking pyconf, Customization, Installation, Top
+@node Invoking pyconf, Existing projects, Installation, Top
 @chapter Invoking pyconf
 
 Before invoking the @file{pyconf} script, you first must decide
@@ -189,8 +200,10 @@ will be a wrapper around the Python installation script
 (i.e. @file{setup.py}), while if you choose the latter, the Python
 installation script will be a wrapper around the Makefile. 
 
-In the most basic case, you would navigate to your project's directory
-and simply invoke @file{pyconf} on your project's @file{PKG-INFO}
+Next, you must create a @file{PKG-INFO} file containing standard
+metadata about your project (@pxref{PKG-INFO metadata}). Finally, in
+the most basic case, you would navigate to your project's directory
+and simply invoke @command{pyconf} on your project's @file{PKG-INFO}
 file:
 
 @example
@@ -201,10 +214,12 @@ This will generate a @file{configure.ac} Autoconf file, a
 @file{configure} script generated from that Autoconf file, a
 @file{setup.py.in} installation file (to be configured by the user
 upon the invocation of @file{configure}) and a @file{Makefile.in} file
-which wraps the functionality of @file{setup.py}. 
+which wraps the functionality of @file{setup.py}. If any of these
+files already exist, @command{pyconf} will not overwrite them unless
+the @option{--overwrite} option is passed.
 
 If you wish the files to be copied into a different directory, you may
-add the @code{--output} option (or its short form @code{-o}) to
+add the @option{--output} option (or its short form @code{-o}) to
 specify the directory into which you would prefer the files to be
 copied.
 
@@ -213,7 +228,7 @@ $ pyconf -output=$HOME/Projects/pyproject PKG-INFO
 @end example
 
 If you would prefer to write your installation logic using Make, pass
-the @code{--prefer-make} (@code{-m}) option:
+the @option{--prefer-make} (@option{-m}) option:
 
 @example
 $ pyconf --prefer-make PKG-INFO
@@ -224,9 +239,9 @@ wrapper around the @file{Makefile.in} file. You would then extend the
 installation process in the latter file.
 
 If you would prefer a pure-Python approach, pyconf may optionally not
-generate any Makefile by passing the @code{--no-make} option. Finally,
+generate any Makefile by passing the @option{--no-make} option. Finally,
 if you only need pyconfigure's Autoconf macros, you may pass the
-@code{--macros-only} option, which causes @file{pyconf} to exit
+@option{--macros-only} option, which causes @command{pyconf} to exit
 immediately after copying the macros into your package directory.
 
 
@@ -241,11 +256,10 @@ As a base, the @file{pyconf} script requires a @file{PKG-INFO} file
 containing metadata about the project. This file should fit the
 requirements of the @file{PKG-INFO} metadata file format as outlined
 in the @url{http://www.python.org/dev/peps/pep-0345/, PEP 345
-document}. Generally speaking, the file consists of several
-@code{Key: value} pairs. Some keys may be specified more than once,
-meaning that the package has several such values, while others may
-appear only once. Refer to PEP 345 for the authoritative
-specification. 
+document}. The file consists of several @code{Key: value} pairs. Some
+keys may be specified more than once, meaning that the package has
+several such values, while others may appear only once. Refer to PEP
+345 for the authoritative specification.
 
 For the purposes of pyconfigure, only four keys are required. The
 first, ``Metadata-Version'' must have a value of 1.2 or higher;
@@ -256,8 +270,42 @@ which may only appear once, contains the package's name. Similarly,
 project. Other keys are required to fully meet the PEP 345
 specification; refer to that document for more information.
 
+@example
+Metadata-Version: 1.2
+Name: foo
+Version: 1.5
+Author-email: bug-foo@gnu.org
+@end example
+
 @c *******************************************************************
-@node Customization, Appendix, Invoking pyconf, Top
+@node Existing projects, Customization, Invoking pyconf, Top
+@chapter Existing projects
+
+Using pyconfigure with existing projects is easy. For example, if your
+project already has a @file{setup.py} script, there is no need to
+replace it with pyconfigure. In this case, the best way to proceed
+would be to run @command{pyconf} to copy all of the files into your
+project's directory. Next, you simply need to copy the contents of
+your @file{setup.py} script into @file{setup.py.in}. Be sure not to
+just overwrite the file directly! Inside @file{setup.py.in} you will
+see several strings like @code{@PACKAGE_NAME@}. These are strings that
+will be replaced by the configure script and they should remain
+as they are. Most of the contents of the standard @code{setup}
+function should have already been filled in through the information in
+the @file{PKG-INFO} file but if not, they can be filled in
+manually. The default @file{setup.py.in} script is otherwise very
+simple, meaning any extensions to it that you have written in your
+@file{setup.py} script can simply be copied in.
+
+If your project does not yet have a @file{setup.py} script but it
+already has a @file{Makefile}, the process is even easier. Simply
+call @command{pyconf} with @option{--prefer-make} and the
+@file{setup.py.in} file that is generated in your project's directory
+will simply wrap your @file{Makefile} (just be sure not to pass the
+@option{--overwrite} option!).
+
+@c *******************************************************************
+@node Customization, Appendix, Existing projects, Top
 @chapter Customization
 
 Once @file{pyconf} has generated the files in your project's
@@ -284,15 +332,21 @@ setup script @file{setup.py}.
 
 There are some minimum modifications that should be made in
 @file{configure.ac}. The file contains a significant amount of
-information in comment from, so it is possible to discern your needs
-while editing. For more advanced usage, it is recommended to refer to
-the @inforef{Autoconf, Autoconf manual, autoconf}.
+information in the form of comments, so it is possible to discern your
+needs while editing. For more advanced usage, it is recommended to
+refer to the @inforef{Autoconf, Autoconf manual, autoconf}.
 
 In this file you will see a macro called @code{AC_INIT}. This is a
 standard Autoconf macro. The arguments to this are automatically
 generated from the @file{PKG-INFO} file that you used. These three
 values are used extensively in the files modified by the configure
 script, so it is important that they be correct.
+
+Further down, you will also find a macro called @code{PC_INIT}. This
+is the core macro of pyconfigure. This will build the code necessary
+to find a suitable Python interpreter on the user's computer. To that
+end, you can pass arguments to this macro which specify the minimum
+and/or maximum supported Python versions.
 
 While the default @file{configure.ac} script will likely be sufficient
 for a basic Python-based project, it may be made to be much more
@@ -347,14 +401,20 @@ write your own macros for other purposes, you should include them in
 the @file{m4} directory as well.
 
 @example
-AC_PROG_PYTHON
+PC_INIT([2.5], [3.3.1])
 @end example
 
-This is the key macro. It finds the highest-version Python interpreter
-available on the system and saves its path in the @code{PYTHON}
-variable. Because the other pyconfigure M4 macros depend on this one,
-you typically will not need to explicitly include it in
-@file{configure.ac}.
+This is the key macro. It finds a Python interpreter available on the
+system that meets optional version requirements specified in its
+arguments and saves its path in the @env{PYTHON} variable. Generally
+speaking, the highest-version Python interpreter found within the
+given version range (inclusive) will be used. Note, however, that
+minor version differences may cause discrepancies. For example, the
+user may have Python 3.3.1 installed but a slight difference in its
+release may cause the interpreter to internally report a slightly
+higher version, causing this interpreter to not pass the version
+check. To be safe, set the maximum version one bugfix release higher
+(i.e. ``3.3.2'' in this case).
 
 @example
 PC_PYTHON_SITE_PACKAGE_DIR
@@ -379,44 +439,17 @@ version installed. There is a macro available to simplify this,
 
 @example
 m4_define(python_min_ver, 2.6.1)
-PC_PYTHON_VERIFY_VERSION([$PYTHON], python_min_ver, ,
+PC_PYTHON_VERIFY_VERSION([>=], python_min_ver, ,
                          [AC_MSG_ERROR(Python interpreter too old)])
 @end example
 
 In this example, we set the minimum version to 2.6.1 through the use
 of an M4 macro. We then check if the interpreter stored in the
-@code{PYTHON} variable (either set by the user or found by
-@code{AC_PROG_PYTHON}) is at least of that version. If it is not, the
+@env{PYTHON} variable (either set by the user or found by
+@code{PC_INIT}) is at least of that version. If it is not, the
 resulting @file{configure} script will exit with an appropriate error
-message.
-
-Unfortunately, the divide between Python 2 and Python 3 and many
-programs are only compatible with Python 2. Since
-@code{AC_PROG_PYTHON} will find the latest Python interpreter, if the
-user has any Python version 3.x installed, @code{configure} must be
-able to instead find the most latest 2.x version installed. This is
-slightly less straight-forward, but one possible implementation is as
-follows:
-
-@example
-AC_PROG_PYTHON([python2])
-if [[ "x$PYTHON" == "x" ]]; then
-   AC_PROG_PYTHON
-   PC_PYTHON_VERIFY_VERSION(3.0, ,
-	AC_MSG_ERROR(Python 2 (python_min_ver+) is required))
-fi
-PC_PYTHON_VERIFY_VERSION(python_min_ver, ,
-	AC_MSG_ERROR(Python 2 (python_min_ver+) is required))
-@end example
-
-We first check to see if Python is version 3.0 or greater. If it is,
-we create a list of compatible Python interpreters and manually check
-for them using standard Autoconf macros. Finally, we check if the
-interpreter that we found this time is of sufficient version,
-otherwise @file{configure} will halt with an error. Likewise, if no
-appropriate interpreter was found, an error message will be printed
-and @file{configure} will stop.
-
+message. You may use any mathematical comparison operator that Python
+recognizes for the first argument (``=='', ``<='', ``>'', etc.).
 
 @c *******************************************************************
 @node Checking for a module or function, Writing test programs, Verifying the Python version, configure.ac
@@ -664,9 +697,16 @@ Description
 Variables exported
 
 @item
+@code{PC_INIT([MINIMUM-VERSION], [MAXIMUM-VERSION])
+@tab
+Initialize pyconfigure by finding the highest-version Python
+interpreter that meets the specified requirements.
+@code{PYTHON}
+
+@item
 @code{AC_PROG_PYTHON([NAME-TO-CHECK])}
 @tab
-Find a Python interpreter
+Find the highest-version Python interpreter
 @tab
 @code{PYTHON}
 
@@ -678,9 +718,10 @@ Find a python-config program
 @code{PYTHON_CONFIG}
 
 @item
-@code{PC_PYTHON_VERIFY_VERSION(VERSION, [ACTION-IF-TRUE], [ACTION-IF-NOT-TRUE])}
+@code{PC_PYTHON_VERIFY_VERSION([OPERATOR], [VERSION], [ACTION-IF-TRUE], [ACTION-IF-NOT-TRUE])}
 @tab
 Verify that the Python interpreter is of a sufficient version number
+according to some comparison operator ("==", "<=", etc.)
 @tab
 
 @item

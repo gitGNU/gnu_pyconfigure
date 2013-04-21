@@ -1,7 +1,7 @@
-This is pyconfigure.info, produced by makeinfo version 5.0 from
+This is pyconfigure.info, produced by makeinfo version 5.1 from
 pyconfigure.texi.
 
-This manual is for pyconfigure (version 0.2, updated 17 March 2013).
+This manual is for pyconfigure (version 0.2, updated 21 April 2013).
 
    Copyright (C) 2012, 2013 Brandon Invergo
 
@@ -20,10 +20,10 @@ END-INFO-DIR-ENTRY
 
 File: pyconfigure.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir)
 
-GNU Source Release Collection
-*****************************
+pyconfigure
+***********
 
-This manual is for pyconfigure (version 0.2, 17 March 2013).
+This manual is for pyconfigure (version 0.2, 21 April 2013).
 
 * Menu:
 
@@ -73,8 +73,8 @@ method quickly become apparent.
 programs, on the other hand, is done according to the use of standard
 'configure' scripts and Make recipes.  This method has the advantage of
 being language-agnostic, very flexible, and time-proven.  pyconfigure
-consists of all the files necessary to use the standard GNU build
-process to configure and install Python packages.
+consists of all the files necessary to begin using the standard GNU
+build process to configure and install a Python package.
 
 * Menu:
 
@@ -1142,24 +1142,24 @@ their use in free software.
 
 Tag Table:
 Node: Top760
-Node: Introduction1463
-Node: Configuring Python packages2472
-Node: Installation3830
-Node: Invoking pyconf4543
-Node: PKG-INFO metadata6442
-Node: Customization7602
-Node: configure.ac8384
-Node: Required macros10140
-Node: Verifying the Python version11480
-Node: Checking for a module or function13631
-Node: Writing test programs14853
-Node: Using Sphinxbuild to build documentation15950
-Node: Makefile.in16960
-Node: Makefile.in (distutils)17396
-Node: Makefile.in (Make)19352
-Node: setup.py.in22220
-Node: Appendix22848
-Node: Autoconf macros23015
-Node: GNU Free Documentation License26632
+Node: Introduction1427
+Node: Configuring Python packages2445
+Node: Installation3803
+Node: Invoking pyconf4516
+Node: PKG-INFO metadata6415
+Node: Customization7575
+Node: configure.ac8357
+Node: Required macros10113
+Node: Verifying the Python version11453
+Node: Checking for a module or function13604
+Node: Writing test programs14826
+Node: Using Sphinxbuild to build documentation15923
+Node: Makefile.in16933
+Node: Makefile.in (distutils)17369
+Node: Makefile.in (Make)19325
+Node: setup.py.in22193
+Node: Appendix22821
+Node: Autoconf macros22988
+Node: GNU Free Documentation License26605
 
 End Tag Table
