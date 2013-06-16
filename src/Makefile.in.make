@@ -105,7 +105,7 @@ all: build
 .PHONY: all build byte-compile install install-virtualenv				\
 install-pypkgs install-scripts install-pkgdata install-data uninstall	\
 distclean info install-html html install-pdf pdf install-dvi dvi		\
-install-ps ps clean dist check installdirs
+install-ps ps clean dist check install-dirs
 
 
 build: byte-compile
@@ -168,7 +168,7 @@ install-data:
 
 # Create all the required directories
 install-dirs:
-	$(MKDIR_P) $(DESTDIR)$(pythondir)/{$(subst $(space),$(comma),$(PYPACKAGES))}
+	$(MKDIR_P) $(addprefix $(DESTDIR)$(pythondir)/,$(PYPACKAGES))
 	if [ "$(DATA)" != "" ]; then \
 		$(MKDIR_P) $(DESTDIR)$(pkgdatadir); \
 	fi
@@ -231,7 +231,7 @@ check:
 # endif
 #
 #
-# install-html: html installdirs
+# install-html: html install-dirs
 # 	$(INSTALL_DATA) docs/build/html/* $(DESTDIR)$(htmldir)
 #
 # html: docs/build/html/index.html
@@ -242,7 +242,7 @@ check:
 # endif
 #
 #
-# install-pdf: pdf installdirs
+# install-pdf: pdf install-dirs
 # 	$(INSTALL_DATA) docs/build/latex/foo.pdf $(DESTDIR)$(pdfdir)
 #
 # pdf: docs/build/latex/Foo.pdf
