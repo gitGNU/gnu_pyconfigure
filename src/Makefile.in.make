@@ -53,7 +53,8 @@ DATA_ROOT =
 # List whatever files you want to include in your source distribution
 # here.  You can include whole directories but note that *everything*
 # under that directory will be included
-DISTFILES = PKG-INFO Makefile.in configure setup.py install-sh
+DISTFILES = PKG-INFO Makefile.in configure configure.ac setup.py.in	\
+install-sh
 
 DESTDIR = 
 VPATH = @srcdir@
