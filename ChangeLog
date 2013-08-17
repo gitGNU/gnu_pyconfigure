@@ -1,5 +1,9 @@
 2013-08-17  Brandon Invergo  <brandon@invergo.net>
 
+	* src/m4/python.m4 (PC_VERIFY_VERSION): Fix version checking
+	algorithm to include the Python release level (final releases
+	only; no alpha/beta)
+
 	* pyconf.in: Handle different exceptions being thrown by os.mkdir
 	in Python 2 vs Python 3
 

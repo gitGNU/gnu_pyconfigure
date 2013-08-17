@@ -180,9 +180,10 @@ m4_ifval([$1],
 ]) # PC_PYTHON_PROG_PYTHON_CONFIG
 
 
-# PC_PYTHON_VERIFY_VERSION(RELATION, VERSION, [ACTION-IF-TRUE], [ACTION-IF-NOT-FOUND])
+# PC_PYTHON_VERIFY_VERSION([RELATION], [VERSION], [ACTION-IF-TRUE], [ACTION-IF-FALSE])
 # ---------------------------------------------------------------------------
-# Run ACTION-IF-TRUE if the Python interpreter PROG has version >= VERSION.
+# Run ACTION-IF-TRUE if the Python interpreter PROG has version [RELATION] VERSION.
+# i.e if RELATION is "<", check if PROG has a version number less than VERSION.
 # Run ACTION-IF-FALSE otherwise.
 # Specify RELATION as any mathematical comparison "<", ">", "<=", ">=", "==" or "!="
 # This test uses sys.hexversion instead of the string equivalent (first
@@ -205,6 +206,10 @@ import sys
     # xrange is not present in Python 3.0 and range returns an iterator
     for i in list(range(4)):
         reqverhex = (reqverhex << 8) + reqver[[i]]
+    # the final 8 bits are "0xf0" for final versions, which are all
+    # we'll test against, since it's doubtful that a released software
+    # will depend on an alpha- or beta-state Python.
+    reqverhex += 0xf0
     if sys.hexversion $1 reqverhex:
         sys.exit()
     else:
