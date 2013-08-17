@@ -107,7 +107,7 @@ m4_define([_AC_LANG_CALL(Python)],
 
 
 AC_DEFUN([AC_LANG_COMPILER(Python)],
-[AC_REQUIRE([AC_PROG_PYTHON])])
+[AC_REQUIRE([PC_INIT([2.0, [4.0]])])
 
 
 # PC_INIT([MIN_VER], [MAX_VER]) 

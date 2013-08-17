@@ -7,6 +7,8 @@
 	checking to not be put on a new line
 	(PC_INIT): Add plain old "python" to the list of interpreters to
 	search for
+	(): Make AC_LANG_COMPILER depend on PC_INIT instead of
+	AC_PROG_PYTHON
 
 	* pyconf.in: Handle different exceptions being thrown by os.mkdir
 	in Python 2 vs Python 3
