@@ -5,6 +5,8 @@
 	only; no alpha/beta)
 	(PC_VERIFY_VERSION, PC_INIT): Fix printing of results of version
 	checking to not be put on a new line
+	(PC_INIT): Add plain old "python" to the list of interpreters to
+	search for
 
 	* pyconf.in: Handle different exceptions being thrown by os.mkdir
 	in Python 2 vs Python 3

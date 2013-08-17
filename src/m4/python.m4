@@ -126,7 +126,7 @@ dnl Construct a comma-separated list of interpreter names (python2.6,
 dnl python2.7, etc). We only care about the first 3 characters of the
 dnl version strings (major-dot-minor; not 
 dnl major-dot-minor-dot-bugfix[-dot-whatever])
-        [m4_foreach([pc_ver], 
+        [python m4_foreach([pc_ver], 
                     m4_esyscmd_s(seq -s[[", "]] -f["[[%.1f]]"] m4_substr(pc_max_ver, [0], [3]) -0.1 m4_substr(pc_min_ver, [0], [3])),
 dnl Remove python2.8 and python2.9 since they will never exist
                     [m4_bmatch(pc_ver, [2.[89]], [], [python]pc_ver)] ) \
