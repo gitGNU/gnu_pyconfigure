@@ -31,6 +31,14 @@ import warnings
 DATADIR = "@pkgdatadir@"
 
 
+# os.mkdir throws an OSError in Python 2.x when the target already
+# exists, while it throws a FileExistsError in Python 3.x.
+try:
+    raise FileExistsError
+except:
+    FileExistsError = OSError
+
+
 def safe_copy(src, dst, overwrite=False):
     if not overwrite and os.path.exists(dst):
         warnings.warn("{0} exists. Skipping.".format(dst))
