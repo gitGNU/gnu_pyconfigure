@@ -76,7 +76,9 @@ dnl--PC_INIT----------------------------------------------------------
 dnl This is the only required macro. Its primary function is to find
 dnl a Python interpreter that is compatible with the package and set 
 dnl the PYTHON variable to hold its path. It can optionally take
-dnl arguments to specify minimum and/or maximum versions:
+dnl arguments to specify minimum and/or maximum versions.  This is a 
+dnl convenience macro that combines the functionality of the macros
+dnl PC_PROG_PYTHON and PC_PYTHON_VERIFY_VERSION
 dnl PC_INIT: find an interpreter with a version between 2.0 and 3.3.99
 dnl          (in other words, up to and including any possible release
 dnl          in the 3.3 series)
@@ -90,13 +92,15 @@ PC_INIT([2.7], [3.3.1])
 
 
 dnl--PC_PROG_PYTHON---------------------------------------------------
-dnl This macro provides another means of finding a Python interpreter.
-dnl It does not do any version checking like PC_INIT. You may
-dnl optionally pass it argument to pass a path to a binary to check 
-dnl for first. By default, this will first check for a binary called 
-dnl "python" and then from there it will check for version-specific
-dnl binaries (ie "python3", "python2.7") in decending version order. 
-dnl Thus, the highest version binary will be found first. 
+dnl This macro provides a means of finding a Python interpreter.
+dnl You may optionally pass it argument to pass a path to a binary to
+dnl check for first.  You may also pass a second and third argument to
+dnl specify the minimum and maximum versions to check for.  This works
+dnl in a naive way by appending the major and minor release numbers to
+dnl the binary name.  By default, this will first check for a binary 
+dnl called "python" and then from there it will check for version-
+dnl specific binaries (ie "python3", "python2.7") in decending version 
+dnl order. Thus, the highest version binary will be found first. 
 dnl----
 dnl
 dnl PC_PROG_PYTHON

@@ -708,15 +708,21 @@ Variables exported
 @item
 @code{PC_INIT([MINIMUM-VERSION], [MAXIMUM-VERSION])}
 @tab
-Initialize pyconfigure by finding the highest-version Python
-interpreter that meets the specified requirements.
+Initialize pyconfigure by finding the highest-version Python interpreter
+that meets the specified requirements.  If no such interpreter is found,
+exit with an error.  This is a convenience macro that includes
+@code{PC_PROG_PYTHON} and does the version checking via
+@code{PC_PYTHON_VERIFY_VERSION}.
 @tab
 @code{PYTHON}
 
 @item
-@code{PC_PROG_PYTHON([NAME-TO-CHECK])}
+@code{PC_PROG_PYTHON([NAME-TO-CHECK], [MINIMUM-VERSION], [MAXIMUM-VERSION])}
 @tab
-Find the highest-version Python interpreter
+Find a Python interpreter with the highest version number between the
+given minimum and maximum versions.  The version requirement is
+performed in a naive way, by simply appending the major and minor
+release numbers to the interpreter name (i.e. ``python2.7'').
 @tab
 @code{PYTHON}
 
