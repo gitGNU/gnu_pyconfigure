@@ -5,12 +5,25 @@
 	only; no alpha/beta)
 	(PC_VERIFY_VERSION, PC_INIT): Fix printing of results of version
 	checking to not be put on a new line
-	(PC_INIT): Add plain old "python" to the list of interpreters to
-	search for
-	(): Make AC_LANG_COMPILER depend on PC_INIT instead of
-	AC_PROG_PYTHON
 	(PC_PROG_PYTHON): Rename AC_PROG_PYTHON to fit with the
-	pyconfigure PC_ namespace
+	pyconfigure PC_ namespace.  Move Python interpreter list
+	construction call from PC_INIT here.
+	(PC_PROG_PYTHON): Reverse list of interpreters so "python" and
+	optionally "python2" and/or "python3" come at the front.
+	(PC_PROG_PYTHON): Change to define via AC_DEFUN_ONCE
+	(PC_INIT): Use new PC_PROG_PYTHON for interpreter searching
+	(PC_PYTHON_CHECK_VERSION): Change to use AC_LINK_IFELSE instead of
+	AC_CONFTEST
+	(PC_PYTHON_CHECK_PREFIX): Change to use AC_LINK_IFELSE instead of
+	AC_CONFTEST
+	(PC_PYTHON_CHECK_EXEC_PREFIX): Change to use AC_LINK_IFELSE instead
+	of AC_CONFTEST
+	(PC_PYTHON_CHECK_PLATFORM): Change to use AC_LINK_IFELSE instead
+	of AC_CONFTEST
+	(PC_PYTHON_CHECK_SITE_DIR): Change to use AC_LINK_IFELSE instead
+	of AC_CONFTEST
+	(PC_PYTHON_CHECK_EXEC_DIR): Change to use AC_LINK_IFELSE instead
+	of AC_CONFTEST
 
 	* pyconf.in: Handle different exceptions being thrown by os.mkdir
 	in Python 2 vs Python 3
