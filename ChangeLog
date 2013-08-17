@@ -27,6 +27,11 @@
 
 	* pyconf.in: Handle different exceptions being thrown by os.mkdir
 	in Python 2 vs Python 3
+	(parse_pkg_info): Properly parse multi-line descriptions in
+	PKG-INFO
+
+	* src/setup.py.in.distutils: Properly handle multi-line
+	descriptions
 
 2013-06-16  Brandon Invergo  <brandon@invergo.net>
 
