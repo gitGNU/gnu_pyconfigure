@@ -9,6 +9,8 @@
 	search for
 	(): Make AC_LANG_COMPILER depend on PC_INIT instead of
 	AC_PROG_PYTHON
+	(PC_PROG_PYTHON): Rename AC_PROG_PYTHON to fit with the
+	pyconfigure PC_ namespace
 
 	* pyconf.in: Handle different exceptions being thrown by os.mkdir
 	in Python 2 vs Python 3

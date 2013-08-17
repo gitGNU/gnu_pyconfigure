@@ -152,7 +152,7 @@ m4_ifval([PYTHON],
 # ---------------------------------
 # Find a Python interpreter.  Python versions prior to 2.0 are not
 # supported. (2.0 was released on October 16, 2000).
-AC_DEFUN([AC_PROG_PYTHON],
+AC_DEFUN([PC_PROG_PYTHON],
 [AC_ARG_VAR([PYTHON], [the Python interpreter])
 m4_define_default([_PC_PYTHON_INTERPRETER_LIST],
                   [python python3 python3.3 python3.2 python3.1 python3.0 python2 python2.7 dnl

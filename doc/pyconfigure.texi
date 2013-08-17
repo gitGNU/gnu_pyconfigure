@@ -714,7 +714,7 @@ interpreter that meets the specified requirements.
 @code{PYTHON}
 
 @item
-@code{AC_PROG_PYTHON([NAME-TO-CHECK])}
+@code{PC_PROG_PYTHON([NAME-TO-CHECK])}
 @tab
 Find the highest-version Python interpreter
 @tab

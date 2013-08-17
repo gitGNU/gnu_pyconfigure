@@ -89,7 +89,7 @@ dnl
 PC_INIT([2.7], [3.3.1])
 
 
-dnl--AC_PROG_PYTHON---------------------------------------------------
+dnl--PC_PROG_PYTHON---------------------------------------------------
 dnl This macro provides another means of finding a Python interpreter.
 dnl It does not do any version checking like PC_INIT. You may
 dnl optionally pass it argument to pass a path to a binary to check 
@@ -99,7 +99,7 @@ dnl binaries (ie "python3", "python2.7") in decending version order.
 dnl Thus, the highest version binary will be found first. 
 dnl----
 dnl
-dnl AC_PROG_PYTHON
+dnl PC_PROG_PYTHON
 
 
 dnl--PC_PYTHON_PROG_PYTHON_CONFIG-------------------------------------
