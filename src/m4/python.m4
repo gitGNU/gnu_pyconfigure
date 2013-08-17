@@ -141,12 +141,10 @@ AC_PATH_PROGS(PYTHON, [_PC_PYTHON_INTERPRETER_LIST])
 dnl If we found something, do a sanity check that the interpreter really
 dnl has the version its name would suggest.
 m4_ifval([PYTHON],
-        [PC_PYTHON_VERIFY_VERSION([>=], [pc_min_ver],
-                  [AC_MSG_RESULT([yes])],
+        [PC_PYTHON_VERIFY_VERSION([>=], [pc_min_ver],,
                   [AC_MSG_FAILURE([No compatible Python interpreter found. If you're sure that you have one, try setting the PYTHON environment variable to the location of the interpreter.])])])
 m4_ifval([PYTHON],
-        [PC_PYTHON_VERIFY_VERSION([<=], [pc_max_ver], 
-                  [AC_MSG_RESULT([yes])], 
+        [PC_PYTHON_VERIFY_VERSION([<=], [pc_max_ver],,
                   [AC_MSG_FAILURE([No compatible Python interpreter found. If you're sure that you have one, try setting the PYTHON environment variable to the location of the interpreter.])])])
 ])# PC_INIT
 
@@ -192,7 +190,7 @@ m4_ifval([$1],
 AC_DEFUN([PC_PYTHON_VERIFY_VERSION],
 [m4_define([pc_python_safe_ver], m4_bpatsubsts($2, [\.], [_]))
 AC_CACHE_CHECK([if Python $1 '$2'],
-    [[pc_cv_python_min_version_]pc_python_safe_ver],
+    [[pc_cv_python_req_version_]pc_python_safe_ver],
     [AC_LANG_PUSH(Python)[]dnl
      AC_RUN_IFELSE(
         [AC_LANG_PROGRAM([dnl
@@ -215,8 +213,8 @@ import sys
     else:
         sys.exit(1)
 ])], 
-         [[pc_cv_python_req_version_]pc_python_safe_ver="yes"], 
-         [[pc_cv_python_req_version_]pc_python_safe_ver="no"])
+         [[pc_cv_python_req_version_]pc_python_safe_ver=yes], 
+         [[pc_cv_python_req_version_]pc_python_safe_ver=no])
      AC_LANG_POP(Python)[]dnl
     ])
 AS_IF([test "$[pc_cv_python_req_version_]pc_python_safe_ver" = "no"], [$4], [$3])

@@ -3,6 +3,8 @@
 	* src/m4/python.m4 (PC_VERIFY_VERSION): Fix version checking
 	algorithm to include the Python release level (final releases
 	only; no alpha/beta)
+	(PC_VERIFY_VERSION, PC_INIT): Fix printing of results of version
+	checking to not be put on a new line
 
 	* pyconf.in: Handle different exceptions being thrown by os.mkdir
 	in Python 2 vs Python 3
