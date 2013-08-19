@@ -70,7 +70,7 @@ def parse_pkg_info(pkg_info):
         if line[0:8] == "       |":
             if key is None or key == "":
                 sys.exit("*** Error: Folded field that doesn't belong to any key")
-            pkg_meta[key] = '\r\n'.join([pkg_meta[key], line[8:]])
+            pkg_meta[key] = '\n'.join([pkg_meta[key], line[8:]])
             continue
         key, sep, val = line.partition(':')
         val = val.strip()
