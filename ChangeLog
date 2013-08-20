@@ -1,3 +1,8 @@
+2013-08-21  Brandon Invergo  <brandon@invergo.net>
+
+	* src/configure.ac: Include Autoconf macros via m4_include rather
+	than AC_CONFIG_MACRO_DIRS
+
 2013-08-17  Brandon Invergo  <brandon@invergo.net>
 
 	* src/m4/python.m4 (PC_VERIFY_VERSION): Fix version checking
