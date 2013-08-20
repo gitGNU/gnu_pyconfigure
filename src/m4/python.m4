@@ -286,7 +286,7 @@ import sys
     sys.stdout.write(sys.exec_prefix)
 ])],
         [pc_cv_python_exec_prefix=`./conftest`;
-         if test $? !=0; then
+         if test $? != 0; then
             AC_MSG_FAILURE([could not determine Python exec_prefix])
          fi],
          [AC_MSG_FAILURE([failed to run Python program])])
