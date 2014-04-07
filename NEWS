@@ -1,6 +1,6 @@
 # -*- org -*-
 
-Copyright (C) 2012, 2013 Brandon Invergo <brandon@invergo.net>
+Copyright (C) 2012, 2013, 2014 Brandon Invergo <brandon@invergo.net>
 
 This file is part of pyconfigure.
 
@@ -16,6 +16,59 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with pyconfigure.  If not, see <http://www.gnu.org/licenses/>.
+
+* 0.2.2
+This release is a bugfix release fixing a critical bug in the Python
+M4 macros.
+
+** pkgpythondir and pkgpyexecdir are correctly constructed
+In some cases, the package name was not being appended to these
+variables, which could have some nasty effects if used blindly.  This
+has been fixed.
+
+* 0.2.1
+This is a bugfix release.
+
+** The "install-dirs" target of Makefile.in was fixed
+Directory expansion in the "install-dirs" target did not work
+correctly, which has been fixed. Also, some erroneous references to an
+"installdirs" target were fixed.
+
+** More default files were added to DISTFILES in Makefile.in
+Some important files were missing from the default list of files to be
+included in source distributions.
+
+** Multi-line package descriptions in PKG-INFO files are properly parsed.
+The so-called "folded field" format (RFC-822) of multi-line package
+descriptions is properly handled by the pyconf script.
+
+** Compatibility of the pyconf script was improved.
+The intention is for the pyconf script to be run-able via Python 2
+or 3. Further language differences were caught and fixed to improve
+this compatibility.
+
+** The Autoconf macros were cleaned up and improved.
+Several small bugs were fixed in the Autoconf macros, including:
+
+- Version checking properly handles the release level.  This fixes a
+  bug in checking that the interpreter is correctly less-than-or-equal
+  to its actual version.
+
+- Version checking results are displayed on the same line as the
+  check.  Previously, the results were printed on a new line.
+
+- AC_PROG_PYTHON was renamed to PC_PROG_PYTHON.  This macro belongs in
+  the pyconfigure "PC_" namespace.
+
+- PC_PROG_PYTHON now does basic version checking.  You may pass a
+  minimum and maximum version to PC_PROG_PYTHON, which it uses to
+  build a list of interpreters to search for. For example, if the
+  minimum version is 2.7, the interpreter "python27" will be added to
+  the list of executables to search for.
+
+- The running of test programs in the macros was fixed for greater
+  compatibility.  This fixes possible bugs in running some of the
+  Autoconf macros.
 
 * 0.2
 This release introduces a major restructuring of pyconfigure, making
