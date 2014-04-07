@@ -1,4 +1,4 @@
-# Copyright 2012, 2013 Brandon Invergo <brandon@invergo.net>
+# Copyright 2012, 2013, 2014 Brandon Invergo <brandon@invergo.net>
 #
 # This file is part of pyconfigure.  This program is free
 # software; you can redistribute it and/or modify it under the
@@ -509,7 +509,7 @@ AC_SUBST([pythondir], [\${prefix}/$pc_cv_python_site_dir])])# PC_PYTHON_CHECK_SI
 # $PACKAGE directory under PYTHON_SITE_DIR
 AC_DEFUN([PC_PYTHON_SITE_PACKAGE_DIR],
 [AC_REQUIRE([PC_PYTHON_CHECK_SITE_DIR])[]dnl
-AC_SUBST([pkgpythondir], [\${pythondir}/$PACKAGE])])
+AC_SUBST([pkgpythondir], [\${pythondir}/$PACKAGE_NAME])])
 
 
 # PC_PYTHON_CHECK_EXEC_DIR
@@ -573,7 +573,7 @@ AC_SUBST([pyexecdir], [\${exec_prefix}/$pc_cv_python_pyexecdir])]) #PY_PYTHON_CH
 # $PACKAGE directory under PYTHON_SITE_DIR
 AC_DEFUN([PC_PYTHON_EXEC_PACKAGE_DIR],
 [AC_REQUIRE([PC_PYTHON_CHECK_EXEC_DIR])[]dnl
-AC_SUBST([pkgpyexecdir], [\${pyexecdir}/$PACKAGE])])
+AC_SUBST([pkgpyexecdir], [\${pyexecdir}/$PACKAGE_NAME])])
 
 
 ## -------------------------------------------- ##
