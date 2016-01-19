@@ -179,9 +179,13 @@ install-dirs:
 
 # Remove installed files
 uninstall: 
-	rm -rvf $(addprefix $(pythondir)/,$(PYPACKAGES))
-	rm -rvf $(addprefix $(bindir)/,$(SCRIPTS))
-	rm -rvf $(pkgdatadir)
+	for d in $(addprefix $(pythondir)/,$(PYPACKAGES)); do \
+		if `test -d $$d`; then rm -rv $$d; fi; \
+	done
+	for f in $(addprefix $(bindir)/,$(notdir $(SCRIPTS))); do \
+		if `test -f $$f`; then rm -v $$f; fi; \
+	done
+	if `test -d $(pkgdatadir)`; then rm -rv $(pkgdatadir); fi
 
 
 # Clean up anything that is generated during the installation process
