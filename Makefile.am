@@ -5,7 +5,7 @@ src/setup.py.in.distutils src/setup.py.in.make
 m4dir = $(pkgdatadir)/m4
 dist_m4_DATA = src/m4/python.m4
 info_TEXINFOS = doc/pyconfigure.texi
-doc_COPYING = COPYING COPYING.GPLv4 src/m4/COPYING.EXCEPTION
+dist_doc_DATA = COPYING COPYING.GPLv3 src/m4/COPYING.EXCEPTION
 
 CLEANFILES = $(bin_SCRIPTS)
 
