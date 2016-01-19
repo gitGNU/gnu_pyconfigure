@@ -1,3 +1,11 @@
+2016-01-19  Brandon Invergo  <brandon@invergo.net>
+
+	* Makefile.am (dist_doc_DATA): Fix distribution of COPYING.GPLv3
+	and COPYING.EXCEPTION
+
+	* src/Makefile.in.make (uninstall): Fix uninstallation targets to
+	make them safer and to make script uninstallation work correctly.
+
 2014-04-07  Brandon Invergo  <brandon@invergo.net>
 
 	* src/m4/python.m4 (PC_PYTHON_SITE_PACKAGE_DIR): fix creation of
