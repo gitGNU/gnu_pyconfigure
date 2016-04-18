@@ -138,8 +138,7 @@ dnl The default maximum version is 3.3
 m4_define_default([pc_max_ver], m4_ifval([$3], [$3], [4.0]))
 dnl Build up a list of possible interpreter names. 
 m4_define_default([_PC_PYTHON_INTERPRETER_LIST],
-    [[python] \
-dnl If we want some Python 3 versions (max version >= 3.0), 
+    [dnl If we want some Python 3 versions (max version >= 3.0), 
 dnl also search for "python3"
      m4_if(m4_version_compare(pc_max_ver, [2.9]), [1], [python3], []) \
 dnl If we want some Python 2 versions (min version <= 2.7),
@@ -152,7 +151,8 @@ dnl major-dot-minor-dot-bugfix[-dot-whatever])
      m4_foreach([pc_ver], 
                     m4_esyscmd_s(seq -s[[", "]] -f["[[%.1f]]"] m4_substr(pc_max_ver, [0], [3]) -0.1 m4_substr(pc_min_ver, [0], [3])),
 dnl Remove python2.8 and python2.9 since they will never exist
-                    [m4_bmatch(pc_ver, [2.[89]], [], [python]pc_ver)])])
+                    [m4_bmatch(pc_ver, [2.[89]], [], [python]pc_ver)]) \
+     [python]])
 dnl Do the actual search at last.
 m4_ifval([$1],
 	[AC_PATH_PROGS(PYTHON, [$1 _PC_PYTHON_INTERPRETER_LIST])],

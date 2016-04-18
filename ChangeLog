@@ -1,3 +1,8 @@
+2016-04-18  Brandon Invergo  <brandon@invergo.net>
+
+	* src/m4/python.m4 (PC_INIT): Check for `python` last (after all
+	the version specific ones)
+
 2016-01-19  Brandon Invergo  <brandon@invergo.net>
 
 	* Makefile.am (dist_doc_DATA): Fix distribution of COPYING.GPLv3
